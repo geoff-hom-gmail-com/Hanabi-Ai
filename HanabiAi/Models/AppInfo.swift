@@ -2,10 +2,10 @@
 //  AppInfo.swift
 //  HanabiAi
 //
-//  Abstract:
-//
 //  Created by Geoff Hom on 8/30/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
+//
+//  Abstract:
 //
 
 import Foundation

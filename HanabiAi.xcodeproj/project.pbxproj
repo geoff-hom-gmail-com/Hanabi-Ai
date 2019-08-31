@@ -16,6 +16,7 @@
 		8160C5F32319E08500550C54 /* HanabiAiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5F22319E08500550C54 /* HanabiAiTests.swift */; };
 		8160C5FE2319E08500550C54 /* HanabiAiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5FD2319E08500550C54 /* HanabiAiUITests.swift */; };
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
+		8160C60F231A73B300550C54 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* About.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		8160C5FD2319E08500550C54 /* HanabiAiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HanabiAiUITests.swift; sourceTree = "<group>"; };
 		8160C5FF2319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		8160C60E231A73B300550C54 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				8160C5DB2319E08100550C54 /* AppDelegate.swift */,
 				8160C5DD2319E08100550C54 /* SceneDelegate.swift */,
 				8160C60B2319FF8700550C54 /* Models */,
+				8160C60E231A73B300550C54 /* About.swift */,
 				8160C5DF2319E08100550C54 /* ContentView.swift */,
 				8160C5E12319E08500550C54 /* Assets.xcassets */,
 				8160C5E62319E08500550C54 /* LaunchScreen.storyboard */,
@@ -278,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8160C60F231A73B300550C54 /* About.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
 				8160C5E02319E08100550C54 /* ContentView.swift in Sources */,
@@ -448,6 +452,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HanabiAi/Preview Content\"";
+				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = HanabiAi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -467,6 +472,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"HanabiAi/Preview Content\"";
+				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = HanabiAi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
