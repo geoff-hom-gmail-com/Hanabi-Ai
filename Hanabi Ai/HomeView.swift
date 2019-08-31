@@ -26,21 +26,14 @@ struct HomeView: View {
                 NavigationLink(destination: AboutView()) {
                     Text("About")
                 }
-                
+                .padding()
+                NavigationLink(destination: Auto_PlayView()) {
+                    Text("Auto-Play")
+                }
+                .padding()
             }
             .navigationBarTitle(Text("Hanabi Ai"))
         }
-        
-        // Nav UI. I don't like it as much.
-//        NavigationView {
-//            List {
-//                NavigationLink(destination: About()) {
-//                    Text("About")
-//                }
-//
-//            }
-//            .navigationBarTitle(Text("Hanabi Ai"))
-//        }
     }
 }
 

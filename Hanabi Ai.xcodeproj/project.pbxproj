@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		81231A1E231B39B400B5EAD0 /* Auto-PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */; };
 		8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DB2319E08100550C54 /* AppDelegate.swift */; };
 		8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DD2319E08100550C54 /* SceneDelegate.swift */; };
 		8160C5E02319E08100550C54 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DF2319E08100550C54 /* HomeView.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auto-PlayView.swift"; sourceTree = "<group>"; };
 		8160C5D82319E08100550C54 /* Hanabi Ai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hanabi Ai.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8160C5DB2319E08100550C54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8160C5DD2319E08100550C54 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				8160C5DD2319E08100550C54 /* SceneDelegate.swift */,
 				8160C60B2319FF8700550C54 /* Models */,
 				8160C60E231A73B300550C54 /* AboutView.swift */,
+				81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */,
 				8160C5DF2319E08100550C54 /* HomeView.swift */,
 				8160C5E12319E08500550C54 /* Assets.xcassets */,
 				8160C5E62319E08500550C54 /* LaunchScreen.storyboard */,
@@ -284,6 +287,7 @@
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
+				81231A1E231B39B400B5EAD0 /* Auto-PlayView.swift in Sources */,
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
 			);
