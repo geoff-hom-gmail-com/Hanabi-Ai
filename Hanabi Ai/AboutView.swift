@@ -1,6 +1,6 @@
 //
-//  About.swift
-//  HanabiAi
+//  AboutView.swift
+//  Hanabi Ai
 //
 //  Created by Geoff Hom on 8/31/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct About: View {
+struct AboutView: View {
     var body: some View {
         VStack {
             Text("This is the About screen!")
@@ -20,8 +20,8 @@ struct About: View {
     }
 }
 
-struct About_Previews: PreviewProvider {
+struct AboutView_Previews: PreviewProvider {
     static var previews: some View {
-        About()
+        AboutView()
     }
 }

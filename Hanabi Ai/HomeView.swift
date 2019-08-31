@@ -1,19 +1,19 @@
 //
-//  ContentView.swift
-//  HanabiAi
+//  HomeView.swift
+//  Hanabi Ai
 //
 //  Created by Geoff Hom on 8/30/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
 //
 //  Abstract:
-//  TODO: rename to Home?
+//  Home/main menu.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     var body: some View {
-        // This isn't working so far (beta).
+        // This isn't working so far (beta). List/Stack required.
 //        NavigationView {
 //            NavigationLink(destination: About()) {
 //                Text("About")
@@ -23,7 +23,7 @@ struct ContentView: View {
         
         NavigationView {
             VStack {
-                NavigationLink(destination: About()) {
+                NavigationLink(destination: AboutView()) {
                     Text("About")
                 }
                 
@@ -44,8 +44,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        HomeView()
     }
 }

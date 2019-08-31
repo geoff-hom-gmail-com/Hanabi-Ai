@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DB2319E08100550C54 /* AppDelegate.swift */; };
 		8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DD2319E08100550C54 /* SceneDelegate.swift */; };
-		8160C5E02319E08100550C54 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DF2319E08100550C54 /* ContentView.swift */; };
+		8160C5E02319E08100550C54 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DF2319E08100550C54 /* HomeView.swift */; };
 		8160C5E22319E08500550C54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8160C5E12319E08500550C54 /* Assets.xcassets */; };
 		8160C5E52319E08500550C54 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8160C5E42319E08500550C54 /* Preview Assets.xcassets */; };
 		8160C5E82319E08500550C54 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8160C5E62319E08500550C54 /* LaunchScreen.storyboard */; };
-		8160C5F32319E08500550C54 /* HanabiAiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5F22319E08500550C54 /* HanabiAiTests.swift */; };
-		8160C5FE2319E08500550C54 /* HanabiAiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5FD2319E08500550C54 /* HanabiAiUITests.swift */; };
+		8160C5F32319E08500550C54 /* Hanabi_AiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5F22319E08500550C54 /* Hanabi_AiTests.swift */; };
+		8160C5FE2319E08500550C54 /* Hanabi_AiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5FD2319E08500550C54 /* Hanabi_AiUITests.swift */; };
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
-		8160C60F231A73B300550C54 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* About.swift */; };
+		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,22 +37,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8160C5D82319E08100550C54 /* HanabiAi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HanabiAi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8160C5D82319E08100550C54 /* Hanabi Ai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hanabi Ai.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8160C5DB2319E08100550C54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8160C5DD2319E08100550C54 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		8160C5DF2319E08100550C54 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8160C5DF2319E08100550C54 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8160C5E12319E08500550C54 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8160C5E42319E08500550C54 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8160C5E72319E08500550C54 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8160C5E92319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8160C5EE2319E08500550C54 /* HanabiAiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HanabiAiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8160C5F22319E08500550C54 /* HanabiAiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HanabiAiTests.swift; sourceTree = "<group>"; };
+		8160C5EE2319E08500550C54 /* Hanabi AiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Hanabi AiTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8160C5F22319E08500550C54 /* Hanabi_AiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hanabi_AiTests.swift; sourceTree = "<group>"; };
 		8160C5F42319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8160C5F92319E08500550C54 /* HanabiAiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HanabiAiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8160C5FD2319E08500550C54 /* HanabiAiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HanabiAiUITests.swift; sourceTree = "<group>"; };
+		8160C5F92319E08500550C54 /* Hanabi AiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Hanabi AiUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8160C5FD2319E08500550C54 /* Hanabi_AiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hanabi_AiUITests.swift; sourceTree = "<group>"; };
 		8160C5FF2319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
-		8160C60E231A73B300550C54 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
+		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,9 +83,9 @@
 		8160C5CF2319E08100550C54 = {
 			isa = PBXGroup;
 			children = (
-				8160C5DA2319E08100550C54 /* HanabiAi */,
-				8160C5F12319E08500550C54 /* HanabiAiTests */,
-				8160C5FC2319E08500550C54 /* HanabiAiUITests */,
+				8160C5DA2319E08100550C54 /* Hanabi Ai */,
+				8160C5F12319E08500550C54 /* Hanabi AiTests */,
+				8160C5FC2319E08500550C54 /* Hanabi AiUITests */,
 				8160C5D92319E08100550C54 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -93,27 +93,27 @@
 		8160C5D92319E08100550C54 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8160C5D82319E08100550C54 /* HanabiAi.app */,
-				8160C5EE2319E08500550C54 /* HanabiAiTests.xctest */,
-				8160C5F92319E08500550C54 /* HanabiAiUITests.xctest */,
+				8160C5D82319E08100550C54 /* Hanabi Ai.app */,
+				8160C5EE2319E08500550C54 /* Hanabi AiTests.xctest */,
+				8160C5F92319E08500550C54 /* Hanabi AiUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8160C5DA2319E08100550C54 /* HanabiAi */ = {
+		8160C5DA2319E08100550C54 /* Hanabi Ai */ = {
 			isa = PBXGroup;
 			children = (
 				8160C5DB2319E08100550C54 /* AppDelegate.swift */,
 				8160C5DD2319E08100550C54 /* SceneDelegate.swift */,
 				8160C60B2319FF8700550C54 /* Models */,
-				8160C60E231A73B300550C54 /* About.swift */,
-				8160C5DF2319E08100550C54 /* ContentView.swift */,
+				8160C60E231A73B300550C54 /* AboutView.swift */,
+				8160C5DF2319E08100550C54 /* HomeView.swift */,
 				8160C5E12319E08500550C54 /* Assets.xcassets */,
 				8160C5E62319E08500550C54 /* LaunchScreen.storyboard */,
 				8160C5E92319E08500550C54 /* Info.plist */,
 				8160C5E32319E08500550C54 /* Preview Content */,
 			);
-			path = HanabiAi;
+			path = "Hanabi Ai";
 			sourceTree = "<group>";
 		};
 		8160C5E32319E08500550C54 /* Preview Content */ = {
@@ -124,22 +124,22 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		8160C5F12319E08500550C54 /* HanabiAiTests */ = {
+		8160C5F12319E08500550C54 /* Hanabi AiTests */ = {
 			isa = PBXGroup;
 			children = (
-				8160C5F22319E08500550C54 /* HanabiAiTests.swift */,
+				8160C5F22319E08500550C54 /* Hanabi_AiTests.swift */,
 				8160C5F42319E08500550C54 /* Info.plist */,
 			);
-			path = HanabiAiTests;
+			path = "Hanabi AiTests";
 			sourceTree = "<group>";
 		};
-		8160C5FC2319E08500550C54 /* HanabiAiUITests */ = {
+		8160C5FC2319E08500550C54 /* Hanabi AiUITests */ = {
 			isa = PBXGroup;
 			children = (
-				8160C5FD2319E08500550C54 /* HanabiAiUITests.swift */,
+				8160C5FD2319E08500550C54 /* Hanabi_AiUITests.swift */,
 				8160C5FF2319E08500550C54 /* Info.plist */,
 			);
-			path = HanabiAiUITests;
+			path = "Hanabi AiUITests";
 			sourceTree = "<group>";
 		};
 		8160C60B2319FF8700550C54 /* Models */ = {
@@ -153,9 +153,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8160C5D72319E08100550C54 /* HanabiAi */ = {
+		8160C5D72319E08100550C54 /* Hanabi Ai */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8160C6022319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAi" */;
+			buildConfigurationList = 8160C6022319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi Ai" */;
 			buildPhases = (
 				8160C5D42319E08100550C54 /* Sources */,
 				8160C5D52319E08100550C54 /* Frameworks */,
@@ -165,14 +165,14 @@
 			);
 			dependencies = (
 			);
-			name = HanabiAi;
+			name = "Hanabi Ai";
 			productName = HanabiAi;
-			productReference = 8160C5D82319E08100550C54 /* HanabiAi.app */;
+			productReference = 8160C5D82319E08100550C54 /* Hanabi Ai.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8160C5ED2319E08500550C54 /* HanabiAiTests */ = {
+		8160C5ED2319E08500550C54 /* Hanabi AiTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8160C6052319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAiTests" */;
+			buildConfigurationList = 8160C6052319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi AiTests" */;
 			buildPhases = (
 				8160C5EA2319E08500550C54 /* Sources */,
 				8160C5EB2319E08500550C54 /* Frameworks */,
@@ -183,14 +183,14 @@
 			dependencies = (
 				8160C5F02319E08500550C54 /* PBXTargetDependency */,
 			);
-			name = HanabiAiTests;
+			name = "Hanabi AiTests";
 			productName = HanabiAiTests;
-			productReference = 8160C5EE2319E08500550C54 /* HanabiAiTests.xctest */;
+			productReference = 8160C5EE2319E08500550C54 /* Hanabi AiTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		8160C5F82319E08500550C54 /* HanabiAiUITests */ = {
+		8160C5F82319E08500550C54 /* Hanabi AiUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8160C6082319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAiUITests" */;
+			buildConfigurationList = 8160C6082319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi AiUITests" */;
 			buildPhases = (
 				8160C5F52319E08500550C54 /* Sources */,
 				8160C5F62319E08500550C54 /* Frameworks */,
@@ -201,9 +201,9 @@
 			dependencies = (
 				8160C5FB2319E08500550C54 /* PBXTargetDependency */,
 			);
-			name = HanabiAiUITests;
+			name = "Hanabi AiUITests";
 			productName = HanabiAiUITests;
-			productReference = 8160C5F92319E08500550C54 /* HanabiAiUITests.xctest */;
+			productReference = 8160C5F92319E08500550C54 /* Hanabi AiUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -229,7 +229,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8160C5D32319E08100550C54 /* Build configuration list for PBXProject "HanabiAi" */;
+			buildConfigurationList = 8160C5D32319E08100550C54 /* Build configuration list for PBXProject "Hanabi Ai" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -242,9 +242,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8160C5D72319E08100550C54 /* HanabiAi */,
-				8160C5ED2319E08500550C54 /* HanabiAiTests */,
-				8160C5F82319E08500550C54 /* HanabiAiUITests */,
+				8160C5D72319E08100550C54 /* Hanabi Ai */,
+				8160C5ED2319E08500550C54 /* Hanabi AiTests */,
+				8160C5F82319E08500550C54 /* Hanabi AiUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -281,10 +281,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8160C60F231A73B300550C54 /* About.swift in Sources */,
+				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
-				8160C5E02319E08100550C54 /* ContentView.swift in Sources */,
+				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,7 +293,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8160C5F32319E08500550C54 /* HanabiAiTests.swift in Sources */,
+				8160C5F32319E08500550C54 /* Hanabi_AiTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,7 +301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8160C5FE2319E08500550C54 /* HanabiAiUITests.swift in Sources */,
+				8160C5FE2319E08500550C54 /* Hanabi_AiUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,12 +310,12 @@
 /* Begin PBXTargetDependency section */
 		8160C5F02319E08500550C54 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8160C5D72319E08100550C54 /* HanabiAi */;
+			target = 8160C5D72319E08100550C54 /* Hanabi Ai */;
 			targetProxy = 8160C5EF2319E08500550C54 /* PBXContainerItemProxy */;
 		};
 		8160C5FB2319E08500550C54 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8160C5D72319E08100550C54 /* HanabiAi */;
+			target = 8160C5D72319E08100550C54 /* Hanabi Ai */;
 			targetProxy = 8160C5FA2319E08500550C54 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -451,15 +451,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HanabiAi/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Hanabi Ai/Preview Content\"";
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HanabiAi/Info.plist;
+				INFOPLIST_FILE = "Hanabi Ai/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAi;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-Ai";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -471,15 +471,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"HanabiAi/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Hanabi Ai/Preview Content\"";
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HanabiAi/Info.plist;
+				INFOPLIST_FILE = "Hanabi Ai/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAi;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-Ai";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -492,18 +492,18 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = HanabiAiTests/Info.plist;
+				INFOPLIST_FILE = "Hanabi AiTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAiTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-AiTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HanabiAi.app/HanabiAi";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hanabi Ai.app/Hanabi Ai";
 			};
 			name = Debug;
 		};
@@ -513,18 +513,18 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = HanabiAiTests/Info.plist;
+				INFOPLIST_FILE = "Hanabi AiTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAiTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-AiTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HanabiAi.app/HanabiAi";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hanabi Ai.app/Hanabi Ai";
 			};
 			name = Release;
 		};
@@ -533,13 +533,13 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = HanabiAiUITests/Info.plist;
+				INFOPLIST_FILE = "Hanabi AiUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAiUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-AiUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -552,13 +552,13 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = HanabiAiUITests/Info.plist;
+				INFOPLIST_FILE = "Hanabi AiUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.geoffhom.HanabiAiUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.geoffhom.Hanabi-AiUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -569,7 +569,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8160C5D32319E08100550C54 /* Build configuration list for PBXProject "HanabiAi" */ = {
+		8160C5D32319E08100550C54 /* Build configuration list for PBXProject "Hanabi Ai" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8160C6002319E08500550C54 /* Debug */,
@@ -578,7 +578,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8160C6022319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAi" */ = {
+		8160C6022319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi Ai" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8160C6032319E08500550C54 /* Debug */,
@@ -587,7 +587,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8160C6052319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAiTests" */ = {
+		8160C6052319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi AiTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8160C6062319E08500550C54 /* Debug */,
@@ -596,7 +596,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8160C6082319E08500550C54 /* Build configuration list for PBXNativeTarget "HanabiAiUITests" */ = {
+		8160C6082319E08500550C54 /* Build configuration list for PBXNativeTarget "Hanabi AiUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8160C6092319E08500550C54 /* Debug */,

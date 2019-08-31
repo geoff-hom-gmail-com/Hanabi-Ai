@@ -1,13 +1,13 @@
 //
 //  HanabiAiTests.swift
-//  HanabiAiTests
+//  Hanabi Ai Tests
 //
 //  Created by Geoff Hom on 8/30/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
 //
 
 import XCTest
-@testable import HanabiAi
+@testable import Hanabi_Ai
 
 class HanabiAiTests: XCTestCase {
 

@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  HanabiAi
+//  Hanabi Ai
 //
 //  Created by Geoff Hom on 8/30/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView()
+        let contentView = HomeView()
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
