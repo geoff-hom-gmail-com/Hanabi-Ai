@@ -20,12 +20,12 @@ struct Auto_PlayView: View {
                 }
             }
             .padding()
-            NavigationLink(destination: AboutView()) {
+            NavigationLink(destination: Play1DetailedGameView()) {
                 Text("Play 1 Detailed Game")
             }
             .padding()
         }
-        .navigationBarTitle(Text("Auto-Play"))
+        .navigationBarTitle(Text("Auto-Play"))    
     }
 }
 
