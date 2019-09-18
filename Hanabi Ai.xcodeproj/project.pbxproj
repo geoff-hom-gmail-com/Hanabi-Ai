@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		81231A1E231B39B400B5EAD0 /* Auto-PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */; };
 		81231A20231B3F2700B5EAD0 /* Play1DetailedGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1F231B3F2700B5EAD0 /* Play1DetailedGameView.swift */; };
+		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
+		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
 		8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DB2319E08100550C54 /* AppDelegate.swift */; };
 		8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DD2319E08100550C54 /* SceneDelegate.swift */; };
 		8160C5E02319E08100550C54 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5DF2319E08100550C54 /* HomeView.swift */; };
@@ -41,6 +43,8 @@
 /* Begin PBXFileReference section */
 		81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auto-PlayView.swift"; sourceTree = "<group>"; };
 		81231A1F231B3F2700B5EAD0 /* Play1DetailedGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play1DetailedGameView.swift; sourceTree = "<group>"; };
+		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		8160C5D82319E08100550C54 /* Hanabi Ai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hanabi Ai.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8160C5DB2319E08100550C54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8160C5DD2319E08100550C54 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				8160C60C2319FFB700550C54 /* AppInfo.swift */,
+				815749D72331C915008E95CF /* Deck.swift */,
+				815749D52331C2DA008E95CF /* Game.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -295,6 +301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				815749D82331C915008E95CF /* Deck.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
@@ -302,6 +309,7 @@
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
 				81231A20231B3F2700B5EAD0 /* Play1DetailedGameView.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
+				815749D62331C2DA008E95CF /* Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

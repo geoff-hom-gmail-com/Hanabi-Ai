@@ -9,27 +9,46 @@
 import SwiftUI
 
 struct Play1DetailedGameView: View {
+//    @State private var deck: String = "this is a test yes its kjleflkef eit's really longlong"
+    @State private var randomDeckDescription: String = Game.randomDeckDescription
+    @State private var specificDeckDescription: String = ""
+
     var body: some View {
-        VStack {
-            VStack {
-                Text("Random Deck:")
-                TextField("g1r2w3b4y5", text: /*@START_MENU_TOKEN@*/.constant("")/*@END_MENU_TOKEN@*/)
-                NavigationLink(destination: AboutView()) {
-                    Text("Go")
+        // Using Form until .lineLimit(nil) starts working robustly.
+        Form {
+            Section {
+                VStack {
+                    Text("Random Deck:")
+                    TextField("Deck contents: g3r2w3b1y5, etc.", text: $randomDeckDescription).font(.caption)
+                    // .lineLimit(nil) not working. Can wrap in UITextField, but it should work. Waiting for Apple.
+                    
+                    // temp, until TextField.lineLimit(nil) works
+                    Text(randomDeckDescription)
+                        .font(.caption)
+                        .lineLimit(nil)
+                    
+                    NavigationLink(destination: AboutView()) {
+                        Text("Go")
+                    }
                 }
             }
-            .padding(.vertical)
-//            .background(Color.green)
-//            Divider()
-            VStack {
-                Text("Specific:")
-                TextField("g1r2w3b4y5", text: /*@START_MENU_TOKEN@*/.constant("")/*@END_MENU_TOKEN@*/)
-                NavigationLink(destination: AboutView()) {
-                    Text("Go")
+//            .padding(.vertical)
+            //            .background(Color.green)
+            //            Divider()
+            Section {
+                VStack {
+                    Text("Specific:")
+                    TextField("Deck contents: g3r2w3b1y5, etc.", text: $specificDeckDescription)
+                        .font(.caption)
+                    // I could seed this with the random deck. Or more likely, the last specific deck. If none, use the random deck.
+                    
+                    NavigationLink(destination: AboutView()) {
+                        Text("Go")
+                    }
                 }
+//                .padding(.vertical)
             }
-            .padding(.vertical)
-//            .background(Color.blue)
+            //            .background(Color.blue)
         }
         .navigationBarTitle(Text("Play 1 Detailed Game"))
     }
