@@ -38,7 +38,7 @@ struct Play1DetailedGameView: View {
             Section {
                 VStack {
                     Text("Specific:")
-                    TextField("Deck contents: g3r2w3b1y5, etc.", text: $specificDeckDescription)
+                    TextField("Deck contents: e.g., g3r2w3b1y5…", text: $specificDeckDescription)
                         .font(.caption)
                     // I could seed this with the random deck. Or more likely, the last specific deck. If none, use the random deck.
                     

@@ -11,7 +11,7 @@ import Foundation
 struct Game {
     // Returns a string defining a random deck.
     static var randomDeckDescription: String {
-        let deck = Deck()
+        var deck = Deck()
         deck.shuffle()
         let description = deck.description
         return description

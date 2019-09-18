@@ -48,9 +48,7 @@ struct Deck: CustomStringConvertible {
     }
     
     // Randomly reorder the deck.
-    func shuffle() {
-        
+    mutating func shuffle() {
+        cards.shuffle()
     }
-    // randomly pick stuff from it.
-  
 }
