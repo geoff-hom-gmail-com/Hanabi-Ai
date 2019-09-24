@@ -13,14 +13,6 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        // This isn't working so far (beta). List/Stack required.
-//        NavigationView {
-//            NavigationLink(destination: About()) {
-//                Text("About")
-//            }
-//            .navigationBarTitle(Text("Hanabi Ai"))
-//        }
-        
         NavigationView {
             VStack {
                 NavigationLink(destination: AboutView()) {

@@ -8,8 +8,8 @@
 
 import SwiftUI
 
+// TODO: This view is deprecated. It now goes from Auto-Play -> GameResults. Get rid of this view once the rest works.
 struct Play1DetailedGameView: View {
-//    @State private var deck: String = "this is a test yes its kjleflkef eit's really longlong"
     @State private var randomDeckDescription: String = Game.randomDeckDescription
     @State private var specificDeckDescription: String = ""
 
@@ -19,17 +19,21 @@ struct Play1DetailedGameView: View {
             Section {
                 VStack {
                     Text("Random Deck:")
-                    TextField("Deck contents: g3r2w3b1y5, etc.", text: $randomDeckDescription).font(.caption)
-                    // .lineLimit(nil) not working. Can wrap in UITextField, but it should work. Waiting for Apple.
+                    TextField("Deck contents: g3r2w4b1y5, etc.", text: $randomDeckDescription)
+                        .font(.caption)
+//                        .frame(idealHeight: .infinity)
+                    // .lineLimit(nil) not working. Can wrap in UITextField, but it should work as-is. Waiting for Apple.
                     
                     // temp, until TextField.lineLimit(nil) works
                     Text(randomDeckDescription)
                         .font(.caption)
                         .lineLimit(nil)
                     
-                    NavigationLink(destination: AboutView()) {
-                        Text("Go")
-                    }
+                    // Go to DetailedGameView. So, I should pass in the deck description.
+                    // Though later, we'll pass in the parameters for the game, like # players. So, either I pass in the game, or the GRView knows about the game/model inherently. Former seems better.
+//                    NavigationLink(destination: GameResultsView()) {
+//                        Text("Go")
+//                    }
                 }
             }
 //            .padding(.vertical)
@@ -38,24 +42,26 @@ struct Play1DetailedGameView: View {
             Section {
                 VStack {
                     Text("Specific:")
-                    TextField("Deck contents: e.g., g3r2w3b1y5…", text: $specificDeckDescription)
+                    TextField("Deck contents: e.g., g3r2w4b1y5…", text: $specificDeckDescription)
                         .font(.caption)
                     // I could seed this with the random deck. Or more likely, the last specific deck. If none, use the random deck.
                     
-                    NavigationLink(destination: AboutView()) {
-                        Text("Go")
-                    }
+//                    NavigationLink(destination: GameResultsView()) {
+//                        Text("Go")
+//                    }
                 }
 //                .padding(.vertical)
             }
             //            .background(Color.blue)
         }
-        .navigationBarTitle(Text("Play 1 Detailed Game"))
+        .navigationBarTitle(Text("Play 1 Game"), displayMode: .inline)
     }
 }
 
 struct Play1DetailedGameView_Previews: PreviewProvider {
     static var previews: some View {
-        Play1DetailedGameView()
+        NavigationView {
+            Play1DetailedGameView()
+        }
     }
 }

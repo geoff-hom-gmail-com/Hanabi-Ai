@@ -35,12 +35,15 @@ struct AboutView: View {
                 Text("Version \(AppInfo.version) (build \(AppInfo.build))")
             }
         }
-        .navigationBarTitle(Text("About"))
+        .navigationBarTitle(Text("About"), displayMode: .inline)
+
     }
 }
 
 struct AboutView_Previews: PreviewProvider {
     static var previews: some View {
-        AboutView()
+        NavigationView {
+            AboutView()
+        }
     }
 }

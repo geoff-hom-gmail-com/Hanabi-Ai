@@ -20,11 +20,11 @@ struct Deck: CustomStringConvertible {
     }
     
     private enum Suits: String, CaseIterable {
-        case Green = "g"
-        case Red = "r"
-        case White = "w"
-        case Blue = "b"
-        case Yellow = "y"
+        case green = "g"
+        case red = "r"
+        case white = "w"
+        case blue = "b"
+        case yellow = "y"
     }
     
     // Each color has three 1s, two 2s/3s/4s, one 5.

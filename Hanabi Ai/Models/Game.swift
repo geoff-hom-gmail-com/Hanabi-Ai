@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum DeckSetup {
+    case random, custom
+}
+
 struct Game {
     // Returns a string defining a random deck.
     static var randomDeckDescription: String {
@@ -16,5 +20,9 @@ struct Game {
         let description = deck.description
         return description
     }
-
+    
+    var numberOfPlayers: Int = 2
+    var deckSetup: DeckSetup = .random
+    var customDeckDescription: String = ""
+//    var deck: Deck
 }
