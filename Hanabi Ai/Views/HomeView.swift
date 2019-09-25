@@ -19,7 +19,7 @@ struct HomeView: View {
                     Text("About")
                 }
                 .padding()
-                NavigationLink(destination: Auto_PlayView()) {
+                NavigationLink(destination: AutoPlayView()) {
                     Text("Auto-Play")
                 }
                 .padding()

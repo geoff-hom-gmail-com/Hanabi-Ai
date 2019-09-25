@@ -1,5 +1,5 @@
 //
-//  Auto-PlayView.swift
+//  AutoPlayView.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 8/31/19.
@@ -8,8 +8,7 @@
 
 import SwiftUI
 
-//TODO: the hyphen doesn't make sense here, as it's not connecting. Rename file and class and notes.
-struct Auto_PlayView: View {
+struct AutoPlayView: View {
     var body: some View {
         Form {
             OneGameSection()
@@ -105,17 +104,17 @@ struct NumberOfGamesHStack: View {
 struct PlayMultipleGamesNavigationLink: View {
     var body: some View {
         // TODO: This would be a new view for showing multiple game results.
-        NavigationLink(destination: AboutView()) {
+        NavigationLink(destination: Text("Placeholder")) {
             Spacer()
             Text("Run")
         }
     }
 }
 
-struct Auto_PlayView_Previews: PreviewProvider {
+struct AutoPlayView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            Auto_PlayView()
+            AutoPlayView()
         }
     }
 }

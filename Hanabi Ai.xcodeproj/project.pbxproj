@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		81231A1E231B39B400B5EAD0 /* Auto-PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */; };
+		81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1D231B39B400B5EAD0 /* AutoPlayView.swift */; };
 		81231A20231B3F2700B5EAD0 /* Play1DetailedGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1F231B3F2700B5EAD0 /* Play1DetailedGameView.swift */; };
 		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
 		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
@@ -42,7 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Auto-PlayView.swift"; sourceTree = "<group>"; };
+		81231A1D231B39B400B5EAD0 /* AutoPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPlayView.swift; sourceTree = "<group>"; };
 		81231A1F231B3F2700B5EAD0 /* Play1DetailedGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play1DetailedGameView.swift; sourceTree = "<group>"; };
 		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				8160C60E231A73B300550C54 /* AboutView.swift */,
-				81231A1D231B39B400B5EAD0 /* Auto-PlayView.swift */,
+				81231A1D231B39B400B5EAD0 /* AutoPlayView.swift */,
 				815749FB233226D2008E95CF /* GameResultsView.swift */,
 				8160C5DF2319E08100550C54 /* HomeView.swift */,
 				81231A1F231B3F2700B5EAD0 /* Play1DetailedGameView.swift */,
@@ -309,7 +309,7 @@
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
 				815749FC233226D2008E95CF /* GameResultsView.swift in Sources */,
-				81231A1E231B39B400B5EAD0 /* Auto-PlayView.swift in Sources */,
+				81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */,
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
 				81231A20231B3F2700B5EAD0 /* Play1DetailedGameView.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
