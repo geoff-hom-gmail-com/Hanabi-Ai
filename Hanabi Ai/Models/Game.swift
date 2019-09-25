@@ -8,8 +8,20 @@
 
 import Foundation
 
-enum DeckSetup {
+enum DeckSetup: CaseIterable, Identifiable {
+    // TODO: later, could have options like "hard," "easy"; will have to figure out how to make those
     case random, custom
+
+    var id: DeckSetup { self }
+    
+    var name: String {
+        switch self {
+        case .random:
+            return "Random"
+        case .custom:
+            return "Custom"
+        }
+    }
 }
 
 struct Game {

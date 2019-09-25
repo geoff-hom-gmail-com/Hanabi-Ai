@@ -44,6 +44,7 @@ struct GameResultsView: View {
 //                    Text("Turn").underline()
 //                        .background(Color.red.opacity(0.2))
 //
+                // Can I group, then underline, then wrap that in an Hstack? try it?
 //                    HStack {
 //                        Text("g").underline().foregroundColor(.green)
 //                        Text("r").underline().foregroundColor(.red)
