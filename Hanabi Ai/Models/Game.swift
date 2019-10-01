@@ -11,18 +11,19 @@ import Foundation
 // FYI: Why is this a class (vs. struct)? We need to control identity. E.g., if we simulate two identical games, they're still different.
 class Game: ObservableObject {
     // Returns a string defining a random deck.
-    static var randomDeckDescription: String {
-        var deck = Deck()
-        deck.shuffle()
-        let description = deck.description
-        return description
-    }
+//    static var randomDeckDescription: String {
+//        var deck = Deck()
+//        deck.shuffle()
+//        let description = deck.description
+//        return description
+//    }
     
     //TODO: Update Published. I probably don't need to publish numberOfPlayers. But deck will change.
     @Published var numberOfPlayers: Int = 2
     var deckSetup: DeckSetup = .random
     var customDeckDescription: String = ""
-    var startingDeckDescription: String = ""
+//    var startingDeckDescription: String = ""
+    var startingDeck: Deck
     var deck: Deck
     var turns: [Turn] = []
     
@@ -36,7 +37,8 @@ class Game: ObservableObject {
             ()
         }
         self.deck = deck
-        self.startingDeckDescription = self.deck.description
+        self.startingDeck = self.deck
+//        self.startingDeckDescription = self.deck.description
         dealHands()
     }
     

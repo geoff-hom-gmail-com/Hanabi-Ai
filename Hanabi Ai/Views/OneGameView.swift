@@ -19,7 +19,7 @@ struct OneGameView: View {
     
     var body: some View {
         Form {
-            DeckSetupSection(deckSetup: game.deckSetup, startingDeckDescription: game.startingDeckDescription)
+            DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
             StartingSetupSection(game: game)
             TurnsSection(turns: game.turns)
             ResultsSection()
@@ -33,10 +33,11 @@ struct OneGameView: View {
 // Deck setup and deck used.
 struct DeckSetupSection: View {
     var deckSetup: DeckSetup
-    var startingDeckDescription: String
+    var startingDeck: Deck
     var body: some View {
         Section(header: Text("Deck Setup")) {
-            Text("\(deckSetup.name): \(startingDeckDescription)")
+            // initialString has non-breaking space.
+            ColoredCardsText(initialString: "\(deckSetup.name): ", cards: startingDeck.cards)
                 .font(.caption)
         }
     }
@@ -66,15 +67,51 @@ struct StartingHandsAndDeckGroup: View {
     let deck: Deck
     var body: some View {
         Group {
-            VStack(alignment: .leading) {
-                ForEach(hands) {
-                    Text("\($0.description)")
+            HStack(spacing: 0) {
+                Text("Hands: ")
+                VStack(alignment: .leading) {
+                    ForEach(hands) {
+                        ColoredCardsText(cards: $0.cards)
+                    }
                 }
             }
-            Text("Deck: \(deck.description)")
+            // initialString has non-breaking space.
+            ColoredCardsText(initialString: "Deck: ", cards: deck.cards)
         }
         .font(.caption)
     }
+}
+
+/// Card descriptions, in a row, colored by suit.
+struct ColoredCardsText: View {
+    var initialString: String = ""
+    var cards: [Card]
+    var body: some View {
+        // Make a Text for each card. Then concatenate them.
+        let coloredCards = cards.map {
+            Text("\($0.description)")
+                .foregroundColor(colorForSuit($0.suit))
+        }
+        return coloredCards.reduce(Text(initialString), +)
+    }
+}
+
+/// The color to represent each suit.
+func colorForSuit(_ suit: Suit) -> Color {
+    var color: Color
+    switch suit {
+    case .green:
+        color = .green
+    case .red:
+        color = .red
+    case .white:
+        color = .gray
+    case .blue:
+        color = .blue
+    case .yellow:
+        color = .yellow
+    }
+    return color
 }
 
 /// Starts playing the game that was set up.
@@ -241,8 +278,11 @@ struct PlayerHandsView: View {
     let hands: [Hand]
     var body: some View {
         VStack(alignment: .leading) {
+//            ForEach(hands) {
+//                Text("\($0.cardsDescription)")
+//            }
             ForEach(hands) {
-                Text("\($0.cardsDescription)")
+                ColoredCardsText(cards: $0.cards)
             }
         }
     }
@@ -323,6 +363,7 @@ struct OneGameView_Previews: PreviewProvider {
         }
     }
 }
+
 
 
 

@@ -19,18 +19,19 @@ import Foundation
 struct Hand: Identifiable {    
     let id = UUID()
     let player: String
-    var cards: [String] = []
+    var cards: [Card] = []
     
-    // TODO: If we use colored backgrounds to highlight, we could maybe get rid of separator. Even if colorblind. Or it could just be different colored font for each color. Would have to test. 
     // E.g., "P1: g3r1r3…"
-    var description: String {
-        let compact = cards.joined(separator: "/")
-        return "\(player): \(compact)"
-    }
+//    var description: String {
+//        let cardDescriptions = cards.map { $0.description }
+//        let compact = cardDescriptions.joined(separator: "")
+//        return "\(player): \(compact)"
+//    }
     
     // E.g., "g3/r1/r3…"
-    var cardsDescription: String {
-        let compact = cards.joined(separator: "/")
-        return "\(compact)"
-    }
+//    var cardsDescription: String {
+//        let cardDescriptions = cards.map { $0.description }
+//        let compact = cardDescriptions.joined(separator: "")
+//        return "\(compact)"
+//    }
 }

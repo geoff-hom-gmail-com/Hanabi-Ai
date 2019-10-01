@@ -10,14 +10,15 @@ import Foundation
 
 // A deck of Hanabi cards, in an order.
 struct Deck {
-    // E.g., ["r1", "g3", "r3", …]
-    var cards: [String] = []
+    var cards: [Card] = []
     
     // E.g., "g3r1r3…"
-    var description: String {
-        let compact = cards.joined(separator: "")
-        return compact
-    }
+//    var description: String {
+//        // CustomStringConvertible seems buggy in SwiftUI (as of Xcode 11.0). So, we'll use direct calls. We want the array of cards to become an array of strings, which we can then join. So we can use map.
+//        let cardDescriptions = cards.map { $0.description }
+//        let compact = cardDescriptions.joined(separator: "")
+//        return compact
+//    }
     
     // Each color has three 1s, two 2s/3s/4s, one 5.
     private let ones = Array(repeating: 1, count: 3)
@@ -32,8 +33,7 @@ struct Deck {
     init() {
         for suit in Suit.allCases {
             for number in numbers {
-                let card = "\(suit.rawValue)\(number)"
-                // E.g., "g1"
+                let card = Card(suit: suit, number: number)
                 cards.append(card)
             }
         }

@@ -12,6 +12,7 @@
 		812F8CCE2342E701000D8925 /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8CCD2342E701000D8925 /* Turn.swift */; };
 		812F8CD02342F424000D8925 /* Hand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8CCF2342F424000D8925 /* Hand.swift */; };
 		812F8CD223433C93000D8925 /* Suit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8CD123433C93000D8925 /* Suit.swift */; };
+		81465FB62343FC4200DD67C8 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81465FB52343FC4200DD67C8 /* Card.swift */; };
 		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
 		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
 		815749FC233226D2008E95CF /* OneGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749FB233226D2008E95CF /* OneGameView.swift */; };
@@ -50,6 +51,7 @@
 		812F8CCD2342E701000D8925 /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
 		812F8CCF2342F424000D8925 /* Hand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hand.swift; sourceTree = "<group>"; };
 		812F8CD123433C93000D8925 /* Suit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Suit.swift; sourceTree = "<group>"; };
+		81465FB52343FC4200DD67C8 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		815749FB233226D2008E95CF /* OneGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneGameView.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				8160C60C2319FFB700550C54 /* AppInfo.swift */,
+				81465FB52343FC4200DD67C8 /* Card.swift */,
 				815749D72331C915008E95CF /* Deck.swift */,
 				812F8CCB2342E6D7000D8925 /* DeckSetup.swift */,
 				815749D52331C2DA008E95CF /* Game.swift */,
@@ -322,6 +325,7 @@
 				81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */,
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
 				812F8CCC2342E6D7000D8925 /* DeckSetup.swift in Sources */,
+				81465FB62343FC4200DD67C8 /* Card.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
 				812F8CCE2342E701000D8925 /* Turn.swift in Sources */,
 				812F8CD223433C93000D8925 /* Suit.swift in Sources */,
