@@ -59,8 +59,8 @@ struct DeckSetupPicker: View {
     var body: some View {
         // No ":" after label because Picker's in a Form.
         Picker("Deck Setup", selection: $deckSetupSelection) {
-            ForEach(DeckSetup.allCases) { deckSetup in
-                Text(deckSetup.name).tag(deckSetup)
+            ForEach(DeckSetup.allCases) {
+                Text($0.name).tag($0)
             }
         }
     }
@@ -83,7 +83,7 @@ struct PlayGameNavigationLink: View {
 struct NumberOfGamesHStack: View {
     @Binding var numberOfGames: Int
     @State private var numberOfGamesString: String = "300"
-    //TODO: When user enters new number of games, update the binding. Hmm, user could enter something invalid. So we'll have to check.
+    //TODO: When user enters new number of games, update the binding. Hmm, user could enter something invalid. So we'll have to check. Could try a picker, like the decimal calorie entry in MFP.
     init(numberOfGames: Binding<Int>) {
         self._numberOfGames = numberOfGames
 //        self.numberOfGamesString = "\(self.numberOfGames)"

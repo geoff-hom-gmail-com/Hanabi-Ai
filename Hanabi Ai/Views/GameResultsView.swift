@@ -10,33 +10,27 @@ import SwiftUI
 
 // TODO: I could pass indata when I call this. And I guess that's fine to init the view. But we may have a long game, so we'd like to show stuff as it's being done, turn by turn
 struct GameResultsView: View {
-    var game: Game
+    @ObservedObject var game: Game
 //    var numberOfPlayers: Int
 //    var deckSetup: DeckSetup
 //    var customDeckDescription: String
-    // Who owns the game? This view can for now.
-    // So, we need to somehow make a game from what we were passed.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
         
-        self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+        let game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+        self.game = game
+        
+//        self._game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         //game.deal()
         // then below, it'd be fun to have a button "Play", and then to see it spit out all the turns really fast.
     }
     
     var body: some View {
         Form {
-            Section(header: Text("Deck")) {
-                Text("r1g2…")
-                    .font(.caption)
-            }
-            Section(header: Text("Starting Setup")) {
-                HStack {
-                    Text("P1: r1r1r1r2r2")
-                    Text("P2: r1r1r2r4r3")
-                }
-                Text("Deck: r4g2…")
-                    .font(.caption)
-            }
+            DeckSetupSection(deckSetup: game.deckSetup, deck: game.deck)
+            // TODO: currently this will crash. we need to initialize the turns. Hmm, we have a slight timing issue. If we want to have the user hit a "Play" button, then turn 1 won't be done yet. But we want to show the starting hands. So, either we have a turn 1 which is half-done, which kinda makes sense, or we do something else. I suppose a turn can be set up before the play, as the final turn would be like that: We want to know what the player just drew, or the final state of the board.
+            StartingSetupSection(turn: game.turns.first!)
+            
+            //TODO: Extract Subview
             Section(header: Text("Turns")) {
                 // If this Hstack is commented out, then it compiles in time.
 //                HStack {
@@ -180,6 +174,41 @@ struct TokenPilesView: View {
             Text("\(strikes)")
         }
         .background(Color.blue.opacity(0.2))
+    }
+}
+
+// Show deck setup and deck used.
+struct DeckSetupSection: View {
+    var deckSetup: DeckSetup
+    var deck: Deck
+    var body: some View {
+        Section(header: Text("Deck Setup")) {
+            Text("\(deckSetup.name): \(deck.description)")
+                .font(.caption)
+        }
+    }
+}
+
+// Show starting hands and remaining deck.
+struct StartingSetupSection: View {
+    var turn: Turn
+    var body: some View {
+        Section(header: Text("Starting Setup")) {
+            // TODO: Here, we need to show the hands at the start of Turn 1. And the remaining deck.
+            HStack {
+                ForEach(turn.hands) {
+                    //TODO: why are there no cards? Is it because it starts the game in the init?
+                    // Hmm, this isn't a state thing, as I don't want the starting setup to change
+                    Text("\($0.description)")
+                }
+            }
+            HStack {
+                Text("P1: r1r1r1r2r2")
+                Text("P2: r1r1r2r4r3")
+            }
+            //TODO: Make this the actual deck
+            Text("Deck: r4g2…")
+        }.font(.caption)
     }
 }
 
