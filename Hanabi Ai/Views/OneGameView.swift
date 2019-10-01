@@ -1,5 +1,5 @@
 //
-//  GameResults.swift
+//  OneGameView.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 9/18/19.
@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-// TODO: I could pass indata when I call this. And I guess that's fine to init the view. But we may have a long game, so we'd like to show stuff as it's being done, turn by turn
-struct GameResultsView: View {
+// Interface for auto-playing one game.
+struct OneGameView: View {
     @ObservedObject var game: Game
+    
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
-        
         let game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         self.game = game
         // then below, it'd be fun to have a button "Play", and then to see it spit out all the turns really fast.
@@ -21,47 +21,15 @@ struct GameResultsView: View {
     var body: some View {
         Form {
             DeckSetupSection(deckSetup: game.deckSetup, startingDeckDescription: game.startingDeckDescription)
+            // TODO: this should take either the whole Game or just what it displays. Sending it a turn doesn't make sense.
             StartingSetupSection(turn: game.turns.first!)
             TurnsSection()
-            //TODO: Extract Subview
-            Section(header: Text("Results")) {
-                Text("r1g2…")
-                    .font(.caption)
-            }
+            // TODO: rename this? Or the title, which is "Game Results." I guess the title needs renaming, if we have a "Play" button.
+            ResultsSection()
         }
-        .navigationBarTitle(Text("Game Results"), displayMode: .inline)
+        .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
 }
-
-//struct TurnNumberView2: View {
-//    let turn
-//    var body: some View {
-//        Text("\(turn).")
-//    }
-//}
-
-struct TurnNumberView: View {
-    let turn: Int
-    var body: some View {
-        Text("\(turn).")
-    }
-}
-
-struct PlayerActionsView: View {
-    let p1: String
-    let p2: String
-    var body: some View {
-        VStack {
-            // TODO: ah, this needs to have unique IDs, and right now, that's not true (could be c c). Fix.
-            ForEach([p1, p2], id: \.self) { action in
-                Text("\(action)")
-            }
-        }
-        .background(Color.red.opacity(0.2))
-    }
-}
-
-
 
 // Deck setup and deck used.
 struct DeckSetupSection: View {
@@ -81,7 +49,8 @@ struct StartingSetupSection: View {
     var body: some View {
         Section(header: Text("Starting Setup")) {
             Group {
-                HStack {
+                // TODO: Should this be a VStack instead, as Turns are VStack?
+                VStack(alignment: .leading) {
                     ForEach(turn.hands) {
                         Text("\($0.description)")
                     }
@@ -92,6 +61,18 @@ struct StartingSetupSection: View {
         }
     }
 }
+
+// The players' cards. Also highlights current player.
+//struct PlayerHandsView: View {
+//    let hands: [Hand]
+//    var body: some View {
+//        VStack(alignment: .leading) {
+//            ForEach(hands) {
+//                Text("\($0.cardsDescription)")
+//            }
+//        }
+//    }
+//}
 
 // Show each turn in the game.
 struct TurnsSection: View {
@@ -119,6 +100,16 @@ struct TurnsSection: View {
 //                TokenPilesView(clues: 8, strikes: 0)
 //            }
 //            .font(.caption)
+        }
+    }
+}
+
+// The end of the game, or a summary.
+struct ResultsSection: View {
+    var body: some View {
+        Section(header: Text("Results")) {
+            Text("??")
+                .font(.caption)
         }
     }
 }
@@ -221,6 +212,14 @@ struct TurnView3: View {
     }
 }
 
+struct TurnNumberView: View {
+    let turn: Int
+    var body: some View {
+        Text("\(turn).")
+    }
+}
+
+
 // TODO: how does it know whose turn it is? need to pass in; except we don't have index control in swiftui loops; maybe: https://forums.developer.apple.com/thread/118361
 // The players' cards. Also highlights current player.
 struct PlayerHandsView: View {
@@ -284,12 +283,28 @@ struct TokenPilesView: View {
         .background(Color.blue.opacity(0.2))
     }
 }
-struct GameResultsView_Previews: PreviewProvider {
+
+struct PlayerActionsView: View {
+    let p1: String
+    let p2: String
+    var body: some View {
+        VStack {
+            // TODO: ah, this needs to have unique IDs, and right now, that's not true (could be c c). Fix.
+            ForEach([p1, p2], id: \.self) { action in
+                Text("\(action)")
+            }
+        }
+        .background(Color.red.opacity(0.2))
+    }
+}
+
+
+struct OneGameView_Previews: PreviewProvider {
 //    static let hands = [Hand(player: "P1", cards: ["r1","w2","r3","r4","r5"]), Hand(player: "P2", cards: ["w1","r2","s3","s4","w5"])]
     static var previews: some View {
         NavigationView {
 //            PlayerHandsView(hands: hands)
-            GameResultsView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
+            OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
         }
     }
 }

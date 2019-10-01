@@ -23,7 +23,7 @@ struct Hand: Identifiable {
     
     // E.g., "P1: g3r1r3…"
     var description: String {
-        let compact = cards.joined(separator: "")
+        let compact = cards.joined(separator: "/")
         return "\(player): \(compact)"
     }
     

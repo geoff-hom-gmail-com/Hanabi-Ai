@@ -11,9 +11,11 @@
 
 import SwiftUI
 
+// Main menu.
 struct HomeView: View {
     var body: some View {
         NavigationView {
+            //TODO: Update UI so options are easier to see. List? Form?
             VStack {
                 NavigationLink(destination: AboutView()) {
                     Text("About")

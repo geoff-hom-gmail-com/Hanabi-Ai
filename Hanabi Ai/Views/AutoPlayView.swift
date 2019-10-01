@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+// Options for auto-play.
 struct AutoPlayView: View {
     var body: some View {
         Form {
@@ -72,7 +73,7 @@ struct PlayGameNavigationLink: View {
     var deckSetup: DeckSetup
     var customDeckDescription: String
     var body: some View {
-        NavigationLink(destination: GameResultsView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
+        NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
             Spacer()
             Text("Go")
         }
