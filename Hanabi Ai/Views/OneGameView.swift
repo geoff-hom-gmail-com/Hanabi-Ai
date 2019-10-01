@@ -15,21 +15,20 @@ struct OneGameView: View {
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
         let game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         self.game = game
-        // then below, it'd be fun to have a button "Play", and then to see it spit out all the turns really fast.
     }
     
     var body: some View {
         Form {
             DeckSetupSection(deckSetup: game.deckSetup, startingDeckDescription: game.startingDeckDescription)
-            // TODO: this should take either the whole Game or just what it displays. Sending it a turn doesn't make sense.
-            StartingSetupSection(turn: game.turns.first!)
-            TurnsSection()
-            // TODO: rename this? Or the title, which is "Game Results." I guess the title needs renaming, if we have a "Play" button.
+            StartingSetupSection(game: game)
+            TurnsSection(turns: game.turns)
             ResultsSection()
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
 }
+
+// MARK: DeckSetupSection
 
 // Deck setup and deck used.
 struct DeckSetupSection: View {
@@ -43,63 +42,75 @@ struct DeckSetupSection: View {
     }
 }
 
-// Starting hands and remaining deck.
+// MARK: StartingSetupSection
+
+/// The game state after dealing hands, plus the "Play" button.
 struct StartingSetupSection: View {
+    let game: Game
     let turn: Turn
+    init(game: Game) {
+        self.game = game
+        self.turn = self.game.turns.first!
+    }
     var body: some View {
         Section(header: Text("Starting Setup")) {
-            Group {
-                // TODO: Should this be a VStack instead, as Turns are VStack?
-                VStack(alignment: .leading) {
-                    ForEach(turn.hands) {
-                        Text("\($0.description)")
-                    }
-                }
-                Text("Deck: \(turn.deck.description)")
-            }
-            .font(.caption)
+            StartingHandsAndDeckGroup(hands: turn.hands, deck: turn.deck)
+            PlayButton(game: game)
         }
     }
 }
 
-// The players' cards. Also highlights current player.
-//struct PlayerHandsView: View {
-//    let hands: [Hand]
-//    var body: some View {
-//        VStack(alignment: .leading) {
-//            ForEach(hands) {
-//                Text("\($0.cardsDescription)")
-//            }
-//        }
-//    }
-//}
+/// The starting hands, and the remaining deck.
+struct StartingHandsAndDeckGroup: View {
+    let hands: [Hand]
+    let deck: Deck
+    var body: some View {
+        Group {
+            VStack(alignment: .leading) {
+                ForEach(hands) {
+                    Text("\($0.description)")
+                }
+            }
+            Text("Deck: \(deck.description)")
+        }
+        .font(.caption)
+    }
+}
+
+/// Starts playing the game that was set up.
+struct PlayButton: View {
+    let game: Game
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: { self.game.play() }) {
+                Text("Play")
+            }
+            Spacer()
+        }
+    }
+}
+
+// MARK: TurnsSection
 
 // Show each turn in the game.
 struct TurnsSection: View {
-    let turns: [Turn] = []
+    let turns: [Turn]
+//    let turns: [Turn] = []
     var body: some View {
         Section(header: Text("Turns (C: Clues, S: Strikes, D: Deck)")) {
             TurnHeaderView()
             //TODO: add placeholder turns. In the end, we'll add them by drawing from Turns.
-//            ForEach(turns) {
-//                TurnView()
-//            }
-            TurnView1()
-            TurnView2()
-            TurnView3()
+            ForEach(turns, id: \.number) {
+                TurnView(turn: $0)
+            }
+            //            TurnView1()
+            //            TurnView2()
+            //            TurnView3()
 
             //                HStack {
             //                    // Ugh. Lining stuff up can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
             // I want the rows to line up. E.g., Turn takes up 40% of row, grwby takes 40%, cs takes 20%
-            
-//            HStack {
-//                TurnNumberView(turn: 1)
-//                PlayerActionsView(p1: "p.r1", p2: "p.g1")
-//                PlayerHandsView(p1: "r1r2r3r4r5", p2: "w1w2s3s4w5")
-//                ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-//                TokenPilesView(clues: 8, strikes: 0)
-//            }
-//            .font(.caption)
         }
     }
 }
@@ -113,6 +124,8 @@ struct ResultsSection: View {
         }
     }
 }
+
+
 
 // Field descriptions for each turn.
 struct TurnHeaderView: View {
@@ -132,12 +145,13 @@ struct TurnHeaderView: View {
     }
 }
 
-// Info needed to understand a turn.
+/// Info needed to understand a turn.
 struct TurnView: View {
+    let turn: Turn
     var body: some View {
         HStack {
-            TurnNumberView(turn: 1)
-//            PlayerHandsView(p1: "r1r2r3r4r5", p2: "w1w2s3s4w5")
+            TurnNumberView(number: turn.number)
+            PlayerHandsView(hands: turn.hands)
 //            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
             TokenPilesView(clues: 8, strikes: 0)
             Text("40")
@@ -148,74 +162,75 @@ struct TurnView: View {
 }
 
 // Info needed to understand each turn.
-struct TurnView1: View {
-    let turn: Turn = Turn(hands:
-        [Hand(player: "P1", cards: ["r1","w2","r3","r4","r5"]), Hand(player: "P2", cards: ["w1","r2","s3","s4","w5"])],
-                          deck: Deck())
-    var body: some View {
-        HStack {
-            TurnNumberView(turn: 1)
-            PlayerHandsView(hands: turn.hands)
-            ScorePilesView(scores: turn.scores)
+//struct TurnView1: View {
+//    let turn: Turn = Turn(hands:
+//        [Hand(player: "P1", cards: ["r1","w2","r3","r4","r5"]), Hand(player: "P2", cards: ["w1","r2","s3","s4","w5"])],
+//                          deck: Deck())
+//    var body: some View {
+//        HStack {
+//            TurnNumberView(turn: 1)
+//            PlayerHandsView(hands: turn.hands)
+//            ScorePilesView(scores: turn.scores)
+//
+////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
+//            TokenPilesView(clues: turn.clues, strikes: turn.strikes)
+//
+////            TokenPilesView(clues: 8, strikes: 0)
+//            // TODO: Extract to DeckCountView()
+//            Text("40")
+//            // TODO: Extract Subview
+//            VStack {
+//                Text("p.r1")
+//                Text("\n")
+//            }
+//        }
+//        .font(.caption)
+//    }
+//}
 
-//            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-            TokenPilesView(clues: turn.clues, strikes: turn.strikes)
-
+// Info needed to understand each turn.
+//struct TurnView2: View {
+//    var body: some View {
+//        HStack {
+//            TurnNumberView(turn: 2)
+//            //TODO: Can highlight the current player, and action
+////            PlayerHandsView(p1: "w2/r3/r4/r5/g1", p2: "w1/r2/s3/s4/w5")
+////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
 //            TokenPilesView(clues: 8, strikes: 0)
-            // TODO: Extract to DeckCountView()
-            Text("40")
-            // TODO: Extract Subview
-            VStack {
-                Text("p.r1")
-                Text("\n")
-            }
-        }
-        .font(.caption)
-    }
-}
+//            Text("39")
+//            VStack {
+//                Text("\n")
+//                Text("p.r2")
+//            }
+//        }
+//        .font(.caption)
+//    }
+//}
 
 // Info needed to understand each turn.
-struct TurnView2: View {
-    var body: some View {
-        HStack {
-            TurnNumberView(turn: 2)
-            //TODO: Can highlight the current player, and action
-//            PlayerHandsView(p1: "w2/r3/r4/r5/g1", p2: "w1/r2/s3/s4/w5")
-//            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-            TokenPilesView(clues: 8, strikes: 0)
-            Text("39")
-            VStack {
-                Text("\n")
-                Text("p.r2")
-            }
-        }
-        .font(.caption)
-    }
-}
+//struct TurnView3: View {
+//    var body: some View {
+//        HStack {
+//            TurnNumberView(turn: 3)
+//            //TODO: Can highlight the current player, and action
+////            PlayerHandsView(p1: "w2,r3,r4,r5,g1", p2: "w1r2s3s4w5")
+////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
+//            TokenPilesView(clues: 8, strikes: 0)
+//            Text("39")
+//            VStack {
+//                Text("\n")
+//                Text("p.r2")
+//            }
+//        }
+//        .font(.caption)
+//    }
+//}
 
-// Info needed to understand each turn.
-struct TurnView3: View {
-    var body: some View {
-        HStack {
-            TurnNumberView(turn: 3)
-            //TODO: Can highlight the current player, and action
-//            PlayerHandsView(p1: "w2,r3,r4,r5,g1", p2: "w1r2s3s4w5")
-//            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-            TokenPilesView(clues: 8, strikes: 0)
-            Text("39")
-            VStack {
-                Text("\n")
-                Text("p.r2")
-            }
-        }
-        .font(.caption)
-    }
-}
-
+/// Which turn it is.
 struct TurnNumberView: View {
-    let turn: Int
+    let number: Int
     var body: some View {
-        Text("\(turn).")
+        Text("\(number).")
     }
 }
 
@@ -308,3 +323,6 @@ struct OneGameView_Previews: PreviewProvider {
         }
     }
 }
+
+
+

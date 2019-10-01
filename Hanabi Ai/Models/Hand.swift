@@ -21,6 +21,7 @@ struct Hand: Identifiable {
     let player: String
     var cards: [String] = []
     
+    // TODO: If we use colored backgrounds to highlight, we could maybe get rid of separator. Even if colorblind. Or it could just be different colored font for each color. Would have to test. 
     // E.g., "P1: g3r1r3…"
     var description: String {
         let compact = cards.joined(separator: "/")

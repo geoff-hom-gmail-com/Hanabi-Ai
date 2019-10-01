@@ -63,11 +63,15 @@ class Game: ObservableObject {
                 hands[index].cards.append(card)
             }
         }
-        let turn = Turn(hands: hands, deck: deck)
+        let turn = Turn(number: 1, hands: hands, deck: deck)
         self.turns.append(turn)
-        print("\(deck.description)")
     }
     
     //TODO: Game makes nextTurn from previous Turn
     
+    // Play each turn until the end.
+    func play() {
+        // Let's do a test version here. It'll add a turn.
+        print("play testing")
+    }
 }

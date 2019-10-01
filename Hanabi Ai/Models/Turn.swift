@@ -8,17 +8,17 @@
 
 import Foundation
 
-// Current state of the game. May also include the current player's action.
+/// Current state of the game. Can also include the current player's action.
 struct Turn {
-    // includes hands at start of turn, remaining deck, score piles, clues, strikes
-    
+    let number: Int
     var hands: [Hand]
     var deck: Deck
     var scores: [Suit: Int] = [:]
     var clues: Int = 8
     var strikes: Int = 0
     
-    init(hands: [Hand], deck: Deck) {
+    init(number: Int, hands: [Hand], deck: Deck) {
+        self.number = number
         self.hands = hands
         self.deck = deck
         for suit in Suit.allCases {
