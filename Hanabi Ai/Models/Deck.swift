@@ -11,20 +11,12 @@ import Foundation
 // A deck of Hanabi cards, in an order.
 struct Deck {
     // E.g., ["r1", "g3", "r3", …]
-    var cards = [String]()
+    var cards: [String] = []
     
     // E.g., "g3r1r3…"
     var description: String {
         let compact = cards.joined(separator: "")
         return compact
-    }
-    
-    private enum Suits: String, CaseIterable {
-        case green = "g"
-        case red = "r"
-        case white = "w"
-        case blue = "b"
-        case yellow = "y"
     }
     
     // Each color has three 1s, two 2s/3s/4s, one 5.
@@ -38,7 +30,7 @@ struct Deck {
     }
     
     init() {
-        for suit in Suits.allCases {
+        for suit in Suit.allCases {
             for number in numbers {
                 let card = "\(suit.rawValue)\(number)"
                 // E.g., "g1"

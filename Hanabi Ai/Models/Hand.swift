@@ -26,4 +26,10 @@ struct Hand: Identifiable {
         let compact = cards.joined(separator: "")
         return "\(player): \(compact)"
     }
+    
+    // E.g., "g3/r1/r3…"
+    var cardsDescription: String {
+        let compact = cards.joined(separator: "/")
+        return "\(compact)"
+    }
 }

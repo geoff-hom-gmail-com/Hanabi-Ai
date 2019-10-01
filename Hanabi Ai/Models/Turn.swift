@@ -14,5 +14,16 @@ struct Turn {
     
     var hands: [Hand]
     var deck: Deck
+    var scores: [Suit: Int] = [:]
+    var clues: Int = 8
+    var strikes: Int = 0
+    
+    init(hands: [Hand], deck: Deck) {
+        self.hands = hands
+        self.deck = deck
+        for suit in Suit.allCases {
+            scores[suit] = 0
+        }
+    }
 }
 
