@@ -8,8 +8,15 @@
 
 import Foundation
 
-// Player's cards.
-struct Hand: Identifiable {
+// Custom string interpolations don't compile in SwiftUI (as of Xcode 11.0). (Nor does CustomStringConvertible.)
+//extension String.StringInterpolation {
+//    mutating func appendInterpolation(_ value: Hand) {
+//        appendInterpolation("My name is \(value.player) and ")
+//    }
+//}
+
+// A player's cards.
+struct Hand: Identifiable {    
     let id = UUID()
     let player: String
     var cards: [String] = []

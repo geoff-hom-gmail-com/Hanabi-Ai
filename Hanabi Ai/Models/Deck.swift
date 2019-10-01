@@ -9,7 +9,7 @@
 import Foundation
 
 // A deck of Hanabi cards, in an order.
-struct Deck: CustomStringConvertible {
+struct Deck {
     // E.g., ["r1", "g3", "r3", …]
     var cards = [String]()
     

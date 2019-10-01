@@ -8,10 +8,11 @@
 
 import Foundation
 
-// Current state of the game.
+// Current state of the game. May also include the current player's action.
 struct Turn {
     // includes hands at start of turn, remaining deck, score piles, clues, strikes
     
     var hands: [Hand]
+    var deck: Deck
 }
 
