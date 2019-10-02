@@ -12,14 +12,16 @@ import Foundation
 struct Turn {
     let number: Int
     var hands: [Hand]
+    let currentHandID: UUID
     var deck: Deck
     var scores: [Suit: Int] = [:]
     var clues: Int = 8
     var strikes: Int = 0
     
-    init(number: Int, hands: [Hand], deck: Deck) {
+    init(number: Int, hands: [Hand], currentHandID: UUID, deck: Deck) {
         self.number = number
         self.hands = hands
+        self.currentHandID = currentHandID
         self.deck = deck
         for suit in Suit.allCases {
             scores[suit] = 0

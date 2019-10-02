@@ -65,7 +65,7 @@ class Game: ObservableObject {
                 hands[index].cards.append(card)
             }
         }
-        let turn = Turn(number: 1, hands: hands, deck: deck)
+        let turn = Turn(number: 1, hands: hands, currentHandID: hands.first!.id, deck: deck)
         self.turns.append(turn)
     }
     

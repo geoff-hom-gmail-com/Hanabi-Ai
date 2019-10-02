@@ -77,22 +77,30 @@ struct StartingHandsAndDeckGroup: View {
             }
             // initialString has non-breaking space.
             ColoredCardsText(initialString: "Deck: ", cards: deck.cards)
+                .font(.caption)
         }
         .font(.caption)
     }
 }
 
+// This returns Text, but it won't let me put that in the sig. So it doesn't allow Text modifiers externally.
 /// Card descriptions, in a row, colored by suit.
 struct ColoredCardsText: View {
     var initialString: String = ""
     var cards: [Card]
+    // Emphasis is here, because don't know how to add Text modifiers to ColoredCardsText. (Won't compile.)
+    var emphasis: Bool = false
     var body: some View {
         // Make a Text for each card. Then concatenate them.
         let coloredCards = cards.map {
             Text("\($0.description)")
                 .foregroundColor(colorForSuit($0.suit))
         }
-        return coloredCards.reduce(Text(initialString), +)
+        var text: Text = coloredCards.reduce(Text(initialString), +)
+        if emphasis {
+            text = text.bold()
+        }
+        return text
     }
 }
 
@@ -135,7 +143,7 @@ struct TurnsSection: View {
     let turns: [Turn]
 //    let turns: [Turn] = []
     var body: some View {
-        Section(header: Text("Turns (C: Clues, S: Strikes, D: Deck)")) {
+        Section(header: Text("Turns (C/S/D: Clues/Strikes/Deck)")) {
             TurnHeaderView()
             //TODO: add placeholder turns. In the end, we'll add them by drawing from Turns.
             ForEach(turns, id: \.number) {
@@ -169,13 +177,16 @@ struct TurnHeaderView: View {
     var body: some View {
         HStack {
             Text("Hands")
-            Text("g").foregroundColor(.green)
-            Text("r").foregroundColor(.red)
-            Text("w").foregroundColor(.gray)
-            Text("b").foregroundColor(.blue)
-            Text("y").foregroundColor(.yellow)
-            Text("C/S")
-            Text("Deck")
+//            Text("g").foregroundColor(.green)
+//            + Text("/")
+//            + Text("r").foregroundColor(.red)
+//            + Text("/")
+//            + Text("w").foregroundColor(.gray)
+//            + Text("/")
+//            + Text("b").foregroundColor(.blue)
+//            + Text("/")
+//            + Text("y").foregroundColor(.yellow)
+            Text("C/S/D")
             Text("Action")
         }
         .font(.caption)
@@ -188,11 +199,10 @@ struct TurnView: View {
     var body: some View {
         HStack {
             TurnNumberView(number: turn.number)
-            PlayerHandsView(hands: turn.hands)
-//            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-            TokenPilesView(clues: 8, strikes: 0)
-            Text("40")
-            Text("p.r1")
+            PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
+            ScorePilesView(scores: turn.scores)
+            TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
+            ActionView(hands: turn.hands, currentHandID: turn.currentHandID)
         }
         .font(.caption)
     }
@@ -271,18 +281,14 @@ struct TurnNumberView: View {
     }
 }
 
-
-// TODO: how does it know whose turn it is? need to pass in; except we don't have index control in swiftui loops; maybe: https://forums.developer.apple.com/thread/118361
-// The players' cards. Also highlights current player.
+/// The players' cards. Current player is highlighted.
 struct PlayerHandsView: View {
     let hands: [Hand]
+    let currentHandID: UUID
     var body: some View {
         VStack(alignment: .leading) {
-//            ForEach(hands) {
-//                Text("\($0.cardsDescription)")
-//            }
-            ForEach(hands) {
-                ColoredCardsText(cards: $0.cards)
+            ForEach(hands) { hand in
+                ColoredCardsText(cards: hand.cards, emphasis: hand.id == self.currentHandID)
             }
         }
     }
@@ -290,6 +296,9 @@ struct PlayerHandsView: View {
 
 // The score for each color.
 struct ScorePilesView: View {
+    // TODO: I should be able to compact this. Instead of a literal score for each suit, what if we have a dictionary, with the suit as the key?
+    var scores: [Suit: Int] = [:]
+    // The trickiest part is there is no order for a dictionary. 
     var greenScore: Int = 0
     var redScore: Int = 0
     var whiteScore: Int = 0
@@ -314,56 +323,68 @@ struct ScorePilesView: View {
     }
     
     var body: some View {
-        // TODO: Could also do this as one line of text? Just use "/" as separator. I think I read somewhere you can join Text in SwiftUI with +.
-        HStack {
-            Text("\(greenScore)").foregroundColor(.green)
-            Text("\(redScore)").foregroundColor(.red)
-            Text("\(whiteScore)").foregroundColor(.gray)
-            Text("\(blueScore)").foregroundColor(.blue)
-            Text("\(yellowScore)").foregroundColor(.yellow)
-        }
-            // TODO: temp highlight? though it helps group; add corner radius?
-        .background(Color.gray.opacity(0.1))
+        Text("\(greenScore)").foregroundColor(.green)
+            + Text("/")
+            + Text("\(redScore)").foregroundColor(.red)
+            + Text("/")
+            + Text("\(whiteScore)").foregroundColor(.gray)
+            + Text("/")
+            + Text("\(blueScore)").foregroundColor(.blue)
+            + Text("/")
+            + Text("\(yellowScore)").foregroundColor(.yellow)
+        // TODO: temp highlight? though it helps group; add corner radius?
+//        .background(Color.gray.opacity(0.1))
     }
 }
 
+/// Number of clues, strikes, cards in deck.
 struct TokenPilesView: View {
     let clues: Int
     let strikes: Int
+    let cardsInDeck: Int
     var body: some View {
-        return HStack {
-            Text("\(clues)")
-            Text("\(strikes)")
-        }
-        .background(Color.blue.opacity(0.2))
+        Text("\(clues)/\(strikes)/\(cardsInDeck)")
+//        .background(Color.blue.opacity(0.2))
     }
 }
 
-struct PlayerActionsView: View {
-    let p1: String
-    let p2: String
+/// Current player's action. Highlighted, to match highlighted hand.
+struct ActionView: View {
+    // TODO: Eventually, we'll need the action (p/c/d)
+    let hands: [Hand]
+    let currentHandID: UUID
     var body: some View {
         VStack {
-            // TODO: ah, this needs to have unique IDs, and right now, that's not true (could be c c). Fix.
-            ForEach([p1, p2], id: \.self) { action in
-                Text("\(action)")
+            ForEach(hands) { hand in
+                if hand.id == self.currentHandID {
+                    Text("??").bold()
+                } else {
+                    Text("\n")
+                }
             }
         }
-        .background(Color.red.opacity(0.2))
     }
 }
 
+//struct PlayerActionsView: View {
+//    let p1: String
+//    let p2: String
+//    var body: some View {
+//        VStack {
+//            // TODO: ah, this needs to have unique IDs, and right now, that's not true (could be c c). Fix.
+//            ForEach([p1, p2], id: \.self) { action in
+//                Text("\(action)")
+//            }
+//        }
+//        .background(Color.red.opacity(0.2))
+//    }
+//}
 
 struct OneGameView_Previews: PreviewProvider {
-//    static let hands = [Hand(player: "P1", cards: ["r1","w2","r3","r4","r5"]), Hand(player: "P2", cards: ["w1","r2","s3","s4","w5"])]
     static var previews: some View {
         NavigationView {
-//            PlayerHandsView(hands: hands)
             OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
         }
     }
 }
-
-
-
 
