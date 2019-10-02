@@ -16,6 +16,6 @@ struct Card: Identifiable {
     
     // E.g., "g3". (Adding foreground color is left to Views.)
     var description: String {
-        return "\(suit.rawValue)\(number)"
+        return "\(suit.letter)\(number)"
     }
 }

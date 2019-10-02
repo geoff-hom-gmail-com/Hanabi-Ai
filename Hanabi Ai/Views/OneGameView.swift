@@ -138,12 +138,12 @@ struct PlayButton: View {
 
 // MARK: TurnsSection
 
-// Show each turn in the game.
+/// Each turn in the game.
 struct TurnsSection: View {
     let turns: [Turn]
 //    let turns: [Turn] = []
     var body: some View {
-        Section(header: Text("Turns (C/S/D: Clues/Strikes/Deck)")) {
+        Section(header: TurnsSectionHeaderView()) {
             TurnHeaderView()
             //TODO: add placeholder turns. In the end, we'll add them by drawing from Turns.
             ForEach(turns, id: \.number) {
@@ -153,43 +153,54 @@ struct TurnsSection: View {
             //            TurnView2()
             //            TurnView3()
 
-            //                HStack {
             //                    // Ugh. Lining stuff up can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
             // I want the rows to line up. E.g., Turn takes up 40% of row, grwby takes 40%, cs takes 20%
         }
     }
 }
 
-// The end of the game, or a summary.
-struct ResultsSection: View {
+/// The text for the section header.
+struct TurnsSectionHeaderView: View {
+    // TODO: Add legend to UI via popover/context button, if that's doable on iPhone
     var body: some View {
-        Section(header: Text("Results")) {
-            Text("??")
-                .font(.caption)
-        }
+        Text("Turns")
+//        + Text(" (g/r/w/b/y: green/red/white/blue/yellow)")
+//        + Text(" (C/S/D: Clues/Strikes/Deck)")
     }
 }
 
-
-
-// Field descriptions for each turn.
+/// Field descriptions for each turn.
 struct TurnHeaderView: View {
     var body: some View {
         HStack {
             Text("Hands")
-//            Text("g").foregroundColor(.green)
-//            + Text("/")
-//            + Text("r").foregroundColor(.red)
-//            + Text("/")
-//            + Text("w").foregroundColor(.gray)
-//            + Text("/")
-//            + Text("b").foregroundColor(.blue)
-//            + Text("/")
-//            + Text("y").foregroundColor(.yellow)
+            ScoreHeaderView()
             Text("C/S/D")
             Text("Action")
         }
         .font(.caption)
+    }
+}
+
+/// Abbreviation for each color, in order.
+struct ScoreHeaderView: View {
+    /// Text for each color, in order. Includes dividers.
+    var sortedTexts: [Text] = []
+    
+    /// Order the suits. Add color. Add divider.
+    init() {
+        let sortedSuits = Suit.allCases.sorted()
+        for sortedSuit in sortedSuits {
+            let text = Text("\(sortedSuit.letter)").foregroundColor(colorForSuit(sortedSuit))
+            if !sortedTexts.isEmpty {
+                sortedTexts.append(Text("/"))
+            }
+            sortedTexts.append(text)
+        }
+    }
+    
+    var body: some View {
+        sortedTexts.reduce(Text(""), +)
     }
 }
 
@@ -294,46 +305,26 @@ struct PlayerHandsView: View {
     }
 }
 
-// The score for each color.
+/// The score for each color.
 struct ScorePilesView: View {
-    // TODO: I should be able to compact this. Instead of a literal score for each suit, what if we have a dictionary, with the suit as the key?
-    var scores: [Suit: Int] = [:]
-    // The trickiest part is there is no order for a dictionary. 
-    var greenScore: Int = 0
-    var redScore: Int = 0
-    var whiteScore: Int = 0
-    var blueScore: Int = 0
-    var yellowScore: Int = 0
+    /// Text for each score, in order. Includes dividers.
+    var sortedTexts: [Text] = []
     
+    /// Order the scores. Add color. Add divider.
     init(scores: [Suit: Int]) {
-        for (suit, score) in scores {
-            switch suit {
-            case .green:
-                greenScore = score
-            case .red:
-                redScore = score
-            case .white:
-                whiteScore = score
-            case .blue:
-                blueScore = score
-            case .yellow:
-                yellowScore = score
+        let sortedSuits = scores.keys.sorted()
+        for sortedSuit in sortedSuits {
+            let score = scores[sortedSuit]!
+            let text = Text("\(score)").foregroundColor(colorForSuit(sortedSuit))
+            if !sortedTexts.isEmpty {
+                sortedTexts.append(Text("/"))
             }
+            sortedTexts.append(text)
         }
     }
     
     var body: some View {
-        Text("\(greenScore)").foregroundColor(.green)
-            + Text("/")
-            + Text("\(redScore)").foregroundColor(.red)
-            + Text("/")
-            + Text("\(whiteScore)").foregroundColor(.gray)
-            + Text("/")
-            + Text("\(blueScore)").foregroundColor(.blue)
-            + Text("/")
-            + Text("\(yellowScore)").foregroundColor(.yellow)
-        // TODO: temp highlight? though it helps group; add corner radius?
-//        .background(Color.gray.opacity(0.1))
+        sortedTexts.reduce(Text(""), +)
     }
 }
 
@@ -379,6 +370,18 @@ struct ActionView: View {
 //        .background(Color.red.opacity(0.2))
 //    }
 //}
+
+// MARK: ResultsSection
+
+// The end of the game, or a summary.
+struct ResultsSection: View {
+    var body: some View {
+        Section(header: Text("Results")) {
+            Text("??")
+                .font(.caption)
+        }
+    }
+}
 
 struct OneGameView_Previews: PreviewProvider {
     static var previews: some View {

@@ -8,12 +8,47 @@
 
 import Foundation
 
-// TODO: update Suit so it's more generic (use name instead of a raw string) (add sort order via Int, <?)
-/// TODO: add description
-enum Suit: String, CaseIterable {
-    case green = "g"
-    case red = "r"
-    case white = "w"
-    case blue = "b"
-    case yellow = "y"
+/// A Hanabi card has a suit (i.e., color).
+enum Suit: CaseIterable, Comparable {
+    static func < (lhs: Suit, rhs: Suit) -> Bool {
+        return lhs.sortIndex < rhs.sortIndex
+    }
+    
+    case green, red, white, blue, yellow
+    
+    /// For clarity (e.g., colorblindness), the suit is always shown by at least a letter. E.g., cards "r1", "g3".
+    var letter: String {
+        let tempString: String
+        switch self {
+        case .green:
+            tempString = "g"
+        case .red:
+            tempString = "r"
+        case .white:
+            tempString = "w"
+        case .blue:
+            tempString = "b"
+        case .yellow:
+            tempString = "y"
+        }
+        return tempString
+    }
+    
+    // The order is in honor of RWBY (i.e., gRWBY).
+    var sortIndex: Int {
+        let tempInt: Int
+        switch self {
+        case .green:
+            tempInt = 0
+        case .red:
+            tempInt = 1
+        case .white:
+            tempInt = 2
+        case .blue:
+            tempInt = 3
+        case .yellow:
+            tempInt = 4
+        }
+        return tempInt
+    }
 }
