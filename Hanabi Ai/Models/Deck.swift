@@ -8,7 +8,7 @@
 
 import Foundation
 
-// A deck of Hanabi cards, in an order.
+/// A deck of Hanabi cards, in an order.
 struct Deck {
     var cards: [Card] = []
     

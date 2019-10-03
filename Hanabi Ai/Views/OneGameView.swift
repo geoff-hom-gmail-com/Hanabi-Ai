@@ -213,7 +213,7 @@ struct TurnView: View {
             PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
             ScorePilesView(scores: turn.scores)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
-            ActionView(hands: turn.hands, currentHandID: turn.currentHandID)
+            ActionView(hands: turn.hands, currentHandID: turn.currentHandID, action: turn.action)
         }
         .font(.caption)
     }
@@ -335,20 +335,21 @@ struct TokenPilesView: View {
     let cardsInDeck: Int
     var body: some View {
         Text("\(clues)/\(strikes)/\(cardsInDeck)")
-//        .background(Color.blue.opacity(0.2))
     }
 }
 
 /// Current player's action. Highlighted, to match highlighted hand.
 struct ActionView: View {
-    // TODO: Eventually, we'll need the action (p/c/d)
+    // TODO: Eventually, we'll need the action (p/c/d). Currently, it's an abbreviation for the action but not the rest of it (e.g., which card, which suit/number). Want something like type.description, or action.abbr.
     let hands: [Hand]
     let currentHandID: UUID
+    let action: Action?
     var body: some View {
-        VStack {
+        let actionString: String = action?.type.abbr ?? "??"
+        return VStack {
             ForEach(hands) { hand in
                 if hand.id == self.currentHandID {
-                    Text("??").bold()
+                    Text("\(actionString)").bold()
                 } else {
                     Text("\n")
                 }

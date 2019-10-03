@@ -15,11 +15,13 @@ enum DeckSetup: CaseIterable, Identifiable {
     var id: DeckSetup { self }
     
     var name: String {
+        let tempString: String
         switch self {
         case .random:
-            return "Random"
+            tempString = "Random"
         case .custom:
-            return "Custom"
+            tempString = "Custom"
         }
+        return tempString
     }
 }
