@@ -12,19 +12,19 @@ import Foundation
 struct Turn {
     let number: Int
     let hands: [Hand]
-    // TODO: Swap this out for currentHandIndex
-    let currentHandID: UUID
+    let currentHandIndex: Int
     let deck: Deck
+    // TODO: make scores an array of ScorePile? And ScorePile is a type with a color/suit and number? (like a card, but different) hmm, the current way kinda still makes sense. The main issue is when we talk about scores elsewhere, we have to remember the implementation. Yeah, let's make it [ScorePile]
     let scores: [Suit: Int]
     let clues: Int
     let strikes: Int
     // At the turn start, there is no action (i.e., nil).
     var action: Action?
     
-    init(number: Int, hands: [Hand], currentHandID: UUID, deck: Deck, clues: Int = 8, strikes: Int = 0) {
+    init(number: Int, hands: [Hand], currentHandIndex: Int, deck: Deck, clues: Int = 8, strikes: Int = 0) {
         self.number = number
         self.hands = hands
-        self.currentHandID = currentHandID
+        self.currentHandIndex = currentHandIndex
         self.deck = deck
         var scores: [Suit: Int] = [:]
         for suit in Suit.allCases {

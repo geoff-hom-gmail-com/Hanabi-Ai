@@ -70,8 +70,8 @@ struct StartingHandsAndDeckGroup: View {
             HStack(spacing: 0) {
                 Text("Hands: ")
                 VStack(alignment: .leading) {
-                    ForEach(hands) {
-                        ColoredCardsText(cards: $0.cards)
+                    ForEach(hands) { hand in
+                        ColoredCardsText(cards: hand.cards)
                     }
                 }
             }
@@ -210,10 +210,15 @@ struct TurnView: View {
     var body: some View {
         HStack {
             TurnNumberView(number: turn.number)
-            PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
+            // TODO: make hands work by currentHandIndex, not UUID
+            PlayerHandsView(hands: turn.hands, currentHandIndex: turn.currentHandIndex)
+
+//            PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
             ScorePilesView(scores: turn.scores)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
-            ActionView(hands: turn.hands, currentHandID: turn.currentHandID, action: turn.action)
+            ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
+//            ActionView(hands: turn.hands, currentHandID: turn.currentHandID, action: turn.action)
+
         }
         .font(.caption)
     }
@@ -295,11 +300,11 @@ struct TurnNumberView: View {
 /// The players' cards. Current player is highlighted.
 struct PlayerHandsView: View {
     let hands: [Hand]
-    let currentHandID: UUID
+    let currentHandIndex: Int
     var body: some View {
         VStack(alignment: .leading) {
-            ForEach(hands) { hand in
-                ColoredCardsText(cards: hand.cards, emphasis: hand.id == self.currentHandID)
+            ForEach((0 ..< self.hands.count)) { index in
+                ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
             }
         }
     }
@@ -341,18 +346,31 @@ struct TokenPilesView: View {
 /// Current player's action. Highlighted, to match highlighted hand.
 struct ActionView: View {
     let hands: [Hand]
-    let currentHandID: UUID
+    let currentHandIndex: Int
+//    let currentHandID: UUID
     let action: Action?
     var body: some View {
         let actionString: String = action?.abbr ?? "??"
         return VStack {
-            ForEach(hands) { hand in
-                if hand.id == self.currentHandID {
+
+            //            ForEach((0 ..< self.hands.endIndex), id: \.self) { index in
+//                ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
+//            }
+            ForEach((0 ..< self.hands.count)) { index in
+                if index == self.currentHandIndex {
                     Text("\(actionString)").bold()
                 } else {
                     Text("\n")
                 }
             }
+//            ForEach(hands) { hand in
+////                if hand.id == self.currentHandID {
+//                if 3 == self.currentHandIndex {
+//                    Text("\(actionString)").bold()
+//                } else {
+//                    Text("\n")
+//                }
+//            }
         }
     }
 }

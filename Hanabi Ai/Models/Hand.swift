@@ -16,7 +16,8 @@ import Foundation
 //}
 
 // A player's cards.
-struct Hand: Identifiable {    
+//struct Hand {
+struct Hand: Identifiable {
     let id = UUID()
     let player: String
     var cards: [Card] = []
