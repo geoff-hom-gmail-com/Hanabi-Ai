@@ -340,12 +340,11 @@ struct TokenPilesView: View {
 
 /// Current player's action. Highlighted, to match highlighted hand.
 struct ActionView: View {
-    // TODO: Eventually, we'll need the action (p/c/d). Currently, it's an abbreviation for the action but not the rest of it (e.g., which card, which suit/number). Want something like type.description, or action.abbr.
     let hands: [Hand]
     let currentHandID: UUID
     let action: Action?
     var body: some View {
-        let actionString: String = action?.type.abbr ?? "??"
+        let actionString: String = action?.abbr ?? "??"
         return VStack {
             ForEach(hands) { hand in
                 if hand.id == self.currentHandID {

@@ -98,7 +98,11 @@ class Game: ObservableObject {
     
     /// Do an action for this turn.
     func playTurn(_ turn: inout Turn) {
-        turn.action = Action(type: .clue, number: 1)
+        turn.action = Action(type: .clue, number: 2)
+//        turn.action = Action(type: .clue, suit: .white)
+//        turn.action = Action(type: .play, card: turn.hands[0].cards[2])
+//        turn.action = Action(type: .discard, card: turn.hands[0].cards[1])
+
     }
     
     //
