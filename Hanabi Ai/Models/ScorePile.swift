@@ -9,11 +9,7 @@
 import Foundation
 
 /// Each suit has a score pile. Cards are placed in increasing order, and the score is the top card.
-struct ScorePile: Comparable {
-    static func < (lhs: ScorePile, rhs: ScorePile) -> Bool {
-        return lhs.suit < rhs.suit
-    }
-    
+struct ScorePile  {
     let suit: Suit
     let score: Int
 }

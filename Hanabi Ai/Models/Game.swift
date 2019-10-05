@@ -19,7 +19,7 @@ class Game: ObservableObject {
 //        return description
 //    }
     
-    //TODO: Update Published. I probably don't need to publish numberOfPlayers. But deck will change.
+    //TODO: May need to update which properties are Published. Think about it.
     let numberOfPlayers: Int
     let deckSetup: DeckSetup
     let customDeckDescription: String
@@ -43,10 +43,6 @@ class Game: ObservableObject {
         self.startingDeck = self.deck
         dealHands()
     }
-    
-//    convenience init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
-//        self.init()
-//    }
     
     // Deal starting hands. 
     func dealHands() {

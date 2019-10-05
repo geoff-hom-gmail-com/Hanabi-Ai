@@ -8,31 +8,10 @@
 
 import Foundation
 
-// Custom string interpolations don't compile in SwiftUI (as of Xcode 11.0). (Nor does CustomStringConvertible.)
-//extension String.StringInterpolation {
-//    mutating func appendInterpolation(_ value: Hand) {
-//        appendInterpolation("My name is \(value.player) and ")
-//    }
-//}
-
 // A player's cards.
 //struct Hand {
 struct Hand: Identifiable {
     let id = UUID()
     let player: String
     var cards: [Card] = []
-    
-    // E.g., "P1: g3r1r3…"
-//    var description: String {
-//        let cardDescriptions = cards.map { $0.description }
-//        let compact = cardDescriptions.joined(separator: "")
-//        return "\(player): \(compact)"
-//    }
-    
-    // E.g., "g3/r1/r3…"
-//    var cardsDescription: String {
-//        let cardDescriptions = cards.map { $0.description }
-//        let compact = cardDescriptions.joined(separator: "")
-//        return "\(compact)"
-//    }
 }

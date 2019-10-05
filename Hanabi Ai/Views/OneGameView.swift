@@ -32,8 +32,8 @@ struct OneGameView: View {
 
 // Deck setup and deck used.
 struct DeckSetupSection: View {
-    var deckSetup: DeckSetup
-    var startingDeck: Deck
+    let deckSetup: DeckSetup
+    let startingDeck: Deck
     var body: some View {
         Section(header: Text("Deck Setup")) {
             // initialString has non-breaking space.
@@ -48,14 +48,10 @@ struct DeckSetupSection: View {
 /// The game state after dealing hands, plus the "Play" button.
 struct StartingSetupSection: View {
     let game: Game
-    let turn: Turn
-    init(game: Game) {
-        self.game = game
-        self.turn = self.game.turns.first!
-    }
     var body: some View {
-        Section(header: Text("Starting Setup")) {
-            StartingHandsAndDeckGroup(hands: turn.hands, deck: turn.deck)
+        let firstTurn = game.turns.first!
+        return Section(header: Text("Starting Setup")) {
+            StartingHandsAndDeckGroup(hands: firstTurn.hands, deck: firstTurn.deck)
             PlayButton(game: game)
         }
     }
@@ -70,6 +66,8 @@ struct StartingHandsAndDeckGroup: View {
             HStack(spacing: 0) {
                 Text("Hands: ")
                 VStack(alignment: .leading) {
+                    // TODO 2: If I get rid of this ForEach, I won't need Hand to be Identifiable.
+                    // TODO 1: map should work? like, hands.map{CCT(cards: $0.cards)}
                     ForEach(hands) { hand in
                         ColoredCardsText(cards: hand.cards)
                     }
@@ -141,17 +139,13 @@ struct PlayButton: View {
 /// Each turn in the game.
 struct TurnsSection: View {
     let turns: [Turn]
-//    let turns: [Turn] = []
     var body: some View {
         Section(header: TurnsSectionHeaderView()) {
             TurnHeaderView()
-            //TODO: add placeholder turns. In the end, we'll add them by drawing from Turns.
+            // TODO: try as List? Then wouldn't need to reference `number`. map() should also work
             ForEach(turns, id: \.number) {
                 TurnView(turn: $0)
             }
-            //            TurnView1()
-            //            TurnView2()
-            //            TurnView3()
 
             //                    // Ugh. Lining stuff up can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
             // I want the rows to line up. E.g., Turn takes up 40% of row, grwby takes 40%, cs takes 20%
@@ -218,15 +212,10 @@ struct TurnView: View {
     var body: some View {
         HStack {
             TurnNumberView(number: turn.number)
-            // TODO: make hands work by currentHandIndex, not UUID
             PlayerHandsView(hands: turn.hands, currentHandIndex: turn.currentHandIndex)
-
-//            PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
             ScorePilesView(scorePiles: turn.scorePiles)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
             ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
-//            ActionView(hands: turn.hands, currentHandID: turn.currentHandID, action: turn.action)
-
         }
         .font(.caption)
     }
@@ -246,7 +235,8 @@ struct PlayerHandsView: View {
     let currentHandIndex: Int
     var body: some View {
         VStack(alignment: .leading) {
-            ForEach((0 ..< self.hands.count)) { index in
+            // TODO: try map()?
+            ForEach((0 ..< hands.count)) { index in
                 ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
             }
         }
@@ -286,47 +276,21 @@ struct TokenPilesView: View {
 struct ActionView: View {
     let hands: [Hand]
     let currentHandIndex: Int
-//    let currentHandID: UUID
     let action: Action?
     var body: some View {
         let actionString: String = action?.abbr ?? "??"
         return VStack {
-
-            //            ForEach((0 ..< self.hands.endIndex), id: \.self) { index in
-//                ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
-//            }
-            ForEach((0 ..< self.hands.count)) { index in
+            // try map()?
+            ForEach((0 ..< hands.count)) { index in
                 if index == self.currentHandIndex {
                     Text("\(actionString)").bold()
                 } else {
                     Text("\n")
                 }
             }
-//            ForEach(hands) { hand in
-////                if hand.id == self.currentHandID {
-//                if 3 == self.currentHandIndex {
-//                    Text("\(actionString)").bold()
-//                } else {
-//                    Text("\n")
-//                }
-//            }
         }
     }
 }
-
-//struct PlayerActionsView: View {
-//    let p1: String
-//    let p2: String
-//    var body: some View {
-//        VStack {
-//            // TODO: ah, this needs to have unique IDs, and right now, that's not true (could be c c). Fix.
-//            ForEach([p1, p2], id: \.self) { action in
-//                Text("\(action)")
-//            }
-//        }
-//        .background(Color.red.opacity(0.2))
-//    }
-//}
 
 // MARK: ResultsSection
 
@@ -343,6 +307,7 @@ struct ResultsSection: View {
 struct OneGameView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
+            // TODO: When I have other modes working, like 3+ players, will have to check if Live Preview works with that, or if code below needs to be modified.
             OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
         }
     }
