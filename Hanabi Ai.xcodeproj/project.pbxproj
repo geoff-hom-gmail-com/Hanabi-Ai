@@ -27,6 +27,7 @@
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
 		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
 		819A9311234567F0001B28C5 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A9310234567F0001B28C5 /* Action.swift */; };
+		81DD08D023480CDF009D314F /* ScorePile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DD08CF23480CDF009D314F /* ScorePile.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		819A9310234567F0001B28C5 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		81DD08CF23480CDF009D314F /* ScorePile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorePile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				812F8CCB2342E6D7000D8925 /* DeckSetup.swift */,
 				815749D52331C2DA008E95CF /* Game.swift */,
 				812F8CCF2342F424000D8925 /* Hand.swift */,
+				81DD08CF23480CDF009D314F /* ScorePile.swift */,
 				812F8CD123433C93000D8925 /* Suit.swift */,
 				812F8CCD2342E701000D8925 /* Turn.swift */,
 			);
@@ -324,6 +327,7 @@
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
 				812F8CD02342F424000D8925 /* Hand.swift in Sources */,
+				81DD08D023480CDF009D314F /* ScorePile.swift in Sources */,
 				815749FC233226D2008E95CF /* OneGameView.swift in Sources */,
 				81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */,
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,

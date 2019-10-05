@@ -182,26 +182,34 @@ struct TurnHeaderView: View {
     }
 }
 
-/// Abbreviation for each color, in order.
+/// Return a `View` (i.e., `Text`) of the abbreviation of each suit, in order. Suits are separated for legibility and colored appropriately.
 struct ScoreHeaderView: View {
-    /// Text for each color, in order. Includes dividers.
-    var sortedTexts: [Text] = []
-    
-    /// Order the suits. Add color. Add divider.
-    init() {
-        let sortedSuits = Suit.allCases.sorted()
-        for sortedSuit in sortedSuits {
-            let text = Text("\(sortedSuit.letter)").foregroundColor(colorForSuit(sortedSuit))
-            if !sortedTexts.isEmpty {
-                sortedTexts.append(Text("/"))
-            }
-            sortedTexts.append(text)
-        }
-    }
-    
     var body: some View {
-        sortedTexts.reduce(Text(""), +)
+        
+        // Get each abbreviation; add color.
+        let suitTexts = Suit.allCases.sorted().map {
+            Text("\($0.letter)").foregroundColor(colorForSuit($0))
+        }
+
+        return concatenate(suitTexts, withSeparator: "/")
     }
+}
+
+/// Return the `Text` formed by concatenating the given `texts`, optionally including a `separator` between each given `Text`.
+///
+/// - Parameters:
+///   - texts: An `Array` of `Texts` to concatenate.
+///   - separator: A `String` to include between each `Text` in the concatenation. The default is to have no separator.
+/// - Returns: A `Text`, formed by concatenating the given `texts`. If a `separator` is given, it's included between each given `Text`.
+func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
+    let firstText = texts.first!
+    let otherTexts = texts.dropFirst()
+    guard let separator = separator else {
+        return otherTexts.reduce(firstText, +)
+    }
+    return otherTexts.reduce(firstText, { x, y in
+        x + Text(separator) + y
+    })
 }
 
 /// Info needed to understand a turn.
@@ -214,7 +222,7 @@ struct TurnView: View {
             PlayerHandsView(hands: turn.hands, currentHandIndex: turn.currentHandIndex)
 
 //            PlayerHandsView(hands: turn.hands, currentHandID: turn.currentHandID)
-            ScorePilesView(scores: turn.scores)
+            ScorePilesView(scorePiles: turn.scorePiles)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
             ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
 //            ActionView(hands: turn.hands, currentHandID: turn.currentHandID, action: turn.action)
@@ -223,71 +231,6 @@ struct TurnView: View {
         .font(.caption)
     }
 }
-
-// Info needed to understand each turn.
-//struct TurnView1: View {
-//    let turn: Turn = Turn(hands:
-//        [Hand(player: "P1", cards: ["r1","w2","r3","r4","r5"]), Hand(player: "P2", cards: ["w1","r2","s3","s4","w5"])],
-//                          deck: Deck())
-//    var body: some View {
-//        HStack {
-//            TurnNumberView(turn: 1)
-//            PlayerHandsView(hands: turn.hands)
-//            ScorePilesView(scores: turn.scores)
-//
-////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-//            TokenPilesView(clues: turn.clues, strikes: turn.strikes)
-//
-////            TokenPilesView(clues: 8, strikes: 0)
-//            // TODO: Extract to DeckCountView()
-//            Text("40")
-//            // TODO: Extract Subview
-//            VStack {
-//                Text("p.r1")
-//                Text("\n")
-//            }
-//        }
-//        .font(.caption)
-//    }
-//}
-
-// Info needed to understand each turn.
-//struct TurnView2: View {
-//    var body: some View {
-//        HStack {
-//            TurnNumberView(turn: 2)
-//            //TODO: Can highlight the current player, and action
-////            PlayerHandsView(p1: "w2/r3/r4/r5/g1", p2: "w1/r2/s3/s4/w5")
-////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-//            TokenPilesView(clues: 8, strikes: 0)
-//            Text("39")
-//            VStack {
-//                Text("\n")
-//                Text("p.r2")
-//            }
-//        }
-//        .font(.caption)
-//    }
-//}
-
-// Info needed to understand each turn.
-//struct TurnView3: View {
-//    var body: some View {
-//        HStack {
-//            TurnNumberView(turn: 3)
-//            //TODO: Can highlight the current player, and action
-////            PlayerHandsView(p1: "w2,r3,r4,r5,g1", p2: "w1r2s3s4w5")
-////            ScorePilesView(green: 0, red: 1, white: 1, blue: 0, yellow: 0)
-//            TokenPilesView(clues: 8, strikes: 0)
-//            Text("39")
-//            VStack {
-//                Text("\n")
-//                Text("p.r2")
-//            }
-//        }
-//        .font(.caption)
-//    }
-//}
 
 /// Which turn it is.
 struct TurnNumberView: View {
@@ -310,26 +253,22 @@ struct PlayerHandsView: View {
     }
 }
 
-/// The score for each color.
+/// Return a `View` (i.e., `Text`) of the scores in `scorePiles`. Scores are separated for legibility and colored appropriately.
+///
+/// Colorblind users may not know which score is for which suit. So, `ScorePilesView` should be used with `ScoreHeaderView`, which lists the suit order.
+///
+/// - Parameter scorePiles: (Someday, the docs will work with memberwise initializers…)
 struct ScorePilesView: View {
-    /// Text for each score, in order. Includes dividers.
-    var sortedTexts: [Text] = []
-    
-    /// Order the scores. Add color. Add divider.
-    init(scores: [Suit: Int]) {
-        let sortedSuits = scores.keys.sorted()
-        for sortedSuit in sortedSuits {
-            let score = scores[sortedSuit]!
-            let text = Text("\(score)").foregroundColor(colorForSuit(sortedSuit))
-            if !sortedTexts.isEmpty {
-                sortedTexts.append(Text("/"))
-            }
-            sortedTexts.append(text)
-        }
-    }
+    let scorePiles: [ScorePile]
     
     var body: some View {
-        sortedTexts.reduce(Text(""), +)
+        
+        // Get each score; add color.
+        let scoreTexts = scorePiles.map {
+            Text("\($0.score)").foregroundColor(colorForSuit($0.suit))
+        }
+        
+        return concatenate(scoreTexts, withSeparator: "/")
     }
 }
 
