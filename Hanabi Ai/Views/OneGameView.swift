@@ -36,8 +36,8 @@ struct DeckSetupSection: View {
     let startingDeck: Deck
     var body: some View {
         Section(header: Text("Deck Setup")) {
-            // initialString has non-breaking space.
-            ColoredCardsText(initialString: "\(deckSetup.name): ", cards: startingDeck.cards)
+            // `Prefix` has non-breaking space.
+            ColoredCardsText(cards: startingDeck.cards, prefix: "\(deckSetup.name): ")
                 .font(.caption)
         }
     }
@@ -73,28 +73,47 @@ struct StartingHandsAndDeckGroup: View {
                     }
                 }
             }
-            // initialString has non-breaking space.
-            ColoredCardsText(initialString: "Deck: ", cards: deck.cards)
+    
+            // `Prefix` has non-breaking space.
+            ColoredCardsText(cards: deck.cards, prefix: "Deck: ")
                 .font(.caption)
         }
         .font(.caption)
     }
 }
 
-// This returns Text, but it won't let me put that in the sig. So it doesn't allow Text modifiers externally.
 /// Card descriptions, in a row, colored by suit.
+///
+/// This returns `Text`, but it won't let me put that in the sig. So it doesn't allow `Text` modifiers externally. TODO: Make Text views functions instead? Or wait for Apple to fix? Probably make a function. Then I could do the prefix separately, which makes way more sense. And emphasis
+///
+/// - Parameters:
+///   - cards: An `Array` of `Cards` ... TODO.
+///   - prefix: A `String` ... TODO
+///   - emphasis: A `Bool` ... TODO
+/// - Returns: A `View`, but wish it were a `Text` ... TODO
 struct ColoredCardsText: View {
-    var initialString: String = ""
-    var cards: [Card]
-    // Emphasis is here, because don't know how to add Text modifiers to ColoredCardsText. (Won't compile.)
-    var emphasis: Bool = false
+    // TODO: how do I do this? I want it to be assigned only once. If user assigns it, great. If not, use default. So, use init
+    let cards: [Card]
+    let prefix: String
+    
+    // `Emphasis` is here, because don't know how to add `Text` modifiers to `ColoredCardsText`. (Won't compile.)
+    let emphasis: Bool
+    
+    init(cards: [Card], prefix: String = "", emphasis: Bool = false) {
+        self.cards = cards
+        self.prefix = prefix
+        self.emphasis = emphasis
+    }
+    
     var body: some View {
-        // Make a Text for each card. Then concatenate them.
+        
+        // Each `Card` `description`, with color.
         let coloredCards = cards.map {
             Text("\($0.description)")
                 .foregroundColor(colorForSuit($0.suit))
         }
-        var text: Text = coloredCards.reduce(Text(initialString), +)
+        
+        var text: Text = Text(prefix) + concatenate(coloredCards)
         if emphasis {
             text = text.bold()
         }
@@ -180,7 +199,7 @@ struct TurnHeaderView: View {
 struct ScoreHeaderView: View {
     var body: some View {
         
-        // Get each abbreviation; add color.
+        // Each abbreviation, with color.
         let suitTexts = Suit.allCases.sorted().map {
             Text("\($0.letter)").foregroundColor(colorForSuit($0))
         }

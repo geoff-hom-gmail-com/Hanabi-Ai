@@ -46,23 +46,24 @@ class Game: ObservableObject {
     
     // Deal starting hands. 
     func dealHands() {
-        var hands: [Hand] = []
-        // Get players.
-        for number in 1...numberOfPlayers {
-            let player = "P\(number)"
-            let hand = Hand(player: player)
-            hands.append(hand)
+        
+        // Assign players.
+        var hands = (1...numberOfPlayers).map {
+            Hand(player: "P\($0)")
         }
-        // Deal cards to each player.
-        //TODO: for 4/5 players, it's 4 cards each
-        let numberOfCardsPerPlayer = 5
-        for _ in 1...numberOfCardsPerPlayer {
-            // Using index instead of for-in, because we need the reference.
-            for index in hands.indices {
-                let card = deck.cards.removeFirst()
-                hands[index].cards.append(card)
+        
+        // 2–3 players: 5 cards each; 4–5 players: 4 cards.
+        let numberOfCardsPerPlayer = [2, 3].contains(numberOfPlayers) ? 5 : 4
+        
+        (1...numberOfCardsPerPlayer).forEach { _ in
+            // Deal each player a card.
+            // Using `indices` instead of looping over `hands`, because we need the reference.
+            hands.indices.forEach {
+                let topCard = deck.cards.removeFirst()
+                hands[$0].cards.append(topCard)
             }
         }
+        
         let turn = Turn(number: 1, hands: hands, currentHandIndex: 0, deck: deck)
         self.turns.append(turn)
     }

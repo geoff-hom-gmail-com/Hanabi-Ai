@@ -9,7 +9,7 @@
 import Foundation
 
 // A player's cards.
-//struct Hand {
+// TODO: struct Hand {
 struct Hand: Identifiable {
     let id = UUID()
     let player: String
