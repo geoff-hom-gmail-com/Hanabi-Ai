@@ -36,8 +36,9 @@ struct DeckSetupSection: View {
     let startingDeck: Deck
     var body: some View {
         Section(header: Text("Deck Setup")) {
-            // `Prefix` has non-breaking space.
-            ColoredCardsText(cards: startingDeck.cards, prefix: "\(deckSetup.name): ")
+            
+            // Non-breaking space.
+            (Text("\(deckSetup.name): ") + coloredText(forCards: startingDeck.cards))
                 .font(.caption)
         }
     }
@@ -64,77 +65,20 @@ struct StartingHandsAndDeckGroup: View {
     var body: some View {
         Group {
             HStack(spacing: 0) {
-                Text("Hands: ")
+                Text("Hands: ")
                 VStack(alignment: .leading) {
-                    ForEach(hands) { hand in
-                        ColoredCardsText(cards: hand.cards)
+                    // TODO: Hand doesn't have to be Identifiable. Could use array of indices instead of the array.
+                    ForEach(hands) {
+                        coloredText(forCards: $0.cards)
                     }
                 }
             }
-    
-            // `Prefix` has non-breaking space.
-            ColoredCardsText(cards: deck.cards, prefix: "Deck: ")
-                .font(.caption)
+            
+            // Non-breaking space.
+            (Text("Deck: ") + coloredText(forCards: deck.cards))
         }
         .font(.caption)
     }
-}
-
-/// Card descriptions, in a row, colored by suit.
-///
-/// This returns `Text`, but it won't let me put that in the sig. So it doesn't allow `Text` modifiers externally. TODO: Make Text views functions instead? Or wait for Apple to fix? Probably make a function. Then I could do the prefix separately, which makes way more sense. And emphasis
-///
-/// - Parameters:
-///   - cards: An `Array` of `Cards` ... TODO.
-///   - prefix: A `String` ... TODO
-///   - emphasis: A `Bool` ... TODO
-/// - Returns: A `View`, but wish it were a `Text` ... TODO
-struct ColoredCardsText: View {
-    // TODO: how do I do this? I want it to be assigned only once. If user assigns it, great. If not, use default. So, use init
-    let cards: [Card]
-    let prefix: String
-    
-    // `Emphasis` is here, because don't know how to add `Text` modifiers to `ColoredCardsText`. (Won't compile.)
-    let emphasis: Bool
-    
-    init(cards: [Card], prefix: String = "", emphasis: Bool = false) {
-        self.cards = cards
-        self.prefix = prefix
-        self.emphasis = emphasis
-    }
-    
-    var body: some View {
-        
-        // Each `Card` `description`, with color.
-        let coloredCards = cards.map {
-            Text("\($0.description)")
-                .foregroundColor(colorForSuit($0.suit))
-        }
-        
-        var text: Text = Text(prefix) + concatenate(coloredCards)
-        if emphasis {
-            text = text.bold()
-        }
-        return text
-    }
-}
-
-/// The color to represent each suit.
-func colorForSuit(_ suit: Suit) -> Color {
-    var color: Color
-    switch suit {
-    case .green:
-        color = .green
-    case .red:
-        color = .red
-    case .white:
-        color = .gray
-    case .blue:
-        color = .blue
-    case .yellow:
-        color = .yellow
-    }
-    return color
 }
 
 /// Starts playing the game that was set up.
@@ -205,23 +149,6 @@ struct ScoreHeaderView: View {
     }
 }
 
-/// Return the `Text` formed by concatenating the given `texts`, optionally including a `separator` between each given `Text`.
-///
-/// - Parameters:
-///   - texts: An `Array` of `Texts` to concatenate.
-///   - separator: A `String` to include between each `Text` in the concatenation. The default is to have no separator.
-/// - Returns: A `Text`, formed by concatenating the given `texts`. If a `separator` is given, it's included between each given `Text`.
-func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
-    let firstText = texts.first!
-    let otherTexts = texts.dropFirst()
-    guard let separator = separator else {
-        return otherTexts.reduce(firstText, +)
-    }
-    return otherTexts.reduce(firstText, { x, y in
-        x + Text(separator) + y
-    })
-}
-
 /// Info needed to understand a turn.
 struct TurnView: View {
     let turn: Turn
@@ -245,14 +172,22 @@ struct TurnNumberView: View {
     }
 }
 
-/// The players' cards. Current player is highlighted.
+/// The players' cards. The current player is highlighted.
 struct PlayerHandsView: View {
     let hands: [Hand]
     let currentHandIndex: Int
     var body: some View {
-        VStack(alignment: .leading) {
-            ForEach((0 ..< hands.count)) { index in
-                ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
+        let handsIndices = hands.indices
+        let coloredTexts = handsIndices.map {
+            coloredText(forCards: hands[$0].cards)
+        }
+        return VStack(alignment: .leading) {
+            ForEach(handsIndices) {
+                if $0 == self.currentHandIndex {
+                    coloredTexts[$0].bold()
+                } else {
+                    coloredTexts[$0]
+                }
             }
         }
     }
@@ -295,7 +230,7 @@ struct ActionView: View {
     var body: some View {
         let actionString: String = action?.abbr ?? "??"
         return VStack {
-            ForEach((0 ..< hands.count)) { index in
+            ForEach(hands.indices) { index in
                 if index == self.currentHandIndex {
                     Text("\(actionString)").bold()
                 } else {
@@ -317,6 +252,59 @@ struct ResultsSection: View {
         }
     }
 }
+
+// MARK: Functions
+
+/// Return `Text` formed by concatenating the given `cards'` `descriptions`. Each `description` is colored by `suit`.
+///
+/// - Parameters:
+///   - cards: An `Array` of `Cards`.
+func coloredText(forCards cards: [Card]) -> Text {
+    
+    // Each `Card.description`, with color.
+    let coloredTexts = cards.map {
+        Text("\($0.description)")
+            .foregroundColor(colorForSuit($0.suit))
+    }
+    return concatenate(coloredTexts)
+}
+
+/// The color to represent each suit.
+func colorForSuit(_ suit: Suit) -> Color {
+    var color: Color
+    switch suit {
+    case .green:
+        color = .green
+    case .red:
+        color = .red
+    case .white:
+        color = .gray
+    case .blue:
+        color = .blue
+    case .yellow:
+        color = .yellow
+    }
+    return color
+}
+
+/// Return the `Text` formed by concatenating the given `texts`, optionally including a `separator` between each given `Text`.
+///
+/// - Parameters:
+///   - texts: An `Array` of `Texts` to concatenate.
+///   - separator: A `String` to include between each `Text` in the concatenation. The default is to have no separator.
+/// - Returns: A `Text`, formed by concatenating the given `texts`. If a `separator` is given, it's included between each given `Text`.
+func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
+    let firstText = texts.first!
+    let otherTexts = texts.dropFirst()
+    guard let separator = separator else {
+        return otherTexts.reduce(firstText, +)
+    }
+    return otherTexts.reduce(firstText, { x, y in
+        x + Text(separator) + y
+    })
+}
+
+// MARK: Previews
 
 struct OneGameView_Previews: PreviewProvider {
     static var previews: some View {
