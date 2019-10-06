@@ -158,6 +158,7 @@ class Game: ObservableObject {
             tempBool = true
             // TODO: perfect score. each score has to be 5.
 //        } else if (scoresArePerfect(turn.scores)) {
+            // map?
 //            turn.scores.forEach { score in
 //                print("hi")
 //            }

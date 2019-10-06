@@ -66,8 +66,6 @@ struct StartingHandsAndDeckGroup: View {
             HStack(spacing: 0) {
                 Text("Hands: ")
                 VStack(alignment: .leading) {
-                    // TODO 2: If I get rid of this ForEach, I won't need Hand to be Identifiable.
-                    // TODO 1: map should work? like, hands.map{CCT(cards: $0.cards)}
                     ForEach(hands) { hand in
                         ColoredCardsText(cards: hand.cards)
                     }
@@ -161,7 +159,6 @@ struct TurnsSection: View {
     var body: some View {
         Section(header: TurnsSectionHeaderView()) {
             TurnHeaderView()
-            // TODO: try as List? Then wouldn't need to reference `number`. map() should also work
             ForEach(turns, id: \.number) {
                 TurnView(turn: $0)
             }
@@ -254,7 +251,6 @@ struct PlayerHandsView: View {
     let currentHandIndex: Int
     var body: some View {
         VStack(alignment: .leading) {
-            // TODO: try map()?
             ForEach((0 ..< hands.count)) { index in
                 ColoredCardsText(cards: self.hands[index].cards, emphasis: index == self.currentHandIndex)
             }
@@ -299,7 +295,6 @@ struct ActionView: View {
     var body: some View {
         let actionString: String = action?.abbr ?? "??"
         return VStack {
-            // try map()?
             ForEach((0 ..< hands.count)) { index in
                 if index == self.currentHandIndex {
                     Text("\(actionString)").bold()

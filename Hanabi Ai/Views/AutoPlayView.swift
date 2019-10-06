@@ -58,7 +58,7 @@ struct NumberOfPlayersStepper: View {
 struct DeckSetupPicker: View {
     @Binding var deckSetupSelection: DeckSetup
     var body: some View {
-        // No ":" after label because Picker's in a Form.
+        // No ":" after label because `Picker's` in a `Form`.
         Picker("Deck Setup", selection: $deckSetupSelection) {
             ForEach(DeckSetup.allCases) {
                 Text($0.name).tag($0)
