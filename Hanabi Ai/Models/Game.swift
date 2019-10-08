@@ -46,11 +46,8 @@ class Game: ObservableObject {
     
     // Deal starting hands. 
     func dealHands() {
-        
-        // Assign players.
-        var hands = (1...numberOfPlayers).map {
-            Hand(player: "P\($0)")
-        }
+        // Each player starts with an empty hand.
+        var hands = Array(repeating: Hand(), count: numberOfPlayers)
         
         // 2–3 players: 5 cards each; 4–5 players: 4 cards.
         let numberOfCardsPerPlayer = [2, 3].contains(numberOfPlayers) ? 5 : 4
@@ -81,6 +78,7 @@ class Game: ObservableObject {
 //        var gameIsOver: Bool = false
         print("play testing")
         while gameIsGoing {
+            
             // Play current turn.
             var currentTurn = self.turns.last!
             currentTurn.action = actionForTurn(currentTurn)
@@ -122,10 +120,14 @@ class Game: ObservableObject {
     
     //
     func makeTurnAfter(_ turn: Turn) -> Turn {
-        // The next turn is similar to the first, but +1 number. new handID. If clue given, one less clue. If play/discard, then hands different. And deck.
+        // TODO: The next turn is similar to the first.  If play/discard, then hands different. And deck.
         let number = turn.number + 1
         let hands = turn.hands
-        // how do I get from current hand to next hand? we're passing it by ID, not by index. hmm
+        
+        // Rotate whose turn it is.
+        let oldHandIndex = turn.currentHandIndex
+        let currentHandIndex = (oldHandIndex == hands.count - 1) ? 0 : (oldHandIndex + 1)
+
         var deck = turn.deck
         var clues = turn.clues
         var strikes = turn.strikes
@@ -145,7 +147,7 @@ class Game: ObservableObject {
             clues -= 1
         }
         // TODO: properly code next hand index
-        let nextTurn = Turn(number: number, hands: hands, currentHandIndex: 1, deck: deck, clues: clues, strikes: strikes)
+        let nextTurn = Turn(number: number, hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes)
         return nextTurn
     }
     

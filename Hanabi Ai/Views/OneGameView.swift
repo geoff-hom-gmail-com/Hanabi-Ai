@@ -67,9 +67,9 @@ struct StartingHandsAndDeckGroup: View {
             HStack(spacing: 0) {
                 Text("Hands: ")
                 VStack(alignment: .leading) {
-                    // TODO: Hand doesn't have to be Identifiable. Could use array of indices instead of the array.
-                    ForEach(hands) {
-                        coloredText(forCards: $0.cards)
+                    ForEach(hands.indices) {
+                        coloredText(forCards: self.hands[$0].cards)
+
                     }
                 }
             }
