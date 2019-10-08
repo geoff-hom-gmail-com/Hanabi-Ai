@@ -15,8 +15,7 @@ struct OneGameView: View {
     
     /// Creates an instance with one `Game`.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
-        let game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
-        self.game = game
+        self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
     
     var body: some View {
@@ -64,13 +63,13 @@ struct DeckView: View {
     
     var body: some View {
         // Non-breaking space.
-        (Text("\(label): ") + coloredText(forCards: deck.cards))
+        Text("\(label): ") + coloredText(forCards: deck.cards)
     }
 }
 
 // MARK: StartingSetupSection
 
-/// A `Section` that shows a `game's` state after hands have been dealt.
+/// A `Section` that shows a `Game's` state after hands have been dealt.
 ///
 /// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
 struct StartingSetupSection: View {
@@ -78,7 +77,9 @@ struct StartingSetupSection: View {
     let game: Game
     
     var body: some View {
+        /// The first turn of `game`.
         let firstTurn = game.turns.first!
+        
         return Section(header: Text("Starting Setup")) {
             Group {
                 HandsView(hands: firstTurn.hands)
@@ -177,7 +178,7 @@ struct TurnViewHeader: View {
 struct ScoreHeaderView: View {
     var body: some View {
         
-        // Each abbreviation, with color.
+        /// An `Array` of `Text`s, where each `Text` shows an abbreviation, with color.
         let suitTexts = Suit.allCases.sorted().map {
             Text("\($0.letter)").foregroundColor(colorForSuit($0))
         }
@@ -198,8 +199,6 @@ struct TurnView: View {
             ScorePilesView(scorePiles: turn.scorePiles)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
             ActionView(numberOfPlayers: turn.hands.count, currentHandIndex: turn.currentHandIndex, action: turn.action)
-
-//            ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
         }
         .font(.caption)
     }
@@ -224,10 +223,14 @@ struct PlayerHandsView: View {
     let currentHandIndex: Int
     
     var body: some View {
+        /// A `Range` for looping over `hands`.
         let handsIndices = hands.indices
+        
+        /// An `Array` of `Text`s, where each `Text` shows a hand, with color.
         let coloredTexts = handsIndices.map {
             coloredText(forCards: hands[$0].cards)
         }
+        
         return VStack(alignment: .leading) {
             ForEach(handsIndices) {
                 if $0 == self.currentHandIndex {
@@ -249,7 +252,7 @@ struct ScorePilesView: View {
     
     var body: some View {
         
-        // Get each score; add color.
+        /// An `Array` of `Text`s, where each `Text` shows a score, with color.
         let scoreTexts = scorePiles.map {
             Text("\($0.score)").foregroundColor(colorForSuit($0.suit))
         }
@@ -284,11 +287,13 @@ struct ActionView: View {
     /// The current player's index, assuming an `Array` of the players.
     let currentHandIndex: Int
     
-    /// The player's action (if none yet, then nil).
+    /// The player's action (if none yet, then `nil`).
     let action: Action?
     
     var body: some View {
-        let actionString: String = action?.abbr ?? "??"
+        /// A `String` that shows the action (if `nil`, `"??"`).
+        let actionString = action?.abbr ?? "??"
+        
         return VStack {
             ForEach(0..<numberOfPlayers) {
                 if $0 == self.currentHandIndex {
@@ -303,7 +308,7 @@ struct ActionView: View {
 
 // MARK: ResultsSection
 
-/// A `Section` showing the end of the game, or a summary.
+/// A `Section` that shows the end of the game, or a summary.
 // TODO: Update doc when working on this.
 struct ResultsSection: View {
     var body: some View {
@@ -316,13 +321,10 @@ struct ResultsSection: View {
 
 // MARK: Functions
 
-/// Return `Text` formed by concatenating the given `cards'` `descriptions`. Each `description` is colored by `suit`.
-///
-/// - Parameters:
-///   - cards: An `Array` of `Cards`.
+/// Returns a `Text` which is the concatenation of `Text`s that show each `Card`'s `description`, with color.
 func coloredText(forCards cards: [Card]) -> Text {
     
-    // Each `Card.description`, with color.
+    /// An `Array` of `Text`s, where each `Text` shows a `Card`'s `description`, with color.
     let coloredTexts = cards.map {
         Text("\($0.description)")
             .foregroundColor(colorForSuit($0.suit))
@@ -330,15 +332,21 @@ func coloredText(forCards cards: [Card]) -> Text {
     return concatenate(coloredTexts)
 }
 
-/// The color to represent each suit.
+// TODO: Test colors in Dark Mode?
+/// Returns a foreground `Color` for the given `suit`.
+///
+/// The `Color` should work as a font/foreground color on white background.
 func colorForSuit(_ suit: Suit) -> Color {
+    /// The `Color` to return (avoiding multiple `return` statements).
     var color: Color
+    
     switch suit {
     case .green:
         color = .green
     case .red:
         color = .red
     case .white:
+        // White doesn't show on white background.
         color = .gray
     case .blue:
         color = .blue
@@ -348,15 +356,14 @@ func colorForSuit(_ suit: Suit) -> Color {
     return color
 }
 
-/// Return the `Text` formed by concatenating the given `texts`, optionally including a `separator` between each given `Text`.
-///
-/// - Parameters:
-///   - texts: An `Array` of `Texts` to concatenate.
-///   - separator: A `String` to include between each `Text` in the concatenation. The default is to have no separator.
-/// - Returns: A `Text`, formed by concatenating the given `texts`. If a `separator` is given, it's included between each given `Text`.
+/// Returns a `Text` which is the concatenation of the given `texts`, with an optional `separator` between each `Text`.
 func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
+    /// The first `Text` given, which is before any `separator`.
     let firstText = texts.first!
+    
+    /// The remaining `Text`s, which may be prefixed by a `separator`.
     let otherTexts = texts.dropFirst()
+    
     guard let separator = separator else {
         return otherTexts.reduce(firstText, +)
     }
