@@ -8,10 +8,12 @@
 
 import SwiftUI
 
-// Interface for auto-playing one game.
+/// A `View` that lets the user watch the computer auto-play one game.
 struct OneGameView: View {
+    /// The `Game` to play.
     @ObservedObject var game: Game
     
+    /// Creates an instance with one `Game`.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
         let game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         self.game = game
@@ -30,60 +32,88 @@ struct OneGameView: View {
 
 // MARK: DeckSetupSection
 
-// Deck setup and deck used.
+/// A `Section` that shows the deck used in a game.
 struct DeckSetupSection: View {
+    /// The `DeckSetup` used.
     let deckSetup: DeckSetup
+    
+    /// The `Deck` before any cards are dealt.
     let startingDeck: Deck
+    
     var body: some View {
         Section(header: Text("Deck Setup")) {
-            
-            // Non-breaking space.
-            (Text("\(deckSetup.name): ") + coloredText(forCards: startingDeck.cards))
+            DeckView(deck: startingDeck, label: deckSetup.name)
                 .font(.caption)
         }
     }
 }
 
+/// A `View` that shows the given `deck`.
+struct DeckView: View {
+    /// The `Deck`.
+    let deck: Deck
+    
+    /// A `String` to show in front of the deck.
+    let label: String
+    
+    /// Creates an instance with a `deck` and a `label`.
+    init(deck: Deck, label: String = "Deck") {
+        self.deck = deck
+        self.label = label
+    }
+    
+    var body: some View {
+        // Non-breaking space.
+        (Text("\(label): ") + coloredText(forCards: deck.cards))
+    }
+}
+
 // MARK: StartingSetupSection
 
-/// The game state after dealing hands, plus the "Play" button.
+/// A `Section` that shows a `game's` state after hands have been dealt.
+///
+/// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
 struct StartingSetupSection: View {
+    /// The `Game` to play.
     let game: Game
+    
     var body: some View {
         let firstTurn = game.turns.first!
         return Section(header: Text("Starting Setup")) {
-            StartingHandsAndDeckGroup(hands: firstTurn.hands, deck: firstTurn.deck)
+            Group {
+                HandsView(hands: firstTurn.hands)
+                DeckView(deck: firstTurn.deck)
+            }
+            .font(.caption)
             PlayButton(game: game)
         }
     }
 }
 
-/// The starting hands, and the remaining deck.
-struct StartingHandsAndDeckGroup: View {
+/// A `View` that shows the given `hands`.
+struct HandsView: View {
+    /// An `Array` of `Hands`.
     let hands: [Hand]
-    let deck: Deck
+    
     var body: some View {
-        Group {
-            HStack(spacing: 0) {
-                Text("Hands: ")
-                VStack(alignment: .leading) {
-                    ForEach(hands.indices) {
-                        coloredText(forCards: self.hands[$0].cards)
-
-                    }
+        HStack(spacing: 0) {
+            Text("Hands: ")
+            VStack(alignment: .leading) {
+                ForEach(hands.indices) {
+                    coloredText(forCards: self.hands[$0].cards)
                 }
             }
-            
-            // Non-breaking space.
-            (Text("Deck: ") + coloredText(forCards: deck.cards))
         }
-        .font(.caption)
     }
 }
 
-/// Starts playing the game that was set up.
+/// A  `View` that shows a button to start playing a `game` that has been set up.
+///
+/// This is a `View` because the `Button` itself is wrapped, to center it.
 struct PlayButton: View {
+    /// The `Game` to play.
     let game: Game
+    
     var body: some View {
         HStack {
             Spacer()
@@ -97,34 +127,41 @@ struct PlayButton: View {
 
 // MARK: TurnsSection
 
-/// Each turn in the game.
+/// A `Section` that shows the given `turns`.
 struct TurnsSection: View {
+    /// An `Array` of `Turns`.
     let turns: [Turn]
+    
     var body: some View {
-        Section(header: TurnsSectionHeaderView()) {
-            TurnHeaderView()
+        Section(header: TurnsSectionHeader()) {
+            
+            //  TODO: Align header and rows. E.g., Turn takes 40% of row, grwby takes 40%, cs takes 20%
+            //  Ugh. Alignment can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
+            TurnViewHeader()
             ForEach(turns, id: \.number) {
                 TurnView(turn: $0)
             }
-
-            //                    // Ugh. Lining stuff up can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
-            // I want the rows to line up. E.g., Turn takes up 40% of row, grwby takes 40%, cs takes 20%
         }
     }
 }
 
+/// A `View` that is the header for `TurnsSection`.
+///
+/// TODO: Add legend to UI via popover/context button, if that's doable on iPhone
 /// The text for the section header.
-struct TurnsSectionHeaderView: View {
-    // TODO: Add legend to UI via popover/context button, if that's doable on iPhone
+struct TurnsSectionHeader: View {
     var body: some View {
         Text("Turns")
+        // For popover button
 //        + Text(" (g/r/w/b/y: green/red/white/blue/yellow)")
 //        + Text(" (C/S/D: Clues/Strikes/Deck)")
     }
 }
 
-/// Field descriptions for each turn.
-struct TurnHeaderView: View {
+/// A `View` that shows column headers for `TurnView`.
+///
+/// TODO: Align with elements of TurnView.
+struct TurnViewHeader: View {
     var body: some View {
         HStack {
             Text("Hands")
@@ -136,7 +173,7 @@ struct TurnHeaderView: View {
     }
 }
 
-/// Return a `View` (i.e., `Text`) of the abbreviation of each suit, in order. Suits are separated for legibility and colored appropriately.
+/// A `View` that shows the abbreviation of each card suit, in order. Suits are separated for legibility and colored appropriately.
 struct ScoreHeaderView: View {
     var body: some View {
         
@@ -149,33 +186,43 @@ struct ScoreHeaderView: View {
     }
 }
 
-/// Info needed to understand a turn.
+/// A `View` that shows the info needed to understand the given `turn`.
 struct TurnView: View {
+    /// The `Turn`.
     let turn: Turn
+    
     var body: some View {
         HStack {
             TurnNumberView(number: turn.number)
             PlayerHandsView(hands: turn.hands, currentHandIndex: turn.currentHandIndex)
             ScorePilesView(scorePiles: turn.scorePiles)
             TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
-            ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
+            ActionView(numberOfPlayers: turn.hands.count, currentHandIndex: turn.currentHandIndex, action: turn.action)
+
+//            ActionView(hands: turn.hands, currentHandIndex: turn.currentHandIndex, action: turn.action)
         }
         .font(.caption)
     }
 }
 
-/// Which turn it is.
+/// A `View` that shows which turn it is.
 struct TurnNumberView: View {
+    /// The turn number.
     let number: Int
+    
     var body: some View {
         Text("\(number).")
     }
 }
 
-/// The players' cards. The current player is highlighted.
+/// A `View` that shows each player's cards and highlights the current player.
 struct PlayerHandsView: View {
+    /// The players' cards.
     let hands: [Hand]
+    
+    /// The index of `hands` for the current player.
     let currentHandIndex: Int
+    
     var body: some View {
         let handsIndices = hands.indices
         let coloredTexts = handsIndices.map {
@@ -193,12 +240,11 @@ struct PlayerHandsView: View {
     }
 }
 
-/// Return a `View` (i.e., `Text`) of the scores in `scorePiles`. Scores are separated for legibility and colored appropriately.
+/// A `View` that shows the scores in the given `scorePiles`. Scores are separated for legibility and colored appropriately.
 ///
 /// Colorblind users may not know which score is for which suit. So, `ScorePilesView` should be used with `ScoreHeaderView`, which lists the suit order.
-///
-/// - Parameter scorePiles: (Someday, the docs will work with memberwise initializers…)
 struct ScorePilesView: View {
+    /// The `ScorePiles` containing the scores to show.
     let scorePiles: [ScorePile]
     
     var body: some View {
@@ -212,26 +258,40 @@ struct ScorePilesView: View {
     }
 }
 
-/// Number of clues, strikes, cards in deck.
+/// A `View` that shows the number of clues and strikes, and the number of cards remaining in the deck.
 struct TokenPilesView: View {
+    /// The number of clues.
     let clues: Int
+    
+    /// The number of strikes.
     let strikes: Int
+    
+    /// The number of cards remaining in the deck.
     let cardsInDeck: Int
+    
     var body: some View {
         Text("\(clues)/\(strikes)/\(cardsInDeck)")
     }
 }
 
-/// Current player's action. Highlighted, to match highlighted hand.
+/// A `View` that shows the current player's action and highlights it.
+///
+/// The action is highlighted to match `PlayerHandsView`.
 struct ActionView: View {
-    let hands: [Hand]
+    /// The number of players.
+    let numberOfPlayers: Int
+    
+    /// The current player's index, assuming an `Array` of the players.
     let currentHandIndex: Int
+    
+    /// The player's action (if none yet, then nil).
     let action: Action?
+    
     var body: some View {
         let actionString: String = action?.abbr ?? "??"
         return VStack {
-            ForEach(hands.indices) { index in
-                if index == self.currentHandIndex {
+            ForEach(0..<numberOfPlayers) {
+                if $0 == self.currentHandIndex {
                     Text("\(actionString)").bold()
                 } else {
                     Text("\n")
@@ -243,7 +303,8 @@ struct ActionView: View {
 
 // MARK: ResultsSection
 
-// The end of the game, or a summary.
+/// A `Section` showing the end of the game, or a summary.
+// TODO: Update doc when working on this.
 struct ResultsSection: View {
     var body: some View {
         Section(header: Text("Results")) {

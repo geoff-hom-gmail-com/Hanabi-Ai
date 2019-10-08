@@ -11,7 +11,7 @@
 
 import SwiftUI
 
-// Main menu.
+/// A `View` showing the main menu.
 struct HomeView: View {
     var body: some View {
         NavigationView {
@@ -30,6 +30,8 @@ struct HomeView: View {
         }
     }
 }
+
+// MARK: Previews
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {

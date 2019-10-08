@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-// Options for auto-play.
+/// A `View` that lets the user choose how the computer will play itself.
 struct AutoPlayView: View {
     var body: some View {
         Form {
@@ -19,10 +19,21 @@ struct AutoPlayView: View {
     }
 }
 
+// MARK: OneGameSection
+
+/// A `Section` that lets the user set up and play one game.
 struct OneGameSection: View {
-    @State private var numberOfPlayers: Int = 2
+    /// The number of players in the game.
+    @State private var numberOfPlayers = 2
+    
+    /// The `DeckSetup` to use.
     @State private var deckSetup: DeckSetup = .random
+    
+    /// The card order to use if `deckSetup` is `custom`.
+    ///
+    /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
     @State private var customDeckDescription: String = ""
+    
     var body: some View {
         Section(header: Text("One Game")) {
             NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
@@ -34,29 +45,21 @@ struct OneGameSection: View {
     }
 }
 
-struct MultipleGamesSection: View {
-    @State private var numberOfPlayers: Int = 2
-    @State private var numberOfGames: Int = 101
-    var body: some View {
-        Section(header: Text("Multiple Games")) {
-            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
-            NumberOfGamesHStack(numberOfGames: $numberOfGames)
-            PlayMultipleGamesNavigationLink()
-        }
-    }
-}
-
-// Select number of players.
+/// A `Stepper` that lets the user choose the number of players in a game.
 struct NumberOfPlayersStepper: View {
+    /// The number of players in the game.
     @Binding var numberOfPlayers: Int
+    
     var body: some View {
         Stepper("Players: \(numberOfPlayers)", value: $numberOfPlayers, in: 2...5)
     }
 }
 
-// Select deck setup.
+/// A `Picker` that lets the use choose `DeckSetup`.
 struct DeckSetupPicker: View {
+    /// The `DeckSetup` to use.
     @Binding var deckSetupSelection: DeckSetup
+    
     var body: some View {
         // No ":" after label because `Picker's` in a `Form`.
         Picker("Deck Setup", selection: $deckSetupSelection) {
@@ -67,11 +70,19 @@ struct DeckSetupPicker: View {
     }
 }
 
-// Play a game. Show results.
+/// A `NavigationLink` that goes to another screen to play one game.
+///
+/// The game doesn't start when the link is pressed, because we want the user to see the starting setup first.
 struct PlayGameNavigationLink: View {
+    /// The number of players in the game.
     var numberOfPlayers: Int
+    
+    /// The `DeckSetup` to use.
     var deckSetup: DeckSetup
+    
+    /// The card order to use if `deckSetup` is `custom`.
     var customDeckDescription: String
+    
     var body: some View {
         NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
             Spacer()
@@ -80,15 +91,40 @@ struct PlayGameNavigationLink: View {
     }
 }
 
-// Select number of games.
-struct NumberOfGamesHStack: View {
+// MARK: MultipleGamesSection
+
+/// A `Section` that lets the user set up and play multiple games in a row.
+struct MultipleGamesSection: View {
+    /// The number of players in the game.
+    @State private var numberOfPlayers = 2
+    
+    /// The number of games to play.
+    @State private var numberOfGames = 101
+    
+    var body: some View {
+        Section(header: Text("Multiple Games")) {
+            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
+            NumberOfGamesChooser(numberOfGames: $numberOfGames)
+            PlayMultipleGamesNavigationLink()
+        }
+    }
+}
+
+/// A `View` that lets the user choose the number of games to play.
+struct NumberOfGamesChooser: View {
+    /// The number of games to play.
     @Binding var numberOfGames: Int
+    
+    /// TODO: document
     @State private var numberOfGamesString: String = "300"
+    
     //TODO: When user enters new number of games, update the binding. Hmm, user could enter something invalid. So we'll have to check. Could try a picker, like the decimal calorie entry in MFP.
+    /// TODO: Document
     init(numberOfGames: Binding<Int>) {
         self._numberOfGames = numberOfGames
 //        self.numberOfGamesString = "\(self.numberOfGames)"
     }
+    
     var body: some View {
         HStack {
             // TODO: Align Text and TextField. May want a custom TextField VerticalAlignment, as in WWDC talk on custom views in SwiftUI. But someone else will probably work on this issue soon. After fixing alignment, remove background colors.
@@ -101,7 +137,9 @@ struct NumberOfGamesHStack: View {
     }
 }
 
-// Play multiple games in a row. Show results.
+/// A `NavigationLink` that goes to another screen to play multiple games in a row.
+///
+/// TODO: Do the games start right away? Or show setup first?
 struct PlayMultipleGamesNavigationLink: View {
     var body: some View {
         // TODO: This would be a new view for showing multiple game results.
@@ -111,6 +149,8 @@ struct PlayMultipleGamesNavigationLink: View {
         }
     }
 }
+
+// MARK: Previews
 
 struct AutoPlayView_Previews: PreviewProvider {
     static var previews: some View {

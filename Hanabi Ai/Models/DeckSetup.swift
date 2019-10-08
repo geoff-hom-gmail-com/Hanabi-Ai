@@ -8,6 +8,8 @@
 
 import Foundation
 
+///
+//    /// A flag for how to arrange the deck; e.g., randomly, or with a custom order.
 enum DeckSetup: CaseIterable, Identifiable {
     // TODO: later, could have options like "hard," "easy"; will have to figure out how to make those
     case random, custom
