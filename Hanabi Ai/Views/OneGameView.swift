@@ -23,7 +23,10 @@ struct OneGameView: View {
             DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
             StartingSetupSection(game: game)
             TurnsSection(turns: game.turns)
-            ResultsSection()
+            // this works if turns is Published and game is observed. But even without the $, it refreshes the entire Form each change. Why?
+            // the only thign the $ does here is let me change turns, which I wasn't doing anyway.
+//            TurnsSection(turns: $game.turns)
+            ResultsSection(gameIsOver: game.isOver)
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
@@ -63,13 +66,13 @@ struct DeckView: View {
     
     var body: some View {
         // Non-breaking space.
-        Text("\(label): ") + coloredText(forCards: deck.cards)
+        Text("\(label): ") + deck.coloredText
     }
 }
 
 // MARK: StartingSetupSection
 
-/// A `Section` that shows a `Game's` state after hands have been dealt.
+/// A `Section` that shows a `Game`'s state after hands have been dealt.
 ///
 /// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
 struct StartingSetupSection: View {
@@ -101,7 +104,8 @@ struct HandsView: View {
             Text("Hands: ")
             VStack(alignment: .leading) {
                 ForEach(hands.indices) {
-                    coloredText(forCards: self.hands[$0].cards)
+                    // TODO: use hands[$0].coloredText
+                    self.hands[$0].cards.coloredText
                 }
             }
         }
@@ -132,7 +136,8 @@ struct PlayButton: View {
 struct TurnsSection: View {
     /// An `Array` of `Turns`.
     let turns: [Turn]
-    
+//    @Binding var turns: [Turn]
+
     var body: some View {
         Section(header: TurnsSectionHeader()) {
             
@@ -177,13 +182,12 @@ struct TurnViewHeader: View {
 /// A `View` that shows the abbreviation of each card suit, in order. Suits are separated for legibility and colored appropriately.
 struct ScoreHeaderView: View {
     var body: some View {
-        
-        /// An `Array` of `Text`s, where each `Text` shows an abbreviation, with color.
+        /// An `Array` of `Text`s, where each `Text` shows a `Suit`'s `coloredText`.
         let suitTexts = Suit.allCases.sorted().map {
-            Text("\($0.letter)").foregroundColor(colorForSuit($0))
+            $0.coloredText
         }
-
-        return concatenate(suitTexts, withSeparator: "/")
+        
+        return suitTexts.concatenated(withSeparator: "/")
     }
 }
 
@@ -223,12 +227,13 @@ struct PlayerHandsView: View {
     let currentHandIndex: Int
     
     var body: some View {
-        /// A `Range` for looping over `hands`.
+        /// A `Range` for looping over `hands`, because `Hand` isn't `Identifiable`.
         let handsIndices = hands.indices
         
-        /// An `Array` of `Text`s, where each `Text` shows a hand, with color.
+        /// An `Array` of `Text`s, where each shows a hand, with color.
         let coloredTexts = handsIndices.map {
-            coloredText(forCards: hands[$0].cards)
+            // TODO: use hands[$0].coloredText
+            hands[$0].cards.coloredText
         }
         
         return VStack(alignment: .leading) {
@@ -247,17 +252,18 @@ struct PlayerHandsView: View {
 ///
 /// Colorblind users may not know which score is for which suit. So, `ScorePilesView` should be used with `ScoreHeaderView`, which lists the suit order.
 struct ScorePilesView: View {
-    /// The `ScorePiles` containing the scores to show.
+    /// The `ScorePile`s that contain the scores to show.
     let scorePiles: [ScorePile]
     
     var body: some View {
-        
         /// An `Array` of `Text`s, where each `Text` shows a score, with color.
+        // TODO: extend ScorePile to have scorepile.coloredScore? scorePile.coloredText? coloredScoreText?
         let scoreTexts = scorePiles.map {
-            Text("\($0.score)").foregroundColor(colorForSuit($0.suit))
+            Text("\($0.score)")
+                .foregroundColor($0.suit.color)
         }
         
-        return concatenate(scoreTexts, withSeparator: "/")
+        return scoreTexts.concatenated(withSeparator: "/")
     }
 }
 
@@ -308,12 +314,19 @@ struct ActionView: View {
 
 // MARK: ResultsSection
 
-/// A `Section` that shows the end of the game, or a summary.
-// TODO: Update doc when working on this.
+/// A `Section` that shows the final state of the game, and a summary.
+// TODO: Update doc when working on this. What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues, Kinda like an F turn
+// show only if game over, so we need a flag?
+// Hmm, I don't want to update everytime that game/turns changes. I want to update only when EoG, so only when game.isOver changes. How can I focus on only that? If I pass in game here and look at game.isOver, will that be enough? Or should I pass in only game.isOver and not game?
+// I don't want read/write access; just read access
+// and the truth is held elsewhere
 struct ResultsSection: View {
+    /// A `Bool` that reflects whether the game is over.
+    let gameIsOver: Bool
+    
     var body: some View {
         Section(header: Text("Results")) {
-            Text("??")
+            Text(gameIsOver ? "Game done!" : "??")
                 .font(.caption)
         }
     }
@@ -322,55 +335,64 @@ struct ResultsSection: View {
 // MARK: Functions
 
 /// Returns a `Text` which is the concatenation of `Text`s that show each `Card`'s `description`, with color.
-func coloredText(forCards cards: [Card]) -> Text {
-    
-    /// An `Array` of `Text`s, where each `Text` shows a `Card`'s `description`, with color.
-    let coloredTexts = cards.map {
-        Text("\($0.description)")
-            .foregroundColor(colorForSuit($0.suit))
-    }
-    return concatenate(coloredTexts)
-}
+//func coloredText(forCards cards: [Card]) -> Text {
+//
+//    /// An `Array` of `Text`s, where each `Text` shows a `Card`'s `description`, with color.
+//    let coloredTexts = cards.map {
+//        Text("\($0.description)")
+//            .foregroundColor($0.suit.color)
+//    }
+////    return concatenate(coloredTexts)
+////    return concatenating(coloredTexts)
+////    return concatenating(texts: coloredTexts)
+//
+////    return concatenated(coloredTexts)
+//    return concatenated(texts: coloredTexts)
+//    return coloredTexts.concatenated()
+////    return joined(texts: coloredTexts)
+//}
+
+
 
 // TODO: Test colors in Dark Mode?
+// TODO: rewrite as an extension of Suit? so can call suit.color?
 /// Returns a foreground `Color` for the given `suit`.
 ///
 /// The `Color` should work as a font/foreground color on white background.
-func colorForSuit(_ suit: Suit) -> Color {
-    /// The `Color` to return (avoiding multiple `return` statements).
-    var color: Color
-    
-    switch suit {
-    case .green:
-        color = .green
-    case .red:
-        color = .red
-    case .white:
-        // White doesn't show on white background.
-        color = .gray
-    case .blue:
-        color = .blue
-    case .yellow:
-        color = .yellow
-    }
-    return color
-}
+//func color(forSuit suit: Suit) -> Color {
+//    switch suit {
+//    case .green:
+//        return .green
+//    case .red:
+//        return .red
+//    case .white:
+//        // White doesn't show on white background.
+//        return .gray
+//    case .blue:
+//        return .blue
+//    case .yellow:
+//        return .yellow
+//    }
+//}
 
+// TODO: rename to concatenation? noun phrase as there's noside effect
 /// Returns a `Text` which is the concatenation of the given `texts`, with an optional `separator` between each `Text`.
-func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
-    /// The first `Text` given, which is before any `separator`.
-    let firstText = texts.first!
-    
-    /// The remaining `Text`s, which may be prefixed by a `separator`.
-    let otherTexts = texts.dropFirst()
-    
-    guard let separator = separator else {
-        return otherTexts.reduce(firstText, +)
-    }
-    return otherTexts.reduce(firstText, { x, y in
-        x + Text(separator) + y
-    })
-}
+//func concatenated(texts: [Text], withSeparator separator: String? = nil) -> Text {
+//
+////func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
+//    /// The first `Text` given, which is before any `separator`.
+//    let firstText = texts.first!
+//
+//    /// The remaining `Text`s, which may be prefixed by a `separator`.
+//    let otherTexts = texts.dropFirst()
+//
+//    guard let separator = separator else {
+//        return otherTexts.reduce(firstText, +)
+//    }
+//    return otherTexts.reduce(firstText, { x, y in
+//        x + Text(separator) + y
+//    })
+//}
 
 // MARK: Previews
 

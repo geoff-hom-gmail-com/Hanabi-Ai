@@ -25,7 +25,7 @@ class Game: ObservableObject {
     
     /// The number of players.
     let numberOfPlayers: Int
-    
+
     /// The method of arranging the deck; e.g., randomly, or with a specific order.
     let deckSetup: DeckSetup
     
@@ -35,11 +35,15 @@ class Game: ObservableObject {
     /// The deck before any cards are dealt.
     let startingDeck: Deck
     
+    // TODO: This may not be needed, nor right. The next turn is made from the previous turn's deck, not this. So this probably isn't updated correctly. And if we copy the startingDeck to deal hands, then we don't need this property anymore.
     /// The current deck, which players draw from throughout the game.
     var deck: Deck
     
     /// Each `Turn` in the game.
     @Published var turns: [Turn] = []
+    
+    /// A Bool that reflects whether this game is over.
+    @Published var isOver: Bool = false
     
     /// Creates a `Game` with the given number of players and deck setup.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
@@ -123,7 +127,7 @@ class Game: ObservableObject {
             /// The next turn, , awaiting the player's action.
             let nextTurn = makeTurnAfter(currentTurn)
             
-            gameIsGoing = !isOver(latestTurn: nextTurn)
+            gameIsGoing = !isOver(nextTurn: nextTurn)
             if gameIsGoing {
                 turns.append(nextTurn)
                 // TODO: temp to avoid infinite loop
@@ -202,19 +206,19 @@ class Game: ObservableObject {
     
     /// Returns a `Bool` that reflects whether the game is over, based on the latest `Turn`.
     ///
-    /// There are 3 ways for the game to end: A perfect score of 25, a 3rd strike, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
+    /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
     ///
     /// The latest `Turn` is the `Turn` about to played next; i.e., after the previous `Turn`'s action has been resolved.
-    func isOver(latestTurn: Turn) -> Bool {
+    func isOver(nextTurn: Turn) -> Bool {
         // TODO: So we need the score, the strikes, the deck
-        /// A `Bool` that reflects whether the game is over (to avoid multiple `return`s).
-        let tempBool: Bool
         
-        // switch statement?
-        if (latestTurn.strikes == 3) {
-            tempBool = true
+        // hmm, this is kinda like multiple returns... we're saying instead of multiple assignments, we'll have one final assignment via switch. the counter argu is that if we have the info to make an assignment, we should make it and exit. esp for small functions.
+        // the pro-single-staement argu for readability is you don't have to worry about assignmet in the middle of the function. let's go for short.
+       
+        if (nextTurn.strikes == 3) {
+            return true
             // TODO: perfect score. each score has to be 5.
-//        } else if (scoresArePerfect(turn.scores)) {
+//        } else if (scoresArePerfect(nextTurn.scores)) {
             // map?
 //            turn.scores.forEach { score in
 //                print("hi")
@@ -222,12 +226,11 @@ class Game: ObservableObject {
 //            tempBool = true
 //
 //             // TODO: turns run out.
-//        } else if (turn.strikes == 3) {
+//        } else if (outOfTurns) {
 //            ()
         } else {
-            tempBool = false
+            return false
         }
-        return tempBool
     }
     
 //    func scoresArePerfect(scores: [Suit: Int]) -> Bool {

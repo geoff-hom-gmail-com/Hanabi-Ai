@@ -23,7 +23,7 @@ enum DeckSetup: CaseIterable, Identifiable {
     
     /// A `String` that describes the deck setup.
     var name: String {
-        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        /// A `String` that holds the `return` value, to avoid multiple `return`s.
         let returnString: String
         
         switch self {

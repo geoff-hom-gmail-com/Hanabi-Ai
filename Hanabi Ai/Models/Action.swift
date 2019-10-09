@@ -15,7 +15,7 @@ enum ActionType {
     
     /// A `String` that describes the action type.
     var abbr: String {
-        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        /// A `String` that holds the `return` value, to avoid multiple `return`s.
         let returnString: String
         
         switch self {
@@ -62,7 +62,7 @@ struct Action {
         /// The type's abbreviation.
         let typeAbbr = type.abbr
         
-        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        /// A `String` that holds the `return` value, to avoid multiple `return`s.
         var returnString: String
         
         switch type {

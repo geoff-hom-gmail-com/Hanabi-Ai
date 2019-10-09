@@ -24,7 +24,7 @@ enum Suit: CaseIterable, Comparable {
     
     /// A String that describes the Suit using one letter.
     var letter: String {
-        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        /// A `String` that holds the `return` value, to avoid multiple `return`s.
         let returnString: String
         
         switch self {
@@ -46,7 +46,7 @@ enum Suit: CaseIterable, Comparable {
     ///
     /// The order is important not because suits trump each other. Rather, the score piles are displayed in a consistent order for legibility. The order is in honor of RWBY (i.e., gRWBY).
     var sortIndex: Int {
-        /// An `Int` that holds the `return` value to avoid multiple `return`s.
+        /// An `Int` that holds the `return` value, to avoid multiple `return`s.
         let returnInt: Int
         
         switch self {

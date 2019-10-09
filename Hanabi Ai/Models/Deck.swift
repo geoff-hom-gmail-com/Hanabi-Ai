@@ -13,6 +13,8 @@ struct Deck {
     /// The cards currently in the deck.
     ///
     /// This could be a `lazy var`. But then, all instances of `Deck` that access `cards` would have to be `var`, even if they're just reading. The current way allows more discernment.
+    /// TODO: make this private? we think of the deck as the cards, so more natural language is like deck.getCard or maybe deck.pop, deck.getTopCard, not deck.cards.get
+    // ditto for Hand. We think hand.description, not hand.cards.description
     var cards: [Card] = []
 
     /// The cards in the deck at the start.
