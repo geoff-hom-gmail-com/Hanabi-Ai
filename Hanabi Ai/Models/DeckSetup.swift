@@ -8,16 +8,24 @@
 
 import Foundation
 
-///
-//    /// A flag for how to arrange the deck; e.g., randomly, or with a custom order.
+/// The type of deck setup; e.g., randomly, or with a custom order.
 enum DeckSetup: CaseIterable, Identifiable {
     // TODO: later, could have options like "hard," "easy"; will have to figure out how to make those
+    /// The deck-setup options.
+    ///
+    /// Random: A randomly shuffled deck.
+    ///
+    /// Custom: A user-specified order for the entire deck.
     case random, custom
 
+    /// The `ID` for `Identifiable`.
     var id: DeckSetup { self }
     
+    /// A `String` that describes the deck setup.
     var name: String {
+        /// A `String` that describes the deck setup (to avoid multiple `return`s).
         let tempString: String
+        
         switch self {
         case .random:
             tempString = "Random"

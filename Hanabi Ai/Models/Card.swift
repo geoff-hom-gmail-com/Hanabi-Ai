@@ -8,13 +8,26 @@
 
 import Foundation
 
-/// A Hanabi card has a suit (i.e., color) and a number. For clarity (e.g., colorblindness), the suit is always noted by at least a letter. E.g., "r1", "g3".
+/// A Hanabi card.
+///
+/// A card has a `suit` (i.e., color) and a `number`.
 struct Card: Identifiable {
+    /// The `ID` for `Identifiable`.
+    ///
+    /// In Hanabi, there are multiples of the same card (e.g., three green 1s). We need to distinguish between them.
     let id = UUID()
+    
+    /// The card's `Suit`.
     let suit: Suit
+    
+    /// The card's number (1–5).
     let number: Int
     
-    // E.g., "g3". (Adding foreground color is left to Views.)
+    /// A `String` that describes the card.
+    ///
+    /// For clarity (e.g., colorblindness), the `suit` is always noted by at least a letter. E.g., "r1", "g3".
+    ///
+    /// Adding foreground/font color is left to Views.
     var description: String {
         return "\(suit.letter)\(number)"
     }

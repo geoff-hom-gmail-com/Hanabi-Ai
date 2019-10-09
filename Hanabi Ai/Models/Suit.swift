@@ -9,6 +9,7 @@
 import Foundation
 
 /// A Hanabi card has a suit (i.e., color).
+// todo: mention rainbow, kanji
 enum Suit: CaseIterable, Comparable {
     static func < (lhs: Suit, rhs: Suit) -> Bool {
         return lhs.sortIndex < rhs.sortIndex

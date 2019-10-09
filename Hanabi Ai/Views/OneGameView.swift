@@ -291,7 +291,7 @@ struct ActionView: View {
     let action: Action?
     
     var body: some View {
-        /// A `String` that shows the action (if `nil`, `"??"`).
+        /// A `String` describing the action (if `nil`, `"??"`).
         let actionString = action?.abbr ?? "??"
         
         return VStack {
