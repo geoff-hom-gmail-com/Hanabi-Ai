@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// The type of deck setup; e.g., randomly, or with a custom order.
+/// A way to set up the deck; e.g., randomly, or with a custom order.
 enum DeckSetup: CaseIterable, Identifiable {
     // TODO: later, could have options like "hard," "easy"; will have to figure out how to make those
     /// The deck-setup options.
@@ -23,15 +23,15 @@ enum DeckSetup: CaseIterable, Identifiable {
     
     /// A `String` that describes the deck setup.
     var name: String {
-        /// A `String` that describes the deck setup (to avoid multiple `return`s).
-        let tempString: String
+        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        let returnString: String
         
         switch self {
         case .random:
-            tempString = "Random"
+            returnString = "Random"
         case .custom:
-            tempString = "Custom"
+            returnString = "Custom"
         }
-        return tempString
+        return returnString
     }
 }

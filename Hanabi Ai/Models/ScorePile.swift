@@ -8,8 +8,13 @@
 
 import Foundation
 
-/// Each suit has a score pile. Cards are placed in increasing order, and the score is the top card.
+/// A face-up pile for scoring a `Suit`.
+///
+/// Cards are placed in consecutively increasing order—1-2-3-4-5—and the score is the top card.
 struct ScorePile  {
+    /// The pile's suit.
     let suit: Suit
+    
+    /// The current score for the pile.
     let score: Int
 }

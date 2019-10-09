@@ -8,8 +8,8 @@
 
 import Foundation
 
-// A player's cards.
-//  comment this struct
+/// A player's cards.
 struct Hand {
+    /// The cards.
     var cards: [Card] = []
 }

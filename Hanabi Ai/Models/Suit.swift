@@ -8,48 +8,59 @@
 
 import Foundation
 
-/// A Hanabi card has a suit (i.e., color).
-// todo: mention rainbow, kanji
+/// A suit for a Hanabi card.
+///
+/// This is often called the color (e.g., green). However, an optional 6th suit is "Rainbow." And for colorblind players, each suit in the physical game has an associated kanji.
 enum Suit: CaseIterable, Comparable {
+    /// Returns a Bool that reflects whether one `Suit` is `<` another.
+    ///
+    /// For `Comparable`.
     static func < (lhs: Suit, rhs: Suit) -> Bool {
         return lhs.sortIndex < rhs.sortIndex
     }
     
+    /// The different suits, in terms of color.
     case green, red, white, blue, yellow
     
-    /// For clarity (e.g., colorblindness), the suit is always shown by at least a letter. E.g., cards "r1", "g3".
+    /// A String that describes the Suit using one letter.
     var letter: String {
-        let tempString: String
+        /// A `String` that holds the `return` value to avoid multiple `return`s.
+        let returnString: String
+        
         switch self {
         case .green:
-            tempString = "g"
+            returnString = "g"
         case .red:
-            tempString = "r"
+            returnString = "r"
         case .white:
-            tempString = "w"
+            returnString = "w"
         case .blue:
-            tempString = "b"
+            returnString = "b"
         case .yellow:
-            tempString = "y"
+            returnString = "y"
         }
-        return tempString
+        return returnString
     }
     
-    // The order is in honor of RWBY (i.e., gRWBY).
+    /// The order of each suit, for `Comparable`.
+    ///
+    /// The order is important not because suits trump each other. Rather, the score piles are displayed in a consistent order for legibility. The order is in honor of RWBY (i.e., gRWBY).
     var sortIndex: Int {
-        let tempInt: Int
+        /// An `Int` that holds the `return` value to avoid multiple `return`s.
+        let returnInt: Int
+        
         switch self {
         case .green:
-            tempInt = 0
+            returnInt = 0
         case .red:
-            tempInt = 1
+            returnInt = 1
         case .white:
-            tempInt = 2
+            returnInt = 2
         case .blue:
-            tempInt = 3
+            returnInt = 3
         case .yellow:
-            tempInt = 4
+            returnInt = 4
         }
-        return tempInt
+        return returnInt
     }
 }
