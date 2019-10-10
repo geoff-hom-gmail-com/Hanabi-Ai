@@ -23,10 +23,7 @@ struct OneGameView: View {
             DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
             StartingSetupSection(game: game)
             TurnsSection(turns: game.turns)
-            // this works if turns is Published and game is observed. But even without the $, it refreshes the entire Form each change. Why?
-            // the only thign the $ does here is let me change turns, which I wasn't doing anyway.
-//            TurnsSection(turns: $game.turns)
-            ResultsSection(gameIsOver: game.isOver)
+            ResultsSection(gameIsOver: game.isOver, results: game.results)
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
@@ -322,6 +319,10 @@ struct ActionView: View {
 struct ResultsSection: View {
     /// A `Bool` that reflects whether the game is over.
     let gameIsOver: Bool
+    
+    /// temp def
+    /// hmm, not sure what type this will be yet
+    let results: String
     
     var body: some View {
         Section(header: Text("Results")) {

@@ -43,7 +43,10 @@ class Game: ObservableObject {
     @Published var turns: [Turn] = []
     
     /// A Bool that reflects whether this game is over.
-    @Published var isOver: Bool = false
+    @Published var isOver = false
+    
+    /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
+    let results = "testing"
     
     /// Creates a `Game` with the given number of players and deck setup.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
@@ -104,11 +107,7 @@ class Game: ObservableObject {
         
     /// Plays turns until the game ends.
     func play() {
-        /// A `Bool` that reflects whether the game still has turns to play.
-        var gameIsGoing: Bool = true
-
-        while gameIsGoing {
-            
+        while !isOver {
             /// The current turn, awaiting the player's action.
             var currentTurn = turns.last!
             
@@ -122,18 +121,17 @@ class Game: ObservableObject {
             /// The start of the next turn.
             let nextTurnStart = turnStart(after: currentTurn)
             
-            gameIsGoing = !isOver(if: nextTurnStart)
-            if gameIsGoing {
+            if isOver(at: nextTurnStart) {
+                isOver = true
+                // TODO: populate results. e.g., self.results = X
+//                print("game is over!")
+            } else {
                 /// The next turn.
                 let nextTurn = Turn(number: currentTurn.number + 1, start: nextTurnStart)
                 
                 turns.append(nextTurn)
                 // TODO: temp to avoid infinite loop
-                break
-            } else {
-                // TODO: If game is over, don't add next turn, but add it to Results?
-                print("game is over!")
-                ()
+//                break
             }
         }
     }
@@ -203,14 +201,16 @@ class Game: ObservableObject {
     
     // MARK: Game end
     
-    /// Returns a `Bool` that reflects whether the game is over, if the given `turnStart` is next.
+    /// Returns a `Bool` that reflects whether the game is over at the given `turnStart`.
     ///
     /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
-    func isOver(if turnStart: TurnStart) -> Bool {
+    func isOver(at turnStart: TurnStart) -> Bool {
         // TODO: So we need the score, the strikes, the deck
-        
        
         if (turnStart.strikes == 3) {
+            return true
+            // TODO: this is temp for testing
+        } else if (turnStart.clues == 5) {
             return true
             // TODO: perfect score. each score has to be 5.
 //        } else if (scoresArePerfect(nextTurn.scores)) {
