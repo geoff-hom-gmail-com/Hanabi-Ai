@@ -1,5 +1,5 @@
 //
-//  Suit+Color.swift
+//  Suit+View.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 10/9/19.
@@ -30,7 +30,7 @@ extension Suit {
         }
     }
     
-    /// A `Text` that shows a `Suit`'s `letter`, with color.
+    /// A `Text` that shows a `Suit`'s letter, with color.
     var coloredText: Text {
         Text("\(self.letter)")
             .foregroundColor(self.color)

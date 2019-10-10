@@ -13,9 +13,9 @@ enum DeckSetup: CaseIterable, Identifiable {
     // TODO: later, could have options like "hard," "easy"; will have to figure out how to make those
     /// The deck-setup options.
     ///
-    /// Random: A randomly shuffled deck.
+    /// `random`: A randomly shuffled deck.
     ///
-    /// Custom: A user-specified order for the entire deck.
+    /// `custom`: A user-specified order for the entire deck.
     case random, custom
 
     /// The `ID` for `Identifiable`.
@@ -23,15 +23,11 @@ enum DeckSetup: CaseIterable, Identifiable {
     
     /// A `String` that describes the deck setup.
     var name: String {
-        /// A `String` that holds the `return` value, to avoid multiple `return`s.
-        let returnString: String
-        
         switch self {
         case .random:
-            returnString = "Random"
+            return "Random"
         case .custom:
-            returnString = "Custom"
+            return "Custom"
         }
-        return returnString
     }
 }

@@ -25,10 +25,10 @@ struct Card: Identifiable {
     
     /// A `String` that describes the card.
     ///
-    /// For clarity (e.g., colorblindness), the `suit` is always noted by at least a letter. E.g., "r1", "g3".
+    /// For clarity (e.g., colorblindness), a card's `suit` is always noted by at least a letter. E.g., "r1", "g3".
     ///
-    /// Adding foreground/font color is left to Views.
+    /// Adding foreground/font color is left to views/extensions.
     var description: String {
-        return "\(suit.letter)\(number)"
+        "\(suit.letter)\(number)"
     }
 }

@@ -15,18 +15,14 @@ enum ActionType {
     
     /// A `String` that describes the action type.
     var abbr: String {
-        /// A `String` that holds the `return` value, to avoid multiple `return`s.
-        let returnString: String
-        
         switch self {
         case .play:
-            returnString = "P"
+            return "P"
         case .discard:
-            returnString = "D"
+            return "D"
         case .clue:
-            returnString = "C"
+            return "C"
         }
-        return returnString
     }
 }
 
@@ -62,14 +58,11 @@ struct Action {
         /// The type's abbreviation.
         let typeAbbr = type.abbr
         
-        /// A `String` that holds the `return` value, to avoid multiple `return`s.
-        var returnString: String
-        
         switch type {
         case .play, .discard:
-            returnString = "\(typeAbbr).\(card!.description)"
+            return "\(typeAbbr).\(card!.description)"
         case .clue:
-            /// A String that describes the type of clue given.
+            /// A `String` that describes the type of clue given.
             let clueString: String
             
             // If `number` exists, use that. Else, it must be a `suit`, so describe that.
@@ -78,8 +71,7 @@ struct Action {
             } else {
                 clueString = "\(suit!.letter)"
             }
-            returnString = "\(typeAbbr).\(clueString)"
+            return "\(typeAbbr).\(clueString)"
         }
-        return returnString
     }
 }

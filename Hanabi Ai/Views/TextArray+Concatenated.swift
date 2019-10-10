@@ -1,5 +1,5 @@
 //
-//  Array+Text.swift
+//  TextArray+Concatenated.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 10/9/19.

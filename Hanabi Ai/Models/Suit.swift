@@ -22,45 +22,37 @@ enum Suit: CaseIterable, Comparable {
     /// The different suits, in terms of color.
     case green, red, white, blue, yellow
     
-    /// A String that describes the Suit using one letter.
+    /// A `String` that describes the `Suit` using one letter.
     var letter: String {
-        /// A `String` that holds the `return` value, to avoid multiple `return`s.
-        let returnString: String
-        
         switch self {
         case .green:
-            returnString = "g"
+            return "g"
         case .red:
-            returnString = "r"
+            return "r"
         case .white:
-            returnString = "w"
+            return "w"
         case .blue:
-            returnString = "b"
+            return "b"
         case .yellow:
-            returnString = "y"
+            return "y"
         }
-        return returnString
     }
     
     /// The order of each suit, for `Comparable`.
     ///
     /// The order is important not because suits trump each other. Rather, the score piles are displayed in a consistent order for legibility. The order is in honor of RWBY (i.e., gRWBY).
     var sortIndex: Int {
-        /// An `Int` that holds the `return` value, to avoid multiple `return`s.
-        let returnInt: Int
-        
         switch self {
         case .green:
-            returnInt = 0
+            return 0
         case .red:
-            returnInt = 1
+            return 1
         case .white:
-            returnInt = 2
+            return 2
         case .blue:
-            returnInt = 3
+            return 3
         case .yellow:
-            returnInt = 4
+            return 4
         }
-        return returnInt
     }
 }

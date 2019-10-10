@@ -80,23 +80,23 @@ struct StartingSetupSection: View {
     let game: Game
     
     var body: some View {
-        /// The first turn of `game`.
-        let firstTurn = game.turns.first!
+        /// The start of the first turn.
+        let firstTurnStart = game.turns.first!.start
         
         return Section(header: Text("Starting Setup")) {
             Group {
-                HandsView(hands: firstTurn.hands)
-                DeckView(deck: firstTurn.deck)
+                HandsView(hands: firstTurnStart.hands)
+                DeckView(deck: firstTurnStart.deck)
             }
             .font(.caption)
-            PlayButton(game: game)
+            PlayButtonView(game: game)
         }
     }
 }
 
 /// A `View` that shows the given `hands`.
 struct HandsView: View {
-    /// An `Array` of `Hands`.
+    /// An `Array` of `Hand`s.
     let hands: [Hand]
     
     var body: some View {
@@ -112,14 +112,13 @@ struct HandsView: View {
     }
 }
 
-/// A  `View` that shows a button to start playing a `game` that has been set up.
-///
-/// This is a `View` because the `Button` itself is wrapped, to center it.
-struct PlayButton: View {
+/// A  `View` that shows a button to start playing the `game` that has been set up.
+struct PlayButtonView: View {
     /// The `Game` to play.
     let game: Game
     
     var body: some View {
+        // The `Spacer`s are to center the `Button`.
         HStack {
             Spacer()
             Button(action: { self.game.play() }) {
@@ -134,9 +133,8 @@ struct PlayButton: View {
 
 /// A `Section` that shows the given `turns`.
 struct TurnsSection: View {
-    /// An `Array` of `Turns`.
+    /// An `Array` of `Turn`s.
     let turns: [Turn]
-//    @Binding var turns: [Turn]
 
     var body: some View {
         Section(header: TurnsSectionHeader()) {
@@ -179,10 +177,10 @@ struct TurnViewHeader: View {
     }
 }
 
-/// A `View` that shows the abbreviation of each card suit, in order. Suits are separated for legibility and colored appropriately.
+/// A `View` that shows the colored text for each suit, in order. Suits are separated for legibility.
 struct ScoreHeaderView: View {
     var body: some View {
-        /// An `Array` of `Text`s, where each `Text` shows a `Suit`'s `coloredText`.
+        /// An `Array` of `Text`s, where each `Text` shows a `Suit`'s colored text.
         let suitTexts = Suit.allCases.sorted().map {
             $0.coloredText
         }
@@ -197,12 +195,15 @@ struct TurnView: View {
     let turn: Turn
     
     var body: some View {
-        HStack {
+        /// The start of the turn.
+        let turnStart = turn.start
+        
+        return HStack {
             TurnNumberView(number: turn.number)
-            PlayerHandsView(hands: turn.hands, currentHandIndex: turn.currentHandIndex)
-            ScorePilesView(scorePiles: turn.scorePiles)
-            TokenPilesView(clues: turn.clues, strikes: turn.strikes, cardsInDeck: turn.deck.cards.count)
-            ActionView(numberOfPlayers: turn.hands.count, currentHandIndex: turn.currentHandIndex, action: turn.action)
+            PlayerHandsView(hands: turnStart.hands, currentHandIndex: turnStart.currentHandIndex)
+            ScorePilesView(scorePiles: turnStart.scorePiles)
+            TokenPilesView(clues: turnStart.clues, strikes: turnStart.strikes, cardsInDeck: turnStart.deck.cards.count)
+            ActionView(numberOfPlayers: turnStart.hands.count, currentHandIndex: turnStart.currentHandIndex, action: turn.action)
         }
         .font(.caption)
     }
@@ -297,7 +298,9 @@ struct ActionView: View {
     let action: Action?
     
     var body: some View {
-        /// A `String` describing the action (if `nil`, `"??"`).
+        /// A `String` describing the action.
+        ///
+        /// If action is `nil`, value is `"??"`.
         let actionString = action?.abbr ?? "??"
         
         return VStack {
@@ -316,10 +319,6 @@ struct ActionView: View {
 
 /// A `Section` that shows the final state of the game, and a summary.
 // TODO: Update doc when working on this. What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues, Kinda like an F turn
-// show only if game over, so we need a flag?
-// Hmm, I don't want to update everytime that game/turns changes. I want to update only when EoG, so only when game.isOver changes. How can I focus on only that? If I pass in game here and look at game.isOver, will that be enough? Or should I pass in only game.isOver and not game?
-// I don't want read/write access; just read access
-// and the truth is held elsewhere
 struct ResultsSection: View {
     /// A `Bool` that reflects whether the game is over.
     let gameIsOver: Bool
@@ -331,68 +330,6 @@ struct ResultsSection: View {
         }
     }
 }
-
-// MARK: Functions
-
-/// Returns a `Text` which is the concatenation of `Text`s that show each `Card`'s `description`, with color.
-//func coloredText(forCards cards: [Card]) -> Text {
-//
-//    /// An `Array` of `Text`s, where each `Text` shows a `Card`'s `description`, with color.
-//    let coloredTexts = cards.map {
-//        Text("\($0.description)")
-//            .foregroundColor($0.suit.color)
-//    }
-////    return concatenate(coloredTexts)
-////    return concatenating(coloredTexts)
-////    return concatenating(texts: coloredTexts)
-//
-////    return concatenated(coloredTexts)
-//    return concatenated(texts: coloredTexts)
-//    return coloredTexts.concatenated()
-////    return joined(texts: coloredTexts)
-//}
-
-
-
-// TODO: Test colors in Dark Mode?
-// TODO: rewrite as an extension of Suit? so can call suit.color?
-/// Returns a foreground `Color` for the given `suit`.
-///
-/// The `Color` should work as a font/foreground color on white background.
-//func color(forSuit suit: Suit) -> Color {
-//    switch suit {
-//    case .green:
-//        return .green
-//    case .red:
-//        return .red
-//    case .white:
-//        // White doesn't show on white background.
-//        return .gray
-//    case .blue:
-//        return .blue
-//    case .yellow:
-//        return .yellow
-//    }
-//}
-
-// TODO: rename to concatenation? noun phrase as there's noside effect
-/// Returns a `Text` which is the concatenation of the given `texts`, with an optional `separator` between each `Text`.
-//func concatenated(texts: [Text], withSeparator separator: String? = nil) -> Text {
-//
-////func concatenate(_ texts: [Text], withSeparator separator: String? = nil) -> Text {
-//    /// The first `Text` given, which is before any `separator`.
-//    let firstText = texts.first!
-//
-//    /// The remaining `Text`s, which may be prefixed by a `separator`.
-//    let otherTexts = texts.dropFirst()
-//
-//    guard let separator = separator else {
-//        return otherTexts.reduce(firstText, +)
-//    }
-//    return otherTexts.reduce(firstText, { x, y in
-//        x + Text(separator) + y
-//    })
-//}
 
 // MARK: Previews
 

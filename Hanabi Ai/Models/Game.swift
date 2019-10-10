@@ -91,9 +91,12 @@ class Game: ObservableObject {
             }
         }
         
-        /// The first turn.
-        let firstTurn = Turn(number: 1, hands: hands, currentHandIndex: 0, deck: deck)
+        /// The start of the first turn.
+        let firstTurnStart = TurnStart(hands: hands, currentHandIndex: 0, deck: deck)
         
+        /// The first turn.
+        let firstTurn = Turn(number: 1, start: firstTurnStart)
+
         turns.append(firstTurn)
     }
     
@@ -101,15 +104,7 @@ class Game: ObservableObject {
         
     /// Plays turns until the game ends.
     func play() {
-        // Let's do a test version here. It'll add a turn.
-        
-        // pseudocode for play()
-        // play t1
-        // set up t2 from t1
-        // play t2
-        // repeat for awhile
-        
-        /// A Bool that reflects whether the game still has turns to play.
+        /// A `Bool` that reflects whether the game still has turns to play.
         var gameIsGoing: Bool = true
 
         while gameIsGoing {
@@ -117,18 +112,21 @@ class Game: ObservableObject {
             /// The current turn, awaiting the player's action.
             var currentTurn = turns.last!
             
-            currentTurn.action = actionForTurn(currentTurn)
+            currentTurn.action = action(for: currentTurn.start)
             
             /// The index for the current turn.
             let lastIndex = turns.count - 1
             
             turns[lastIndex] = currentTurn
             
-            /// The next turn, , awaiting the player's action.
-            let nextTurn = makeTurnAfter(currentTurn)
+            /// The start of the next turn.
+            let nextTurnStart = turnStart(after: currentTurn)
             
-            gameIsGoing = !isOver(nextTurn: nextTurn)
+            gameIsGoing = !isOver(if: nextTurnStart)
             if gameIsGoing {
+                /// The next turn.
+                let nextTurn = Turn(number: currentTurn.number + 1, start: nextTurnStart)
+                
                 turns.append(nextTurn)
                 // TODO: temp to avoid infinite loop
                 break
@@ -140,10 +138,10 @@ class Game: ObservableObject {
         }
     }
     
-    /// Returns an `Action` for the given `turn`.
+    /// Returns an `Action` for the given `turnStart`.
     ///
     /// Under construction. The chosen action will depend on the game state and the AIs.
-    func actionForTurn(_ turn: Turn) -> Action {
+    func action(for turnStart: TurnStart) -> Action {
         // TODO: go beyond testing
         let action: Action = Action(type: .clue, number: 2)
         return action
@@ -160,28 +158,28 @@ class Game: ObservableObject {
 //
 //    }
     
-    /// Returns the `Turn` after the given `turn`.
+    /// Returns the `TurnStart` after the given `turn`.
     ///
-    /// Assumes the given `turn`'s action is done.
-    func makeTurnAfter(_ turn: Turn) -> Turn {
+    /// Assumes the `turn`'s action exists.
+    func turnStart(after turn: Turn) -> TurnStart {
         // TODO: The next turn is similar to the first.  If play/discard, then hands different. And deck.
         /// The players' cards, which are unchanged from the end of the previous turn.
-        let hands = turn.hands
+        let hands = turn.start.hands
                 
         /// The `Array` index for the previous "current" player.
-        let oldHandIndex = turn.currentHandIndex
+        let oldHandIndex = turn.start.currentHandIndex
         
         /// The `Array` index for the new current player (simple rotation).
         let currentHandIndex = (oldHandIndex == hands.count - 1) ? 0 : (oldHandIndex + 1)
 
         /// The remaining deck.
-        var deck = turn.deck
+        var deck = turn.start.deck
         
         /// The number of clues.
-        var clues = turn.clues
+        var clues = turn.start.clues
         
         /// The number of strikes.
-        var strikes = turn.strikes
+        var strikes = turn.start.strikes
         
         switch turn.action!.type {
         case .play:
@@ -194,28 +192,25 @@ class Game: ObservableObject {
             clues += 1
             // draw card from deck and put in hand
             /// The top card of the deck.
+            // TODO: replace with like deck.topCard, named appropriately (deck.removeFirst()?)
             let topCard = deck.cards.removeFirst()
 //            hands[index].cards.append(card)
         case .clue:
             clues -= 1
         }
-        return Turn(number: turn.number + 1, hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes)
+        return TurnStart(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes)
     }
     
     // MARK: Game end
     
-    /// Returns a `Bool` that reflects whether the game is over, based on the latest `Turn`.
+    /// Returns a `Bool` that reflects whether the game is over, if the given `turnStart` is next.
     ///
     /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
-    ///
-    /// The latest `Turn` is the `Turn` about to played next; i.e., after the previous `Turn`'s action has been resolved.
-    func isOver(nextTurn: Turn) -> Bool {
+    func isOver(if turnStart: TurnStart) -> Bool {
         // TODO: So we need the score, the strikes, the deck
         
-        // hmm, this is kinda like multiple returns... we're saying instead of multiple assignments, we'll have one final assignment via switch. the counter argu is that if we have the info to make an assignment, we should make it and exit. esp for small functions.
-        // the pro-single-staement argu for readability is you don't have to worry about assignmet in the middle of the function. let's go for short.
        
-        if (nextTurn.strikes == 3) {
+        if (turnStart.strikes == 3) {
             return true
             // TODO: perfect score. each score has to be 5.
 //        } else if (scoresArePerfect(nextTurn.scores)) {

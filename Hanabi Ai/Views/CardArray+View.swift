@@ -1,5 +1,5 @@
 //
-//  Array+Card.swift
+//  CardArray+View.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 10/9/19.
@@ -11,9 +11,9 @@ import SwiftUI
 
 /// An `extension` of `[Card]` for view-related functionality.
 extension Array where Element == Card {
-    /// A `Text` which is the concatenation of each `Card`'s `coloredText`.
+    /// A `Text` which is the concatenation of each `Card`'s colored text.
     var coloredText: Text {
-        /// An `Array` of each `Card`'s `coloredText`.
+        /// An `Array` of each `Card`'s colored text.
         let coloredTexts = self.map {
             $0.coloredText
         }
