@@ -8,44 +8,30 @@
 
 import SwiftUI
 
-// TODO: Hmm, apple's own swift docs don't use much highlighting, at least in the summary. Also, the parameters have multiple-sentence summaries. The summaries are still general.
-// so, naming conventions are consistent, or at least I understand. The summary conventions are not.
-// popFirst() in actual docs is different than guidelines.
-// Docs seem consistent with SwiftUI docs, which came later. What we really want is something from Xcode 10. removeAll() and toggle() work
-// But what about hand.remove(card)? and turns.remove(turn)?
-// sig would be Hand.remove(_ Card), [Turn].remove(_ Turn)
-// more natural than Array.remove(_ Element), but the former has way more code
-// like you could have
-//Board.remove(_ piece: Piece) and
-//Hand.remove(_ card: Card) and/or
-//Array.remove(_ element: Element)
-// and Board and Hand could call Array.remove(). What you gain is the same use signature, but better doc summary. Or at least different. Well, it would make someone wonder, why not just use Array.remove? How's this different? So I guess if the implementation is that straightfoward, you should skip it.
-// Removes the specified element from the array.
-// Removes the specified piece from the board.
-// Removes the specified card from the hand.
-
 /// A view that shows one game played by the computer.
 ///
 /// So the user can analyze the game first, the game doesn't start immediately.
 struct OneGameView: View {
-    /// The `Game` to play.
+    /// The game to set up and play.
     @ObservedObject var game: Game
 
-    /// Creates a `OneGameView` with one `Game` by using `numberOfPlayers`, `deckSetup`, and `customDeckDescription`.
+    /// Creates a one-game view, including a game with the specified parameters.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
-        //testing
-        //testing
-        var bob = [0...3]
-        bob.remove(at:0)
-        
         self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
     
     var body: some View {
         Form {
-            /// A `Section` that shows the deck used in a game.
-
-            DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
+            /// A view that shows a section that shows the deck used in the game.
+//            DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
+            
+            /// A section that shows the deck used in a game.
+            Section(header: Text("Deck Setup")) {
+                DeckView(deck: game.startingDeck, label: game.deckSetup.name)
+                    .font(.caption)
+            }
+            
+            
             // TODO: pass in turnStart? gameState? what's here? the starting setup, so that can't change as the game model updates
             // StartingSetupSection(startingGameState: game.startingState)
             // StartingSetupSection(firstTurnState: game.turns[0].turnStart)
@@ -55,11 +41,40 @@ struct OneGameView: View {
             // (game.turns[0].state)
             // no view should need to know subproperties, only properties?
             // StartingSetupSection(startingState: game.turns[0].turnStart)
-            // find the balance between reusability and readability; read multiple times
             
             /// A `Section` that shows a game's state after hands have been dealt, and includes a "Play" button.
-            StartingSetupSection(startingState: game.startingState, playFunction: game.play)
+//            StartingSetupSection(startingState: game.startingState, playFunction: game.play)
 
+            /// A section that shows a game's state after hands have been dealt, and includes a "Play" button.
+            Section(header: Text("Starting Setup")) {
+                // TODO: I can extract all the section contents. Or just this group... crud the group isn't a view either... but at least a group has less "weight"/expectation to it
+                /// A view that shows a group that shows...
+                /// A view that shows a game's state after hands have been dealt, and includes a "Play" button.
+                //StartingSetupGroup(playFunction: game.play)
+                // what is starting setup? is there ending setup? middle setup?
+                // ah, we have deck setup. So, we have turn 1 setup. starting setup could actually be misinterpreted as deck setup
+                // "Turn 1 Setup"
+                // Turn1SetupGroup()
+                // setup is everything needed to set up that turn
+                // Turn1SetupGroup(setup: game.startingState, playFunction: game.play)
+                
+                // Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
+                
+                // Turn1SetupGroup(setup: TurnSetup, playFunction: () -> Void)
+                // Turn1SetupGroup(setup: Setup, playFunction: () -> Void)
+                             
+                /// The game setup at the start of a turn.
+                /// struct Setup
+
+
+                Group {
+                    HandsView(hands: firstTurnStart.hands)
+                    DeckView(deck: firstTurnStart.deck)
+                }
+                .font(.caption)
+                PlayButtonView(playFunction: playFunction)
+            }
+            
             /// A `Section` that shows a `Game`'s state after hands have been dealt.
 //            StartingSetupSection(game: game)
             
@@ -73,39 +88,40 @@ struct OneGameView: View {
 // MARK: DeckSetupSection
 
 /// A `Section` that shows the deck used in a game.
-struct DeckSetupSection: View {
-    /// The `DeckSetup` used.
-    let deckSetup: DeckSetup
-    
-    /// The `Deck` before any cards are dealt.
-    let startingDeck: Deck
-    
-    var body: some View {
-        Section(header: Text("Deck Setup")) {
-            DeckView(deck: startingDeck, label: deckSetup.name)
-                .font(.caption)
-        }
-    }
-}
+//struct DeckSetupSection: View {
+//    /// The `DeckSetup` used.
+//    let deckSetup: DeckSetup
+//
+//    /// The `Deck` before any cards are dealt.
+//    let startingDeck: Deck
+//
+//    var body: some View {
+//        Section(header: Text("Deck Setup")) {
+//            DeckView(deck: startingDeck, label: deckSetup.name)
+//                .font(.caption)
+//        }
+//    }
+//}
 
-/// A `View` that shows `deck`, with `label` in front.
+/// A view that shows a label and a deck.
 ///
-/// After `label` is ": ", which has a non-breaking space.
+/// The format is `label`, `": "` (which has a non-breaking space), and the deck.
 struct DeckView: View {
-    /// A `Deck`.
-    let deck: Deck
-    
-    /// A `String` that shows in front of `deck`.
+    /// A string for labeling the deck.
     let label: String
     
-    /// Creates a `DeckView` with a `deck` and a `label`.
+    /// The deck.
+    let deck: Deck
+    
+    /// Creates a deck view that shows the specified label and deck.
+    ///
+    /// Default label: `"Deck"`.
     init(deck: Deck, label: String = "Deck") {
         self.deck = deck
         self.label = label
     }
     
     var body: some View {
-        // Non-breaking space.
         Text("\(label): ") + deck.coloredText
     }
 }
