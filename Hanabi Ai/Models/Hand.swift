@@ -12,4 +12,16 @@ import Foundation
 struct Hand {
     /// The cards.
     var cards: [Card] = []
+    
+    /// Adds `card` to `self`.
+    mutating func add(_ card: Card) {
+        cards += [card]
+    }
+    
+    /// Removes `card` from `self`.
+    mutating func remove(_ card: Card) {
+        cards.removeAll {
+            $0.id == card.id
+        }
+    }
 }

@@ -16,5 +16,5 @@ struct ScorePile  {
     let suit: Suit
     
     /// The current score for the pile.
-    let score: Int
+    var score: Int
 }

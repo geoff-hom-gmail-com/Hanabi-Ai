@@ -39,6 +39,9 @@ class Game: ObservableObject {
     /// The current deck, which players draw from throughout the game.
     var deck: Deck
     
+    /// The max number of clues you can have at any time.
+    static let MaxClues = 8
+    
     /// Each `Turn` in the game.
     @Published var turns: [Turn] = []
     
@@ -90,7 +93,7 @@ class Game: ObservableObject {
                 /// The top card of the deck.
                 let topCard = deck.cards.removeFirst()
                 
-                hands[$0].cards.append(topCard)
+                hands[$0].cards += [topCard]
             }
         }
         
@@ -100,7 +103,7 @@ class Game: ObservableObject {
         /// The first turn.
         let firstTurn = Turn(number: 1, start: firstTurnStart)
 
-        turns.append(firstTurn)
+        turns += [firstTurn]
     }
     
     // MARK: Play
@@ -108,6 +111,37 @@ class Game: ObservableObject {
     /// Plays turns until the game ends.
     func play() {
         while !isOver {
+            /// The start of the next turn.
+            let nextTurnStart = doAction()
+            
+            //TODO: this could be
+            // while the game isn't over
+            /// while !isOver(turnStart)
+            /// while !isOver(gameState)
+            // here, it's like game.state which is updated by game.doAction(), vs
+            // game.state = game.doAction(). Tracking hidden mutations seems bad.
+            
+            /// Does an action and returns the resulting game state.
+            ///game.doAction()
+            ///
+            /// Check
+            ///game.checkIfOver()
+            ///
+            ///isOver = game.isOver()
+            ///
+            /// Does an action and returns the start of the next turn.
+            // let nextTurnStart = game.doAction()
+            
+            // if
+            
+            
+            /// Chooses and returns an action for the current turn.
+            // ai.chosenAction()
+            
+            ///
+            // doAction()
+
+            
             /// The current turn, awaiting the player's action.
             var currentTurn = turns.last!
             
@@ -119,7 +153,7 @@ class Game: ObservableObject {
             turns[lastIndex] = currentTurn
             
             /// The start of the next turn.
-            let nextTurnStart = turnStart(after: currentTurn)
+            let nextTurnStart = currentTurn.start.did(currentTurn.action!)
             
             if isOver(at: nextTurnStart) {
                 isOver = true
@@ -129,7 +163,7 @@ class Game: ObservableObject {
                 /// The next turn.
                 let nextTurn = Turn(number: currentTurn.number + 1, start: nextTurnStart)
                 
-                turns.append(nextTurn)
+                turns += [nextTurn]
                 // TODO: temp to avoid infinite loop
 //                break
             }
@@ -141,7 +175,11 @@ class Game: ObservableObject {
     /// Under construction. The chosen action will depend on the game state and the AIs.
     func action(for turnStart: TurnStart) -> Action {
         // TODO: go beyond testing
-        let action: Action = Action(type: .clue, number: 2)
+        let action: Action
+            //        let action = Action(type: .clue, number: 2)
+            //        action = Action(type: .clue, number: 2)
+        // temp; play first card in hand, for testing
+        action = Action(type: .play, card: turnStart.hands[turnStart.currentHandIndex].cards.first!)
         return action
 //            turn.action = Action(type: .clue, number: 2)
     //        turn.action = Action(type: .clue, suit: .white)
@@ -156,11 +194,11 @@ class Game: ObservableObject {
 //
 //    }
     
+    // move this to TurnStart? e.g., turn.start.turnStart(after: action) yeah
     /// Returns the `TurnStart` after the given `turn`.
     ///
     /// Assumes the `turn`'s action exists.
     func turnStart(after turn: Turn) -> TurnStart {
-        // TODO: The next turn is similar to the first.  If play/discard, then hands different. And deck.
         /// The players' cards, which are unchanged from the end of the previous turn.
         let hands = turn.start.hands
                 
@@ -171,20 +209,80 @@ class Game: ObservableObject {
         let currentHandIndex = (oldHandIndex == hands.count - 1) ? 0 : (oldHandIndex + 1)
 
         /// The remaining deck.
-        var deck = turn.start.deck
+        let deck = turn.start.deck
         
-        /// The number of clues.
-        var clues = turn.start.clues
+        /// The number of clues for `TurnStart`.
+        let clues: Int
         
-        /// The number of strikes.
-        var strikes = turn.start.strikes
+        /// The number of strikes for `TurnStart`.
+        let strikes: Int
         
-        switch turn.action!.type {
+        /// The score piles for `TurnStart`.
+        let scorePiles: [ScorePile]
+        
+        /// The given `turn`'s action.
+        let action = turn.action!
+        
+        switch action.type {
         case .play:
-            // TODO: if right, increase score; if 5, gain 1 clue (if not max)
-            // if wrong, put in discard, increase strikes
-            // draw card from deck and put in hand
-            ()
+            /// The played card.
+            let card = action.card!
+            
+            /// The matching score pile's index.
+            // could be turn.start.scorePileIndex(for: card/suit?) or card.scorePileIndex
+            // or returns Bool for valid/not like turnStart.allowsPlay(for: card), turnStart.canScore(card), turnStart.canPlay(card).
+            let scorePileIndex = turn.start.scorePiles.firstIndex(where: {
+                $0.suit == card.suit
+            })!
+            
+            if turn.start.canScore(card) {
+                turn.start.scorePilesF
+            }
+            
+            // If the play is valid, then increase the score and check for bonus clue. Else, add a strike.
+            if card.number == (turn.start.scorePiles[scorePileIndex].score + 1) {
+                /// A mutable copy of the score piles.
+                var newScorePiles = turn.start.scorePiles
+                
+                //TODO: testing; at least see how the code works if we do var newScorePile instead of (only?) var newScorePiles
+                // or, try scorePile.score
+                // or, turnStart.not update but like appending(), turnStart.updatingScore(with: card)
+                // but will that work? we want it to return a copy of turnStart with the updated score
+                turn.start.scorePiles[scorePileIndex].score = 3
+                
+                newScorePiles.removeLast()
+                let testArray: [ScorePile] = turn.start.scorePiles.removeLast()
+                let testArray2: [ScorePile] = turn.start.scorePiles.mutableCopy
+
+                newScorePiles[scorePileIndex].score += 1
+                
+                /// If a score pile is finished, a clue is added.
+                if card.number == 5 {
+                    clues = min(Game.MaxClues, turn.start.clues + 1)
+                } else {
+                    clues = turn.start.clues
+                }
+                
+                strikes = turn.start.strikes
+                scorePiles = newScorePiles
+            } else {
+                // TODO: Put card in discard (really we just need to mark it as unavailable, same as any played card); when we add the ability to look at what could be in the deck, we'll worry about this. Current AI has x-ray.
+                clues = turn.start.clues
+                strikes = turn.start.strikes + 1
+                scorePiles = turn.start.scorePiles
+            }
+            // draw card from deck and put in hand; ok, we draw a card from the deck, but it's immutable?
+            // todo: this isn't as readable; add deck.removeTopCard?
+            turn.start.deck.cards.removeFirst()
+            
+            /// A mutable copy of the deck.
+            var newDeck = turn.start.deck
+            
+            /// The top card of the deck.
+            let topCard = newDeck.removeTopCard()
+
+            /// A mutable copy of the hands.
+            var newHands = turn.start.hands
         case .discard:
             // TODO: implement .discard
             clues += 1
@@ -192,11 +290,11 @@ class Game: ObservableObject {
             /// The top card of the deck.
             // TODO: replace with like deck.topCard, named appropriately (deck.removeFirst()?)
             let topCard = deck.cards.removeFirst()
-//            hands[index].cards.append(card)
+//            hands[index].cards.append(card) use += []
         case .clue:
             clues -= 1
         }
-        return TurnStart(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes)
+        return TurnStart(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes, scorePiles: scorePiles)
     }
     
     // MARK: Game end

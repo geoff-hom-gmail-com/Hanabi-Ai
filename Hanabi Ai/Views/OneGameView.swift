@@ -8,20 +8,59 @@
 
 import SwiftUI
 
+// TODO: Hmm, apple's own swift docs don't use much highlighting, at least in the summary. Also, the parameters have multiple-sentence summaries. The summaries are still general.
+// so, naming conventions are consistent, or at least I understand. The summary conventions are not.
+// popFirst() in actual docs is different than guidelines.
+// Docs seem consistent with SwiftUI docs, which came later. What we really want is something from Xcode 10. removeAll() and toggle() work
+// But what about hand.remove(card)? and turns.remove(turn)?
+// sig would be Hand.remove(_ Card), [Turn].remove(_ Turn)
+// more natural than Array.remove(_ Element), but the former has way more code
+// like you could have
+//Board.remove(_ piece: Piece) and
+//Hand.remove(_ card: Card) and/or
+//Array.remove(_ element: Element)
+// and Board and Hand could call Array.remove(). What you gain is the same use signature, but better doc summary. Or at least different. Well, it would make someone wonder, why not just use Array.remove? How's this different? So I guess if the implementation is that straightfoward, you should skip it.
+// Removes the specified element from the array.
+// Removes the specified piece from the board.
+// Removes the specified card from the hand.
+
 /// A `View` that lets the user watch the computer auto-play one game.
 struct OneGameView: View {
     /// The `Game` to play.
     @ObservedObject var game: Game
-    
-    /// Creates an instance with one `Game`.
+
+    /// Creates a `OneGameView` with one `Game` by using `numberOfPlayers`, `deckSetup`, and `customDeckDescription`.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
+        //testing
+        //testing
+        var bob = [0...3]
+        bob.remove(at:0)
+        
         self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
     
     var body: some View {
         Form {
+            /// A `Section` that shows the deck used in a game.
+
             DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
-            StartingSetupSection(game: game)
+            // TODO: pass in turnStart? gameState? what's here? the starting setup, so that can't change as the game model updates
+            // StartingSetupSection(startingGameState: game.startingState)
+            // StartingSetupSection(firstTurnState: game.turns[0].turnStart)
+            // StartingSetupSection(firstTurnStart: )
+            // (startOfFirstTurn: ??) (firstTurnSetup: ?)
+            // (startingState: game.startingState)
+            // (game.turns[0].state)
+            // no view should need to know subproperties, only properties?
+            // StartingSetupSection(startingState: game.turns[0].turnStart)
+            // find the balance between reusability and readability; read multiple times
+            
+            /// A `Section` that shows a game's state after hands have been dealt, and includes a "Play" button.
+            StartingSetupSection(startingState: game.startingState, playFunction: game.play)
+
+            /// A `Section` that shows a `Game`'s state after hands have been dealt.
+//            StartingSetupSection(game: game)
+            
             TurnsSection(turns: game.turns)
             ResultsSection(gameIsOver: game.isOver, results: game.results)
         }
@@ -47,15 +86,17 @@ struct DeckSetupSection: View {
     }
 }
 
-/// A `View` that shows the given `deck`.
+/// A `View` that shows `deck`, with `label` in front.
+///
+/// After `label` is ": ", which has a non-breaking space.
 struct DeckView: View {
-    /// The `Deck`.
+    /// A `Deck`.
     let deck: Deck
     
-    /// A `String` to show in front of the deck.
+    /// A `String` that shows in front of `deck`.
     let label: String
     
-    /// Creates an instance with a `deck` and a `label`.
+    /// Creates a `DeckView` with a `deck` and a `label`.
     init(deck: Deck, label: String = "Deck") {
         self.deck = deck
         self.label = label
@@ -69,12 +110,16 @@ struct DeckView: View {
 
 // MARK: StartingSetupSection
 
-/// A `Section` that shows a `Game`'s state after hands have been dealt.
+
+/// A `Section` that shows a game's state after hands have been dealt, and includes a "Play" button.
 ///
-/// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
+/// By allowing the user to press "Play," they can analyze the game before the computer tries it.
 struct StartingSetupSection: View {
-    /// The `Game` to play.
-    let game: Game
+    /// A game's starting state.
+    let startingState: StartingState
+    
+    /// A function that plays a game from its starting state.
+    let playFunction: () -> Void
     
     var body: some View {
         /// The start of the first turn.
@@ -86,12 +131,35 @@ struct StartingSetupSection: View {
                 DeckView(deck: firstTurnStart.deck)
             }
             .font(.caption)
-            PlayButtonView(game: game)
+            PlayButtonView(playFunction: playFunction)
         }
     }
 }
 
-/// A `View` that shows the given `hands`.
+/// A `Section` that shows a `Game`'s state after hands have been dealt.
+///
+/// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
+//struct StartingSetupSection: View {
+//    /// The `Game` to play.
+//    let game: Game
+//
+//    var body: some View {
+//        /// The start of the first turn.
+//        let firstTurnStart = game.turns.first!.start
+//
+//        return Section(header: Text("Starting Setup")) {
+//            Group {
+//                HandsView(hands: firstTurnStart.hands)
+//                DeckView(deck: firstTurnStart.deck)
+//            }
+//            .font(.caption)
+//            // TODO: pass in the action/func, then I don't need to pass game.
+//            PlayButtonView(game: game)
+//        }
+//    }
+//}
+
+/// A `View` that shows `hands`.
 struct HandsView: View {
     /// An `Array` of `Hand`s.
     let hands: [Hand]
@@ -109,16 +177,16 @@ struct HandsView: View {
     }
 }
 
-/// A  `View` that shows a button to start playing the `game` that has been set up.
+/// A  `View` that shows a button that plays a game from its starting state.
 struct PlayButtonView: View {
-    /// The `Game` to play.
-    let game: Game
+    /// A function that plays a game from its starting state.
+    let playFunction: () -> Void
     
     var body: some View {
         // The `Spacer`s are to center the `Button`.
         HStack {
             Spacer()
-            Button(action: { self.game.play() }) {
+            Button(action: playFunction) {
                 Text("Play")
             }
             Spacer()
