@@ -11,7 +11,7 @@
 
 import SwiftUI
 
-/// A `View` that shows the main menu.
+/// A view that shows the main menu.
 struct HomeView: View {
     var body: some View {
         NavigationView {

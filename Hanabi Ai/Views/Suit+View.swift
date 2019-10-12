@@ -9,11 +9,11 @@
 import Foundation
 import SwiftUI
 
-/// An `extension` of `Suit` for view-related functionality.
+/// An extension of Suit for view-related functionality.
 extension Suit {
-    /// A foreground `Color` for the `Suit`.
+    /// A font/foreground color for the suit.
     ///
-    /// The `Color` should work as a font/foreground color on white background. TODO: Test colors in Dark Mode?
+    /// The color was tested on white background. TODO: How to handle Dark Mode? Google it. Test.
     var color: Color {
         switch self  {
         case .green:
@@ -30,9 +30,9 @@ extension Suit {
         }
     }
     
-    /// A `Text` that shows a `Suit`'s letter, with color.
+    /// A text that shows the suit's letter, with color.
     var coloredText: Text {
-        Text("\(self.letter)")
-            .foregroundColor(self.color)
+        Text("\(letter)")
+            .foregroundColor(color)
     }
 }

@@ -12,17 +12,10 @@ import Foundation
 ///
 /// This is often called the color (e.g., green). However, an optional 6th suit is "Rainbow." And for colorblind players, each suit in the physical game has an associated kanji.
 enum Suit: CaseIterable, Comparable {
-    /// Returns a Bool that reflects whether one `Suit` is `<` another.
-    ///
-    /// For `Comparable`.
-    static func < (lhs: Suit, rhs: Suit) -> Bool {
-        return lhs.sortIndex < rhs.sortIndex
-    }
-    
-    /// The different suits, in terms of color.
+    /// The available suits, by color.
     case green, red, white, blue, yellow
     
-    /// A `String` that describes the `Suit` using one letter.
+    /// A string of one letter that describes the suit.
     var letter: String {
         switch self {
         case .green:
@@ -38,9 +31,18 @@ enum Suit: CaseIterable, Comparable {
         }
     }
     
-    /// The order of each suit, for `Comparable`.
+    // MARK: Comparable
+    
+    /// Returns a Boolean value that indicates whether the first specified suit is "less than" the other.
     ///
-    /// The order is important not because suits trump each other. Rather, the score piles are displayed in a consistent order for legibility. The order is in honor of RWBY (i.e., gRWBY).
+    /// For `Comparable`.
+    static func < (lhs: Suit, rhs: Suit) -> Bool {
+        return lhs.sortIndex < rhs.sortIndex
+    }
+    
+    /// An integer that indicates the relative order of each suit.
+    ///
+    /// For `Comparable`. The order is important not because suits trump each other. Rather, the score piles are displayed in a consistent order for legibility. The order is in honor of RWBY (i.e., gRWBY).
     var sortIndex: Int {
         switch self {
         case .green:

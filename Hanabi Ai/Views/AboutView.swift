@@ -8,12 +8,12 @@
 
 import SwiftUI
 
-/// A `View` showing info about this app.
+/// A view that shows info about this app.
 ///
 /// If a newbie runs this app, this view should bring them up to speed. Set appropriate expectations of what the app can/can't do. (Don't promise upcoming features because my track record is poor.) Also provides app version/build, for debugging.
 struct AboutView: View {
     var body: some View {
-        // Using Form until Text.lineLimit(nil) starts working robustly.
+        // Using Form until Text.lineLimit(nil) starts working robustly. (A grouped List makes more sense that Form.)
         Form {
             Section {
                 Text("Hanabi Ai is a simulator for the card game Hanabi.")

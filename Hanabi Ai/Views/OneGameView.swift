@@ -24,7 +24,9 @@ import SwiftUI
 // Removes the specified piece from the board.
 // Removes the specified card from the hand.
 
-/// A `View` that lets the user watch the computer auto-play one game.
+/// A view that shows one game played by the computer.
+///
+/// So the user can analyze the game first, the game doesn't start immediately.
 struct OneGameView: View {
     /// The `Game` to play.
     @ObservedObject var game: Game

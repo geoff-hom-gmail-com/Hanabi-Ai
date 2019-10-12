@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-/// A `View` that lets the user choose how the computer will play itself.
+/// A view that shows controls for selecting how the computer will play itself.
 struct AutoPlayView: View {
     var body: some View {
         Form {
@@ -21,15 +21,16 @@ struct AutoPlayView: View {
 
 // MARK: OneGameSection
 
-/// A `Section` that lets the user set up and play one game.
+// TODO: maybe we should have the section above, and then we can group the contents and extract the group. That makes more sense in terms of code reuse.
+/// A view that shows a section for selecting how the computer will play one game against itself.
 struct OneGameSection: View {
     /// The number of players in the game.
     @State private var numberOfPlayers = 2
     
-    /// The `DeckSetup` to use.
+    /// The deck setup to use.
     @State private var deckSetup: DeckSetup = .random
     
-    /// The card order to use if `deckSetup` is `custom`.
+    /// The card order to use if the deck setup is "custom."
     ///
     /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
     @State private var customDeckDescription: String = ""
@@ -45,7 +46,7 @@ struct OneGameSection: View {
     }
 }
 
-/// A `Stepper` that lets the user choose the number of players in a game.
+/// A view that shows a stepper for selecting the number of players in a game.
 struct NumberOfPlayersStepper: View {
     /// The number of players in the game.
     @Binding var numberOfPlayers: Int
@@ -55,13 +56,13 @@ struct NumberOfPlayersStepper: View {
     }
 }
 
-/// A `Picker` that lets the use choose `DeckSetup`.
+/// A view that shows a picker for selecting the deck setup.
 struct DeckSetupPicker: View {
-    /// The `DeckSetup` to use.
+    /// The deck setup to use.
     @Binding var deckSetupSelection: DeckSetup
     
     var body: some View {
-        // No ":" after label because `Picker's` in a `Form`.
+        // We don't add ":" at the end of the label, because the picker's in a form.
         Picker("Deck Setup", selection: $deckSetupSelection) {
             ForEach(DeckSetup.allCases) {
                 Text($0.name).tag($0)
@@ -70,17 +71,16 @@ struct DeckSetupPicker: View {
     }
 }
 
-/// A `NavigationLink` that goes to another screen to play one game.
-///
-/// The game doesn't start when the link is pressed, because we want the user to see the starting setup first.
+// TODO: unextract this? Extractions for single calls seems silly. Though we do that with Section above...
+/// A view that shows a navigation link that goes to a screen for playing one game.
 struct PlayGameNavigationLink: View {
     /// The number of players in the game.
     var numberOfPlayers: Int
     
-    /// The `DeckSetup` to use.
+    /// The deck setup to use.
     var deckSetup: DeckSetup
     
-    /// The card order to use if `deckSetup` is `custom`.
+    /// The card order to use if the deck setup is "custom."
     var customDeckDescription: String
     
     var body: some View {

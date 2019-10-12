@@ -20,12 +20,12 @@ struct AppInfo {
     /// The build-number key has a constant (`kCFBundleVersionKey`), but not the version-number key.
     private static let versionKey = "CFBundleShortVersionString"
     
-    /// A `String` describing the version number.
+    /// A string that describes the version number.
     static let version = mainBundle.object(forInfoDictionaryKey: versionKey) as! String
     
     /// The key for the build number.
     private static let buildKey = kCFBundleVersionKey as String
         
-    /// A `String` describing the build number.
+    /// A string that describes the build number.
     static let build = mainBundle.object(forInfoDictionaryKey: buildKey) as! String
 }
