@@ -98,7 +98,7 @@ class Game: ObservableObject {
         }
         
         /// The start of the first turn.
-        let firstTurnStart = TurnStart(hands: hands, currentHandIndex: 0, deck: deck)
+        let firstTurnStart = Setup(hands: hands, currentHandIndex: 0, deck: deck)
         
         /// The first turn.
         let firstTurn = Turn(number: 1, start: firstTurnStart)
@@ -173,7 +173,7 @@ class Game: ObservableObject {
     /// Returns an `Action` for the given `turnStart`.
     ///
     /// Under construction. The chosen action will depend on the game state and the AIs.
-    func action(for turnStart: TurnStart) -> Action {
+    func action(for turnStart: Setup) -> Action {
         // TODO: go beyond testing
         let action: Action
             //        let action = Action(type: .clue, number: 2)
@@ -198,7 +198,7 @@ class Game: ObservableObject {
     /// Returns the `TurnStart` after the given `turn`.
     ///
     /// Assumes the `turn`'s action exists.
-    func turnStart(after turn: Turn) -> TurnStart {
+    func turnStart(after turn: Turn) -> Setup {
         /// The players' cards, which are unchanged from the end of the previous turn.
         let hands = turn.start.hands
                 
@@ -294,7 +294,7 @@ class Game: ObservableObject {
         case .clue:
             clues -= 1
         }
-        return TurnStart(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes, scorePiles: scorePiles)
+        return Setup(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes, scorePiles: scorePiles)
     }
     
     // MARK: Game end
@@ -302,7 +302,7 @@ class Game: ObservableObject {
     /// Returns a `Bool` that reflects whether the game is over at the given `turnStart`.
     ///
     /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
-    func isOver(at turnStart: TurnStart) -> Bool {
+    func isOver(at turnStart: Setup) -> Bool {
         // TODO: So we need the score, the strikes, the deck
        
         if (turnStart.strikes == 3) {

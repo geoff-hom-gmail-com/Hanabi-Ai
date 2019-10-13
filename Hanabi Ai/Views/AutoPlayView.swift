@@ -12,18 +12,21 @@ import SwiftUI
 struct AutoPlayView: View {
     var body: some View {
         Form {
-            OneGameSection()
-            MultipleGamesSection()
+            Section(header: Text("One Game")) {
+                OneGameGroup()
+            }
+            Section(header: Text("Multiple Games")) {
+                MultipleGamesGroup()
+            }
         }
         .navigationBarTitle(Text("Auto-Play"), displayMode: .inline)
     }
 }
 
-// MARK: OneGameSection
+// MARK: OneGameGroup
 
-// TODO: maybe we should have the section above, and then we can group the contents and extract the group. That makes more sense in terms of code reuse.
-/// A view that shows a section for selecting how the computer will play one game against itself.
-struct OneGameSection: View {
+/// A view that shows controls for selecting how the computer will play one game against itself.
+struct OneGameGroup: View {
     /// The number of players in the game.
     @State private var numberOfPlayers = 2
     
@@ -36,7 +39,7 @@ struct OneGameSection: View {
     @State private var customDeckDescription: String = ""
     
     var body: some View {
-        Section(header: Text("One Game")) {
+        Group {
             NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
             DeckSetupPicker(deckSetupSelection: $deckSetup)
             // TODO: if Custom deck, then need ability to enter that
@@ -45,6 +48,8 @@ struct OneGameSection: View {
         }
     }
 }
+
+// TODO: unextract this? Extractions for single calls seems silly. just gotta figure out how to do the binding/state in one line?
 
 /// A view that shows a stepper for selecting the number of players in a game.
 struct NumberOfPlayersStepper: View {
@@ -71,7 +76,6 @@ struct DeckSetupPicker: View {
     }
 }
 
-// TODO: unextract this? Extractions for single calls seems silly. Though we do that with Section above...
 /// A view that shows a navigation link that goes to a screen for playing one game.
 struct PlayGameNavigationLink: View {
     /// The number of players in the game.
@@ -91,10 +95,10 @@ struct PlayGameNavigationLink: View {
     }
 }
 
-// MARK: MultipleGamesSection
+// MARK: MultipleGamesGroup
 
-/// A `Section` that lets the user set up and play multiple games in a row.
-struct MultipleGamesSection: View {
+/// A view that shows controls for selecting how the computer will play multiple games against itself.
+struct MultipleGamesGroup: View {
     /// The number of players in the game.
     @State private var numberOfPlayers = 2
     
@@ -102,7 +106,7 @@ struct MultipleGamesSection: View {
     @State private var numberOfGames = 101
     
     var body: some View {
-        Section(header: Text("Multiple Games")) {
+        Group {
             NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
             NumberOfGamesChooser(numberOfGames: $numberOfGames)
             PlayMultipleGamesNavigationLink()

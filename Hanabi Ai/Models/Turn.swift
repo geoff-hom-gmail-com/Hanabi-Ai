@@ -16,7 +16,10 @@ struct Turn {
     let number: Int
     
     /// The game state at the start of the turn.
-    let start: TurnStart
+//    let start: TurnStart
+    
+    /// The game's setup at the start of the turn.
+    let setup: Setup
     
     /// The player's action for this turn; at start, `nil`.
     var action: Action?

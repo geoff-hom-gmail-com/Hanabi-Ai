@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// A suit for a Hanabi card.
+/// A Hanabi card's suit.
 ///
 /// This is often called the color (e.g., green). However, an optional 6th suit is "Rainbow." And for colorblind players, each suit in the physical game has an associated kanji.
 enum Suit: CaseIterable, Comparable {

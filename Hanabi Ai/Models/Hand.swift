@@ -9,19 +9,20 @@
 import Foundation
 
 /// A player's cards.
-struct Hand {
+// TODO: think more about the calls, and whether I want cards private, private(set), ability to add/remove cards by modifying cards directly, etc. What's most readable?
+class Hand: Identifiable {
     /// The cards.
     var cards: [Card] = []
     
-    /// Adds `card` to `self`.
-    mutating func add(_ card: Card) {
+    /// Adds the specified card to the hand.
+    func add(_ card: Card) {
         cards += [card]
     }
     
-    /// Removes `card` from `self`.
-    mutating func remove(_ card: Card) {
+    /// Removes the specified card from the hand.
+    func remove(_ card: Card) {
         cards.removeAll {
-            $0.id == card.id
+            $0 === card
         }
     }
 }

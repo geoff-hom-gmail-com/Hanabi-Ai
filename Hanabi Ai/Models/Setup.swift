@@ -1,5 +1,5 @@
 //
-//  TurnStart.swift
+//  Setup.swift
 //  Hanabi Ai
 //
 //  Created by Geoff Hom on 10/9/19.
@@ -8,10 +8,10 @@
 
 import Foundation
 
-/// The game state at the start of a turn.
+/// A Hanabi game's setup at the start of a turn.
 ///
-/// This includes everything needed for a player/computer to choose their action.
-struct TurnStart {
+/// This includes everything needed for a player/computer to choose their action. For example, past clues.
+struct Setup {
     /// All players' hands.
     let hands: [Hand]
     
@@ -46,7 +46,7 @@ struct TurnStart {
     }
     
     /// Returns the `TurnStart` that results from doing the given `action`.
-    func did(_ action: Action) -> TurnStart {
+    func did(_ action: Action) -> Setup {
         // By default, the new `TurnStart` has the same parameters as `self`, except the current hand index.
         
         /// The hands for the new `TurnStart`.
@@ -82,8 +82,8 @@ struct TurnStart {
                 /// Replaces the matching scorePile's score with the card's score.
                  newScorePiles.update(with: card)
 //                newScorePiles = scorePiles(updatedWith: card)
-                if card.number == TurnStart.MaxCardNumber {
-                    newClues = min(newClues + 1, TurnStart.MaxClues)
+                if card.number == Setup.MaxCardNumber {
+                    newClues = min(newClues + 1, Setup.MaxClues)
                 }
                 
                 
@@ -167,7 +167,7 @@ struct TurnStart {
         case .clue:
             clues -= 1
         }
-        return TurnStart(hands: newHands, currentHandIndex: newCurrentHandIndex, deck: newDeck, clues: newClues, strikes: newStrikes, scorePiles: newScorePiles)
+        return Setup(hands: newHands, currentHandIndex: newCurrentHandIndex, deck: newDeck, clues: newClues, strikes: newStrikes, scorePiles: newScorePiles)
 
     }
     
@@ -185,7 +185,7 @@ struct TurnStart {
     //                let scorePile = scorePile(updatedWith: card)
                    
     /// Returns a `TurnStart` that has the, er, ScorePiles?
-    func updatingScore(with card: Card) -> TurnStart {
+    func updatingScore(with card: Card) -> Setup {
         
     }
 }

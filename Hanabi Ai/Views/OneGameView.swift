@@ -22,86 +22,24 @@ struct OneGameView: View {
     
     var body: some View {
         Form {
-            /// A view that shows a section that shows the deck used in the game.
-//            DeckSetupSection(deckSetup: game.deckSetup, startingDeck: game.startingDeck)
-            
-            /// A section that shows the deck used in a game.
             Section(header: Text("Deck Setup")) {
                 DeckView(deck: game.startingDeck, label: game.deckSetup.name)
                     .font(.caption)
             }
-            
-            
-            // TODO: pass in turnStart? gameState? what's here? the starting setup, so that can't change as the game model updates
-            // StartingSetupSection(startingGameState: game.startingState)
-            // StartingSetupSection(firstTurnState: game.turns[0].turnStart)
-            // StartingSetupSection(firstTurnStart: )
-            // (startOfFirstTurn: ??) (firstTurnSetup: ?)
-            // (startingState: game.startingState)
-            // (game.turns[0].state)
-            // no view should need to know subproperties, only properties?
-            // StartingSetupSection(startingState: game.turns[0].turnStart)
-            
-            /// A `Section` that shows a game's state after hands have been dealt, and includes a "Play" button.
-//            StartingSetupSection(startingState: game.startingState, playFunction: game.play)
-
-            /// A section that shows a game's state after hands have been dealt, and includes a "Play" button.
-            Section(header: Text("Starting Setup")) {
-                // TODO: I can extract all the section contents. Or just this group... crud the group isn't a view either... but at least a group has less "weight"/expectation to it
-                /// A view that shows a group that shows...
-                /// A view that shows a game's state after hands have been dealt, and includes a "Play" button.
-                //StartingSetupGroup(playFunction: game.play)
-                // what is starting setup? is there ending setup? middle setup?
-                // ah, we have deck setup. So, we have turn 1 setup. starting setup could actually be misinterpreted as deck setup
-                // "Turn 1 Setup"
-                // Turn1SetupGroup()
-                // setup is everything needed to set up that turn
-                // Turn1SetupGroup(setup: game.startingState, playFunction: game.play)
-                
-                // Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
-                
-                // Turn1SetupGroup(setup: TurnSetup, playFunction: () -> Void)
-                // Turn1SetupGroup(setup: Setup, playFunction: () -> Void)
-                             
-                /// The game setup at the start of a turn.
-                /// struct Setup
-
-
-                Group {
-                    HandsView(hands: firstTurnStart.hands)
-                    DeckView(deck: firstTurnStart.deck)
-                }
-                .font(.caption)
-                PlayButtonView(playFunction: playFunction)
+            Section(header: Text("Turn 1 Setup")) {
+                Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
+            }
+            Section(header: TurnsSectionHeader()) {
+                TurnsGroup(turns: game.turns)
             }
             
-            /// A `Section` that shows a `Game`'s state after hands have been dealt.
-//            StartingSetupSection(game: game)
-            
-            TurnsSection(turns: game.turns)
             ResultsSection(gameIsOver: game.isOver, results: game.results)
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
 }
 
-// MARK: DeckSetupSection
-
-/// A `Section` that shows the deck used in a game.
-//struct DeckSetupSection: View {
-//    /// The `DeckSetup` used.
-//    let deckSetup: DeckSetup
-//
-//    /// The `Deck` before any cards are dealt.
-//    let startingDeck: Deck
-//
-//    var body: some View {
-//        Section(header: Text("Deck Setup")) {
-//            DeckView(deck: startingDeck, label: deckSetup.name)
-//                .font(.caption)
-//        }
-//    }
-//}
+// MARK: Section: Deck Setup
 
 /// A view that shows a label and a deck.
 ///
@@ -126,27 +64,23 @@ struct DeckView: View {
     }
 }
 
-// MARK: StartingSetupSection
+// MARK: Section: Turn 1 Setup
 
-
-/// A `Section` that shows a game's state after hands have been dealt, and includes a "Play" button.
+/// A view that shows a game's setup after hands have been dealt, and includes a "Play" button.
 ///
-/// By allowing the user to press "Play," they can analyze the game before the computer tries it.
-struct StartingSetupSection: View {
-    /// A game's starting state.
-    let startingState: StartingState
+/// The game doesn't start until the user presses "Play," so they can analyze the game first.
+struct Turn1SetupGroup(setup: Setup, playFunction: () -> Void): View {
+    /// The game's setup after hands have been dealt.
+    let setup: Setup
     
-    /// A function that plays a game from its starting state.
+    /// A function that plays a game from its turn 1 setup.
     let playFunction: () -> Void
     
     var body: some View {
-        /// The start of the first turn.
-        let firstTurnStart = game.turns.first!.start
-        
-        return Section(header: Text("Starting Setup")) {
+        Group {
             Group {
-                HandsView(hands: firstTurnStart.hands)
-                DeckView(deck: firstTurnStart.deck)
+                HandsView(hands: setup.hands)
+                DeckView(deck: setup.deck)
             }
             .font(.caption)
             PlayButtonView(playFunction: playFunction)
@@ -154,54 +88,30 @@ struct StartingSetupSection: View {
     }
 }
 
-/// A `Section` that shows a `Game`'s state after hands have been dealt.
-///
-/// Includes the "Play" button. This gives the user a chance to analyze the game before the computer tries it.
-//struct StartingSetupSection: View {
-//    /// The `Game` to play.
-//    let game: Game
-//
-//    var body: some View {
-//        /// The start of the first turn.
-//        let firstTurnStart = game.turns.first!.start
-//
-//        return Section(header: Text("Starting Setup")) {
-//            Group {
-//                HandsView(hands: firstTurnStart.hands)
-//                DeckView(deck: firstTurnStart.deck)
-//            }
-//            .font(.caption)
-//            // TODO: pass in the action/func, then I don't need to pass game.
-//            PlayButtonView(game: game)
-//        }
-//    }
-//}
-
-/// A `View` that shows `hands`.
+/// A view that shows the specified hands.
 struct HandsView: View {
-    /// An `Array` of `Hand`s.
+    /// The hands to show.
     let hands: [Hand]
     
     var body: some View {
         HStack(spacing: 0) {
             Text("Hands: ")
             VStack(alignment: .leading) {
-                ForEach(hands.indices) {
-                    // TODO: use hands[$0].coloredText
-                    self.hands[$0].cards.coloredText
+                ForEach(hands) {
+                    $0.cards.coloredText
                 }
             }
         }
     }
 }
 
-/// A  `View` that shows a button that plays a game from its starting state.
+/// A  view that shows a button that plays something.
 struct PlayButtonView: View {
-    /// A function that plays a game from its starting state.
+    /// A function that plays something.
     let playFunction: () -> Void
     
     var body: some View {
-        // The `Spacer`s are to center the `Button`.
+        // The spacers are to center the button.
         HStack {
             Spacer()
             Button(action: playFunction) {
@@ -212,16 +122,27 @@ struct PlayButtonView: View {
     }
 }
 
-// MARK: TurnsSection
+// MARK: Section: Turns
 
-/// A `Section` that shows the given `turns`.
-struct TurnsSection: View {
-    /// An `Array` of `Turn`s.
+/// A view that shows the header for the turns section.
+///
+/// TODO: Add legend to UI via popover/context button, if that's doable on iPhone
+struct TurnsSectionHeader: View {
+    var body: some View {
+        Text("Turns")
+        // For popover button
+//        + Text(" (g/r/w/b/y: green/red/white/blue/yellow)")
+//        + Text(" (C/S/D: Clues/Strikes/Deck)")
+    }
+}
+
+/// A view that shows the specified turns.
+struct TurnsGroup: View {
+    /// The turns to show.
     let turns: [Turn]
 
     var body: some View {
-        Section(header: TurnsSectionHeader()) {
-            
+        Group {
             //  TODO: Align header and rows. E.g., Turn takes 40% of row, grwby takes 40%, cs takes 20%
             //  Ugh. Alignment can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
             TurnViewHeader()
@@ -229,19 +150,6 @@ struct TurnsSection: View {
                 TurnView(turn: $0)
             }
         }
-    }
-}
-
-/// A `View` that is the header for `TurnsSection`.
-///
-/// TODO: Add legend to UI via popover/context button, if that's doable on iPhone
-/// The text for the section header.
-struct TurnsSectionHeader: View {
-    var body: some View {
-        Text("Turns")
-        // For popover button
-//        + Text(" (g/r/w/b/y: green/red/white/blue/yellow)")
-//        + Text(" (C/S/D: Clues/Strikes/Deck)")
     }
 }
 
@@ -428,4 +336,5 @@ struct OneGameView_Previews: PreviewProvider {
         }
     }
 }
+
 

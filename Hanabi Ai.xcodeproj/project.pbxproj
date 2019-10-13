@@ -32,7 +32,7 @@
 		81A9E6DE234E9522001429B8 /* CardArray+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DD234E9522001429B8 /* CardArray+View.swift */; };
 		81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */; };
 		81A9E6E2234E9B1A001429B8 /* Deck+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E1234E9B1A001429B8 /* Deck+View.swift */; };
-		81A9E6E4234F08D0001429B8 /* TurnStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E3234F08D0001429B8 /* TurnStart.swift */; };
+		81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E3234F08D0001429B8 /* Setup.swift */; };
 		81DD08D023480CDF009D314F /* ScorePile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DD08CF23480CDF009D314F /* ScorePile.swift */; };
 /* End PBXBuildFile section */
 
@@ -85,7 +85,7 @@
 		81A9E6DD234E9522001429B8 /* CardArray+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardArray+View.swift"; sourceTree = "<group>"; };
 		81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextArray+Concatenated.swift"; sourceTree = "<group>"; };
 		81A9E6E1234E9B1A001429B8 /* Deck+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Deck+View.swift"; sourceTree = "<group>"; };
-		81A9E6E3234F08D0001429B8 /* TurnStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnStart.swift; sourceTree = "<group>"; };
+		81A9E6E3234F08D0001429B8 /* Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setup.swift; sourceTree = "<group>"; };
 		81DD08CF23480CDF009D314F /* ScorePile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorePile.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,7 +204,7 @@
 				81DD08CF23480CDF009D314F /* ScorePile.swift */,
 				812F8CD123433C93000D8925 /* Suit.swift */,
 				812F8CCD2342E701000D8925 /* Turn.swift */,
-				81A9E6E3234F08D0001429B8 /* TurnStart.swift */,
+				81A9E6E3234F08D0001429B8 /* Setup.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -342,7 +342,7 @@
 			files = (
 				815749D82331C915008E95CF /* Deck.swift in Sources */,
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
-				81A9E6E4234F08D0001429B8 /* TurnStart.swift in Sources */,
+				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
