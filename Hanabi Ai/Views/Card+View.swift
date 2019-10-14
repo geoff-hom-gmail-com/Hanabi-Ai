@@ -9,9 +9,9 @@
 import Foundation
 import SwiftUI
 
-/// An `extension` of `Card` for view-related functionality.
+/// A card extension for view-related functionality.
 extension Card {
-    /// A `Text` that shows a `Card`'s description, with color.
+    /// A text that shows a card's description, with color.
     var coloredText: Text {
         Text("\(self.description)")
             .foregroundColor(self.suit.color)

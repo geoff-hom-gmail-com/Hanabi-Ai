@@ -31,8 +31,23 @@ extension Suit {
     }
     
     /// A text that shows the suit's letter, with color.
-    var coloredText: Text {
+    var coloredLetter: Text {
         Text("\(letter)")
             .foregroundColor(color)
+    }
+    
+    /// An array of texts, where each text shows a suit's colored letter, in suit order.
+//    static var letters: [Text] {
+//        Suit.allCases.sorted().map {
+//            $0.coloredLetter
+//        }
+//    }
+    
+    /// A text that shows each suit's letter, in suit order.
+    static var allLettersText: Text {
+        let suitLetters = allCases.sorted().map {
+            $0.coloredLetter
+        }
+        return suitLetters.concatenated(withSeparator: "/")
     }
 }

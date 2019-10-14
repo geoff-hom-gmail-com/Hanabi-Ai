@@ -9,20 +9,22 @@
 import Foundation
 import SwiftUI
 
-/// An `extension` of `[Text]`.
+/// A text-array extension.
 extension Array where Element == Text {
-    /// Returns a `Text` which is the concatenation of each `Text` in the `Array`, with an optional `separator` between each `Text`.
+    /// Returns a text that is the concatenation of each text in the array.
+    ///
+    /// If a separator is specified, it's inserted between each text.
     func concatenated(withSeparator separator: String? = nil) -> Text {
-        /// The first `Text`, which is before any `separator`.
-        let firstText = self.first!
+        /// A mutable copy.
+        var array = self
         
-        /// The remaining `Text`s, which may be prefixed by a `separator`.
-        let otherTexts = self.dropFirst()
+        // The first text, for `reduce`.
+        let firstText = array.removeFirst()
         
         guard let separator = separator else {
-            return otherTexts.reduce(firstText, +)
+            return array.reduce(firstText, +)
         }
-        return otherTexts.reduce(firstText, { x, y in
+        return array.reduce(firstText, { x, y in
             x + Text(separator) + y
         })
     }

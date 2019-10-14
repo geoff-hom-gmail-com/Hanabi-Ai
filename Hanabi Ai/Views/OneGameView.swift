@@ -32,8 +32,9 @@ struct OneGameView: View {
             Section(header: TurnsSectionHeader()) {
                 TurnsGroup(turns: game.turns)
             }
-            
-            ResultsSection(gameIsOver: game.isOver, results: game.results)
+            Section(header: Text("Results")) {
+                ResultsGroup(gameIsOver: game.isOver, results: game.results)
+            }
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
     }
@@ -97,8 +98,8 @@ struct HandsView: View {
         HStack(spacing: 0) {
             Text("Hands: ")
             VStack(alignment: .leading) {
-                ForEach(hands) {
-                    $0.cards.coloredText
+                ForEach(hands.indices) {
+                    self.hands[$0].coloredText
                 }
             }
         }
@@ -153,14 +154,13 @@ struct TurnsGroup: View {
     }
 }
 
-/// A `View` that shows column headers for `TurnView`.
-///
-/// TODO: Align with elements of TurnView.
+/// A view that shows the column headers for turn views.
 struct TurnViewHeader: View {
     var body: some View {
+        // TODO: Align with elements of TurnView.
         HStack {
             Text("Hands")
-            ScoreHeaderView()
+            Suit.allLettersText
             Text("C/S/D")
             Text("Action")
         }
@@ -168,135 +168,87 @@ struct TurnViewHeader: View {
     }
 }
 
-/// A `View` that shows the colored text for each suit, in order. Suits are separated for legibility.
-struct ScoreHeaderView: View {
-    var body: some View {
-        /// An `Array` of `Text`s, where each `Text` shows a `Suit`'s colored text.
-        let suitTexts = Suit.allCases.sorted().map {
-            $0.coloredText
-        }
-        
-        return suitTexts.concatenated(withSeparator: "/")
-    }
-}
-
-/// A `View` that shows the info needed to understand the given `turn`.
+/// A view that shows the info needed to understand the specified turn.
 struct TurnView: View {
-    /// The `Turn`.
+    /// The turn to show.
     let turn: Turn
     
     var body: some View {
         /// The start of the turn.
-        let turnStart = turn.start
+        let setup = turn.setup
         
         return HStack {
-            TurnNumberView(number: turn.number)
-            PlayerHandsView(hands: turnStart.hands, currentHandIndex: turnStart.currentHandIndex)
-            ScorePilesView(scorePiles: turnStart.scorePiles)
-            TokenPilesView(clues: turnStart.clues, strikes: turnStart.strikes, cardsInDeck: turnStart.deck.cards.count)
-            ActionView(numberOfPlayers: turnStart.hands.count, currentHandIndex: turnStart.currentHandIndex, action: turn.action)
+            Text("\(turn.number).")
+            PlayerHandsView(hands: setup.hands, currentHandIndex: setup.currentHandIndex)
+            ScorePilesView(scorePiles: setup.scorePiles)
+            Text("\(setup.clues)/\(setup.strikes)/\(setup.deck.count)")
+            ActionView(playerIndices: setup.hands.indices, currentPlayerIndex: setup.currentHandIndex, action: turn.action)
         }
         .font(.caption)
     }
 }
 
-/// A `View` that shows which turn it is.
-struct TurnNumberView: View {
-    /// The turn number.
-    let number: Int
-    
-    var body: some View {
-        Text("\(number).")
-    }
-}
-
-/// A `View` that shows each player's cards and highlights the current player.
+/// A view that shows each player's hand and highlights the current player.
 struct PlayerHandsView: View {
-    /// The players' cards.
+    /// The players' hands.
     let hands: [Hand]
     
     /// The index of `hands` for the current player.
     let currentHandIndex: Int
     
     var body: some View {
-        /// A `Range` for looping over `hands`, because `Hand` isn't `Identifiable`.
-        let handsIndices = hands.indices
-        
-        /// An `Array` of `Text`s, where each shows a hand, with color.
-        let coloredTexts = handsIndices.map {
-            // TODO: use hands[$0].coloredText
-            hands[$0].cards.coloredText
-        }
-        
-        return VStack(alignment: .leading) {
-            ForEach(handsIndices) {
+        VStack(alignment: .leading) {
+            ForEach(hands.indices) {
                 if $0 == self.currentHandIndex {
-                    coloredTexts[$0].bold()
+                    self.hands[$0].coloredText.bold()
                 } else {
-                    coloredTexts[$0]
+                    self.hands[$0].coloredText
                 }
             }
         }
     }
 }
 
-/// A `View` that shows the scores in the given `scorePiles`. Scores are separated for legibility and colored appropriately.
+/// A view that shows the scores in the specified score piles.
 ///
-/// Colorblind users may not know which score is for which suit. So, `ScorePilesView` should be used with `ScoreHeaderView`, which lists the suit order.
+/// Scores are colored. But in case of colorblind users, use this view with a header which lists the suit order.
 struct ScorePilesView: View {
-    /// The `ScorePile`s that contain the scores to show.
+    /// The score piles that contain the scores to show.
     let scorePiles: [ScorePile]
     
     var body: some View {
-        /// An `Array` of `Text`s, where each `Text` shows a score, with color.
-        // TODO: extend ScorePile to have scorepile.coloredScore? scorePile.coloredText? coloredScoreText?
-        let scoreTexts = scorePiles.map {
+        /// An array of texts, where each text shows a colored score.
+        let coloredScoreTexts = scorePiles.map {
             Text("\($0.score)")
                 .foregroundColor($0.suit.color)
         }
         
-        return scoreTexts.concatenated(withSeparator: "/")
+        return coloredScoreTexts.concatenated(withSeparator: "/")
     }
 }
 
-/// A `View` that shows the number of clues and strikes, and the number of cards remaining in the deck.
-struct TokenPilesView: View {
-    /// The number of clues.
-    let clues: Int
-    
-    /// The number of strikes.
-    let strikes: Int
-    
-    /// The number of cards remaining in the deck.
-    let cardsInDeck: Int
-    
-    var body: some View {
-        Text("\(clues)/\(strikes)/\(cardsInDeck)")
-    }
-}
-
-/// A `View` that shows the current player's action and highlights it.
+/// A view that shows the current player's action and highlights it.
 ///
-/// The action is highlighted to match `PlayerHandsView`.
+/// The highlight is meant to match views that highlight the current player's hand.
 struct ActionView: View {
-    /// The number of players.
-    let numberOfPlayers: Int
+    /// A range valid for looping through all players.
+    let playerIndices: Range<Int>
+
+    /// The current player's index.
+    let currentPlayerIndex: Int
     
-    /// The current player's index, assuming an `Array` of the players.
-    let currentHandIndex: Int
-    
-    /// The player's action (if none yet, then `nil`).
+    /// The player's action.
     let action: Action?
     
     var body: some View {
-        /// A `String` describing the action.
+        /// A string that describes the action.
         ///
         /// If action is `nil`, value is `"??"`.
         let actionString = action?.abbr ?? "??"
         
         return VStack {
-            ForEach(0..<numberOfPlayers) {
-                if $0 == self.currentHandIndex {
+            ForEach(playerIndices) {
+                if $0 == self.currentPlayerIndex {
                     Text("\(actionString)").bold()
                 } else {
                     Text("\n")
@@ -306,12 +258,12 @@ struct ActionView: View {
     }
 }
 
-// MARK: ResultsSection
+// MARK: Section: Results
 
-/// A `Section` that shows the final state of the game, and a summary.
 // TODO: Update doc when working on this. What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues, Kinda like an F turn
-struct ResultsSection: View {
-    /// A `Bool` that reflects whether the game is over.
+/// A view that shows the final state of the game, and a summary.
+struct ResultsGroup: View {
+    /// A Boolean value that indicates whether the game is over.
     let gameIsOver: Bool
     
     /// temp def
@@ -319,12 +271,11 @@ struct ResultsSection: View {
     let results: String
     
     var body: some View {
-        Section(header: Text("Results")) {
-            Text(gameIsOver ? "Game done!" : "??")
-                .font(.caption)
-        }
+        Text(gameIsOver ? "Game done!" : "??")
+            .font(.caption)
     }
 }
+
 
 // MARK: Previews
 
@@ -336,5 +287,3 @@ struct OneGameView_Previews: PreviewProvider {
         }
     }
 }
-
-

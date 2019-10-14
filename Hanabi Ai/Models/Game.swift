@@ -10,7 +10,7 @@ import Foundation
 
 /// A game of Hanabi, played by the computer against itself.
 ///
-/// This is a class (vs. struct), because we need to control identity. E.g., if we simulate two identical games, they're still different.
+/// This is a class (vs. struct), because we want to use `ObservableObject`?
 class Game: ObservableObject {
     // TODO: deprecate?
     // Returns a string defining a random deck.
@@ -29,29 +29,25 @@ class Game: ObservableObject {
     /// The method of arranging the deck; e.g., randomly, or with a specific order.
     let deckSetup: DeckSetup
     
-    /// A human-readable description of the starting deck, used if `deckSetup` is `custom`.
+    /// A human-readable description of the starting deck, used if the deck setup is "custom".
     let customDeckDescription: String
     
     /// The deck before any cards are dealt.
     let startingDeck: Deck
     
-    // TODO: This may not be needed, nor right. The next turn is made from the previous turn's deck, not this. So this probably isn't updated correctly. And if we copy the startingDeck to deal hands, then we don't need this property anymore.
-    /// The current deck, which players draw from throughout the game.
-    var deck: Deck
-    
     /// The max number of clues you can have at any time.
     static let MaxClues = 8
     
-    /// Each `Turn` in the game.
+    /// Each turn in the game.
     @Published var turns: [Turn] = []
     
-    /// A Bool that reflects whether this game is over.
+    /// A Boolean value that indicates whether this game is over.
     @Published var isOver = false
     
     /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
     let results = "testing"
     
-    /// Creates a `Game` with the given number of players and deck setup.
+    /// Creates a game with the specified number of players and deck setup.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
@@ -62,19 +58,51 @@ class Game: ObservableObject {
         
         switch self.deckSetup {
         case .random:
-            deck = Deck()
+            deck = Game.makeRandomDeck()
             deck.shuffle()
         // TODO: add Custom deck setup. Read in custom deck description.
         case .custom:
             // Deck(custom: ???)
             deck = Deck()
         }
-        self.deck = deck
-        self.startingDeck = self.deck
+        self.startingDeck = deck
         dealHands()
     }
     
     // MARK: Setup
+    
+    /// Returns a random deck.
+    static func makeRandomDeck() -> Deck {
+        /// An array of 1s, as many as in a Hanabi suit.
+        let suitOnes = Array(repeating: 1, count: 3)
+        
+        /// An array of 2s, as many as in a Hanabi suit.
+        let suitTwos = Array(repeating: 2, count: 2)
+        
+        /// An array of 3s, as many as in a Hanabi suit.
+        let suitThrees = Array(repeating: 3, count: 2)
+        
+        /// An array of 4s, as many as in a Hanabi suit.
+        let suitFours = Array(repeating: 4, count: 2)
+        
+        /// An array of 5s, as many as in a Hanabi suit.
+        let suitFives = Array(repeating: 5, count: 1)
+        
+        /// An array of 1s thru 5s, as many as in a Hanabi suit.
+        let suitNumbers = suitOnes + suitTwos + suitThrees + suitFours + suitFives
+        
+        /// An array of all cards in a deck.
+        ///
+        /// How: For each suit, make its cards. Then flatten.
+        var deck = Suit.allCases.flatMap { suit in
+            suitNumbers.map {
+                Card(suit: suit, number: $0)
+            }
+        }
+        
+        deck.shuffle()
+        return deck
+    }
     
     /// Deals starting hands.
     func dealHands() {
@@ -86,24 +114,27 @@ class Game: ObservableObject {
         /// 2–3 players: 5 each; 4–5 players: 4.
         let numberOfCardsPerPlayer = [2, 3].contains(numberOfPlayers) ? 5 : 4
         
+        /// A mutable copy of the starting deck.
+        var deck = startingDeck
+        
         (1...numberOfCardsPerPlayer).forEach { _ in
             // Deal each player a card.
-            // Using `indices` instead of looping over `hands`, because we need the reference.
+            // Using indices, because we need a reference to modify the hand.
             hands.indices.forEach {
                 /// The top card of the deck.
-                let topCard = deck.cards.removeFirst()
+                let topCard = deck.removeFirst()
                 
-                hands[$0].cards += [topCard]
+                hands[$0] += [topCard]
             }
         }
         
-        /// The start of the first turn.
-        let firstTurnStart = Setup(hands: hands, currentHandIndex: 0, deck: deck)
+        /// The setup for the first turn.
+        let setup = Setup(hands: hands, currentHandIndex: 0, deck: deck)
         
         /// The first turn.
-        let firstTurn = Turn(number: 1, start: firstTurnStart)
+        let turn1 = Turn(number: 1, setup: setup)
 
-        turns += [firstTurn]
+        turns += [turn1]
     }
     
     // MARK: Play
@@ -111,35 +142,21 @@ class Game: ObservableObject {
     /// Plays turns until the game ends.
     func play() {
         while !isOver {
-            /// The start of the next turn.
-            let nextTurnStart = doAction()
+            /// The next turn's setup.
+            let nextSetup = doAction()
             
-            //TODO: this could be
-            // while the game isn't over
-            /// while !isOver(turnStart)
-            /// while !isOver(gameState)
-            // here, it's like game.state which is updated by game.doAction(), vs
-            // game.state = game.doAction(). Tracking hidden mutations seems bad.
+            isOver = isOver(with: nextSetup)
+            if !isOver {
+                /// The next turn.
+                let nextTurn = Turn(number: turns.last!.number + 1, setup: nextSetup)
+                
+                turns += [nextTurn]
+            }
             
-            /// Does an action and returns the resulting game state.
-            ///game.doAction()
-            ///
-            /// Check
-            ///game.checkIfOver()
-            ///
-            ///isOver = game.isOver()
-            ///
-            /// Does an action and returns the start of the next turn.
-            // let nextTurnStart = game.doAction()
-            
-            // if
-            
+            // TODO: at game end, populate results. e.g., self.results = X
             
             /// Chooses and returns an action for the current turn.
             // ai.chosenAction()
-            
-            ///
-            // doAction()
 
             
             /// The current turn, awaiting the player's action.
@@ -155,25 +172,27 @@ class Game: ObservableObject {
             /// The start of the next turn.
             let nextTurnStart = currentTurn.start.did(currentTurn.action!)
             
-            if isOver(at: nextTurnStart) {
-                isOver = true
-                // TODO: populate results. e.g., self.results = X
-//                print("game is over!")
-            } else {
-                /// The next turn.
-                let nextTurn = Turn(number: currentTurn.number + 1, start: nextTurnStart)
-                
-                turns += [nextTurn]
-                // TODO: temp to avoid infinite loop
-//                break
-            }
+            
         }
     }
     
-    /// Returns an `Action` for the given `turnStart`.
+    /// Does an action and returns the resulting game state.
+    func doAction() -> Setup {
+        /// we need to choose an action
+        //game.action(for: setup)
+        // then do it (set up the next setup)
+        
+    }
+    
+    /// Returns a Boolean value that indicates whether the game is over with the specified setup.
+    func isOver(with setup: Setup) -> Bool {
+        
+    }
+    
+    /// Returns an action for the specified setup.
     ///
     /// Under construction. The chosen action will depend on the game state and the AIs.
-    func action(for turnStart: Setup) -> Action {
+    func action(for setup: Setup) -> Action {
         // TODO: go beyond testing
         let action: Action
             //        let action = Action(type: .clue, number: 2)

@@ -10,13 +10,10 @@ import Foundation
 
 /// A player's turn.
 ///
-/// A `Turn` includes the game state at the start of the turn, and the action chosen for that turn. The `action`'s resolution should be reflected in the next `Turn`.
+/// A turn includes the setup at the start of the turn, and the action chosen for that turn. The actual resolution of the action is seen in the setup of the next turn.
 struct Turn {
     /// The turn number, starting with 1.
     let number: Int
-    
-    /// The game state at the start of the turn.
-//    let start: TurnStart
     
     /// The game's setup at the start of the turn.
     let setup: Setup

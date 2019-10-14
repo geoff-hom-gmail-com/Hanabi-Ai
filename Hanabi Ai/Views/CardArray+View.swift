@@ -9,15 +9,15 @@
 import Foundation
 import SwiftUI
 
-/// An `extension` of `[Card]` for view-related functionality.
+/// An array-of-cards extension, for view-related functionality.
 extension Array where Element == Card {
-    /// A `Text` which is the concatenation of each `Card`'s colored text.
+    /// A text that is the concatenation of each card's colored text.
     var coloredText: Text {
-        /// An `Array` of each `Card`'s colored text.
-        let coloredTexts = self.map {
+        /// An array of each card's colored text.
+        let coloredCardTexts = self.map {
             $0.coloredText
         }
         
-        return coloredTexts.concatenated()
+        return coloredCardTexts.concatenated()
     }
 }

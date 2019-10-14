@@ -11,6 +11,7 @@ import Foundation
 /// A Hanabi card.
 ///
 /// A card has a suit (i.e., color) and a number. There are multiples of some cards (e.g., three green 1s).
+
 class Card {
     /// The card's suit.
     let suit: Suit
