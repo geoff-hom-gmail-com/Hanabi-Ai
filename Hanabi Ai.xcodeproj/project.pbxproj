@@ -33,6 +33,7 @@
 		81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */; };
 		81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E3234F08D0001429B8 /* Setup.swift */; };
 		81DD08D023480CDF009D314F /* ScorePile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DD08CF23480CDF009D314F /* ScorePile.swift */; };
+		81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F0165D23555B9D00BDF352 /* ActionType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextArray+Concatenated.swift"; sourceTree = "<group>"; };
 		81A9E6E3234F08D0001429B8 /* Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setup.swift; sourceTree = "<group>"; };
 		81DD08CF23480CDF009D314F /* ScorePile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorePile.swift; sourceTree = "<group>"; };
+		81F0165D23555B9D00BDF352 /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				819A9310234567F0001B28C5 /* Action.swift */,
+				81F0165D23555B9D00BDF352 /* ActionType.swift */,
 				8160C60C2319FFB700550C54 /* AppInfo.swift */,
 				81465FB52343FC4200DD67C8 /* Card.swift */,
 				815749D72331C915008E95CF /* Deck.swift */,
@@ -342,6 +345,7 @@
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
+				81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
 				812F8CD02342F424000D8925 /* Hand.swift in Sources */,

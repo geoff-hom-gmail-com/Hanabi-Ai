@@ -142,45 +142,42 @@ class Game: ObservableObject {
     /// Plays turns until the game ends.
     func play() {
         while !isOver {
+            /// The current turn, awaiting the player's action.
+            var currentTurn = turns.last!
+            
+            currentTurn.action = action(for: currentTurn.setup)
+            
             /// The next turn's setup.
             let nextSetup = doAction()
             
-            isOver = isOver(with: nextSetup)
-            if !isOver {
+            if isOver(with: nextSetup) {
+                isOver = true
+                // TODO: at game end, populate results. e.g., self.results = X
+            } else {
                 /// The next turn.
                 let nextTurn = Turn(number: turns.last!.number + 1, setup: nextSetup)
                 
                 turns += [nextTurn]
             }
-            
-            // TODO: at game end, populate results. e.g., self.results = X
-            
-            /// Chooses and returns an action for the current turn.
-            // ai.chosenAction()
-
-            
-            /// The current turn, awaiting the player's action.
-            var currentTurn = turns.last!
-            
-            currentTurn.action = action(for: currentTurn.start)
-            
-            /// The index for the current turn.
-            let lastIndex = turns.count - 1
-            
-            turns[lastIndex] = currentTurn
-            
-            /// The start of the next turn.
-            let nextTurnStart = currentTurn.start.did(currentTurn.action!)
-            
-            
         }
     }
     
-    /// Does an action and returns the resulting game state.
+    /// Does an action and returns the resulting setup.
     func doAction() -> Setup {
-        /// we need to choose an action
-        //game.action(for: setup)
+        
         // then do it (set up the next setup)
+        // let action = turn.chooseAction()
+        
+        // let nextSetup = game.doAction(for: turn)
+        // let nextSetup = turn.do(action)
+        
+        /// The index for the current turn.
+        let lastIndex = turns.count - 1
+        
+        turns[lastIndex] = currentTurn
+        
+        /// The start of the next turn.
+        let nextTurnStart = currentTurn.start.did(currentTurn.action!)
         
     }
     

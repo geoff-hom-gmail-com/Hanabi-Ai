@@ -8,50 +8,39 @@
 
 import Foundation
 
-/// A type of action a player can do.
-enum ActionType {
-    /// The 3 types of actions.
-    case play, discard, clue
-    
-    /// A `String` that describes the action type.
-    var abbr: String {
-        switch self {
-        case .play:
-            return "P"
-        case .discard:
-            return "D"
-        case .clue:
-            return "C"
-        }
-    }
-}
-
 /// A player's action.
 ///
-/// In Hanabi, there are 3 actions: play/discard/clue. Play/discard is a card from your hand. Clue is to another player, revealing all of a number or all of a color/suit.
+/// In Hanabi, there are 3 actions: Play, Discard, and Clue. A player may play/discard a card from their hand. A player may also clue another player, revealing all of a number or all of a color/suit in their hand.
 struct Action {
     /// The type of action.
     let type: ActionType
     
-    /// The card chosen (if play/discard; else, `nil`).
+    /// The card chosen if the action is play/discard; else, `nil`.
     let card: Card?
     
-    /// The number chosen (if clue; else, `nil`).
+    /// The number chosen if the action is clue; else, `nil`.
     let number: Int?
     
-    /// The suit chosen (if clue; else, `nil`).
+    /// The suit chosen if the action is clue; else, `nil`.
     let suit: Suit?
     
-    /// Creates an `Action` with the given `type`, `card`, `number`, and `suit`.
-    init(type: ActionType, card: Card? = nil, number: Int? = nil, suit: Suit? = nil) {
+    /// Creates an action with the specified parameters.
+    init(type: ActionType, card: Card?, number: Int?, suit: Suit?) {
         self.type = type
-        self.card = card
-        self.number = number
-        self.suit = suit
+        switch self.type {
+        case .play, .discard:
+            self.card = card
+            self.number = nil
+            self.suit = nil
+        case .clue:
+            self.card = nil
+            self.number = number
+            self.suit = suit
+        }
     }
     
     // TODO: If 3+ players, clues need to indicate target player. We don't want this for 2-player games, because that's obvious.
-    /// A `String` that describes the action unambiguously.
+    /// A string that uses abbreviations to describe the action unambiguously.
     ///
     /// E.g., "P.r1," "D.w3," "C.p1.3," "C.p3.r," "C.g," "C.3"
     var abbr: String {
@@ -62,10 +51,10 @@ struct Action {
         case .play, .discard:
             return "\(typeAbbr).\(card!.description)"
         case .clue:
-            /// A `String` that describes the type of clue given.
+            /// A string that describes the type of clue given.
             let clueString: String
             
-            // If `number` exists, use that. Else, it must be a `suit`, so describe that.
+            // If a number exists, use that. Else, the clue must be a suit, so use that.
             if let number = number {
                 clueString = "\(number)"
             } else {

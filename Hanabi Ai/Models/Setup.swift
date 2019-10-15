@@ -45,7 +45,7 @@ struct Setup {
         self.scorePiles = scorePiles
     }
     
-    /// Returns the `TurnStart` that results from doing the given `action`.
+    /// Returns the setup that results from doing the specified action.
     func did(_ action: Action) -> Setup {
         // By default, the new `TurnStart` has the same parameters as `self`, except the current hand index.
         
