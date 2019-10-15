@@ -67,31 +67,4 @@ struct Setup {
     func isGameOver() -> Bool {
         
     }
-    
-    
-    
-    
-    /// Returns the setup that results from doing the specified action.
-    func did(_ action: Action) -> Setup {
-        // By default, the new `TurnStart` has the same parameters as `self`, except the current hand index.
-        
-        
-        switch action.type {
-        case .play:
-            
-           
-        case .discard:
-            // TODO: implement .discard
-            clues += 1
-            // draw card from deck and put in hand
-            /// The top card of the deck.
-            // TODO: replace with like deck.topCard, named appropriately (deck.removeFirst()?)
-            let topCard = deck.cards.removeFirst()
-        //            hands[index].cards.append(card) use += []
-        case .clue:
-            clues -= 1
-        }
-        return Setup(hands: newHands, currentHandIndex: newCurrentHandIndex, deck: newDeck, clues: newClues, strikes: newStrikes, scorePiles: newScorePiles)
-
-    }
 }

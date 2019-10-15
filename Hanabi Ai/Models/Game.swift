@@ -159,30 +159,6 @@ class Game: ObservableObject {
         }
     }
     
-    /// Returns the `TurnStart` after the given `turn`.
-    ///
-    /// Assumes the `turn`'s action exists.
-    func turnStart(after turn: Turn) -> Setup {
-     
-        
-        switch action.type {
-        case .play:
-            /// The played card.
-      
-        case .discard:
-            // TODO: implement .discard
-            clues += 1
-            // draw card from deck and put in hand
-            /// The top card of the deck.
-            // TODO: replace with like deck.topCard, named appropriately (deck.removeFirst()?)
-            let topCard = deck.cards.removeFirst()
-//            hands[index].cards.append(card) use += []
-        case .clue:
-            clues -= 1
-        }
-        return Setup(hands: hands, currentHandIndex: currentHandIndex, deck: deck, clues: clues, strikes: strikes, scorePiles: scorePiles)
-    }
-    
     // MARK: Game end
     
     /// Returns a `Bool` that reflects whether the game is over at the given `turnStart`.
