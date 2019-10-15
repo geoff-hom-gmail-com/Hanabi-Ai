@@ -46,6 +46,11 @@ struct Turn {
         /// The score piles for the new setup.
         var newScorePiles = setup.scorePiles
         
+        /// The number of turns left for the new setup, if the deck is empty.
+        ///
+        /// If the deck is empty, then count down.
+        let newTurnsLeft = setup.deck.isEmpty ? setup.turnsLeft - 1 : setup.turnsLeft
+        
         switch action!.type {
             
         // Play: Remove card from hand. If card scores, increase score. If pile finished, gain clue (up to max). If card doesn't score, gain strike. Draw new card, if available.
@@ -69,7 +74,6 @@ struct Turn {
                 newStrikes += 1
             }
             guard !newDeck.isEmpty else {
-                // TODO: if no cards available; then have to start some sort of timer for setup.isGameOver()
                 break
             }
             
@@ -86,7 +90,6 @@ struct Turn {
             newHands[currentHandIndex].remove(card)
             newClues += 1
             guard !newDeck.isEmpty else {
-                // TODO: if no cards available; then have to start some sort of timer for setup.isGameOver()
                 break
             }
             
@@ -99,6 +102,6 @@ struct Turn {
         case .clue:
             newClues -= 1
         }
-        return Setup(hands: newHands, currentHandIndex: nextHandIndex, deck: newDeck, clues: newClues, strikes: newStrikes, scorePiles: newScorePiles)
+        return Setup(hands: newHands, currentHandIndex: nextHandIndex, deck: newDeck, clues: newClues, strikes: newStrikes, scorePiles: newScorePiles, turnsLeft: newTurnsLeft)
     }
 }

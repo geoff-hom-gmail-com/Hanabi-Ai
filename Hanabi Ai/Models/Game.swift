@@ -126,7 +126,7 @@ class Game: ObservableObject {
         }
         
         /// The setup for the first turn.
-        let setup = Setup(hands: hands, currentHandIndex: 0, deck: deck)
+        let setup = Setup(hands: hands, currentHandIndex: 0, deck: deck, clues: Setup.MaxClues, strikes: 0, scorePiles: Setup.InitialScorePiles, turnsLeft: numberOfPlayers)
         
         /// The first turn.
         let turn1 = Turn(number: 1, setup: setup)
@@ -158,37 +158,4 @@ class Game: ObservableObject {
             }
         }
     }
-    
-    // MARK: Game end
-    
-    /// Returns a `Bool` that reflects whether the game is over at the given `turnStart`.
-    ///
-    /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out. The last case is when the last card has been drawn, and each player has had one more turn.
-    func isOver(at turnStart: Setup) -> Bool {
-        // TODO: So we need the score, the strikes, the deck
-       
-        if (turnStart.strikes == 3) {
-            return true
-            // TODO: this is temp for testing
-        } else if (turnStart.clues == 5) {
-            return true
-            // TODO: perfect score. each score has to be 5.
-//        } else if (scoresArePerfect(nextTurn.scores)) {
-            // map?
-//            turn.scores.forEach { score in
-//                print("hi")
-//            }
-//            tempBool = true
-//
-//             // TODO: turns run out.
-//        } else if (outOfTurns) {
-//            ()
-        } else {
-            return false
-        }
-    }
-    
-//    func scoresArePerfect(scores: [Suit: Int]) -> Bool {
-//
-//    }
 }

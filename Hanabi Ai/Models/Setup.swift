@@ -33,19 +33,21 @@ struct Setup {
     /// The face-up piles for scoring each suit, in suit order.
     let scorePiles: [ScorePile]
     
+    /// The number of turns left, if the deck is empty.
+    let turnsLeft: Int
+    
     /// An array of all score piles, in suit order, with each score set to 0.
-    private static let InitialScorePiles = Suit.allCases.sorted().map {
-        ScorePile(suit: $0, score: 0)
-    }
+    static let InitialScorePiles = Suit.allCases.sorted().map { ScorePile(suit: $0, score: 0) }
     
     /// Creates a setup with the specified parameters.
-    init(hands: [Hand], currentHandIndex: Int, deck: Deck, clues: Int = 8, strikes: Int = 0, scorePiles: [ScorePile] = InitialScorePiles) {
+    init(hands: [Hand], currentHandIndex: Int, deck: Deck, clues: Int, strikes: Int, scorePiles: [ScorePile], turnsLeft: Int) {
         self.hands = hands
         self.currentHandIndex = currentHandIndex
         self.deck = deck
         self.clues = clues
         self.strikes = strikes
         self.scorePiles = scorePiles
+        self.turnsLeft = turnsLeft
     }
     
     /// Chooses and returns an action for this setup.
@@ -63,8 +65,29 @@ struct Setup {
         return action
     }
     
-    /// Returns a Boolean value that indicates whether this setup has reached game over.
+    // MARK: Game end
+    
+    /// Returns a Boolean value that indicates whether this setup has reached the end of the game.
+    ///
+    /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out.
     func isGameOver() -> Bool {
-        
+        strikes == 3 || scoreIsPerfect() || outOfTurns()
+    }
+    
+    /// Returns a Boolean value that indicates whether the score is maxed out in all score piles.
+    func scoreIsPerfect() -> Bool {
+        for scorePile in scorePiles {
+            if scorePile.score < ScorePile.MaxNumber {
+                return false
+            }
+        }
+        return true
+    }
+    
+    /// Returns a Booelan value that indicates whether there are no more turns left.
+    ///
+    /// When the last card has been drawn, each player gets one more turn, then the game ends.
+    func outOfTurns() -> Bool {
+        deck.isEmpty && (turnsLeft == 0)
     }
 }
