@@ -13,26 +13,23 @@ import Foundation
 /// Cards are placed in consecutively increasing order—1-2-3-4-5—and the score is the top card. So, the top card is sufficient to define a score pile.
 typealias ScorePile = Card
 
+/// An extension for score piles.
 extension ScorePile {
     /// The current score for the pile.
     var score: Int {
         self.number
     }
+    
+    /// The max score a pile can have.
+    static let MaxNumber = 5
+    
+    /// Creates a score pile with the specified suit and score.
+    convenience init(suit: Suit, score: Int) {
+        self.init(suit: suit, number: score)
+    }
+    
+    /// Returns a Boolean value that indicates whether the next card to score is the specified card.
+    func nextIs(_ card: Card) -> Bool {
+        (score < ScorePile.MaxNumber) && (score + 1 == card.number)
+    }
 }
-
-// so insetad of aliasing a type like Card/Int/String, I'm trying to make an alias of card.number. So calling scorepile.score = card.number
-//typealias score = ScorePile.number
-//class ScorePile  {
-//    /// The pile's suit.
-//    let suit: Suit
-//
-//    /// The current score for the pile.
-//    var score: Int
-//
-//    /// Creates a score pile with the specified parameters.
-//    init(suit: Suit, score: Int) {
-//        self.suit = suit
-//        self.score = score
-//    }
-//}
-
