@@ -70,7 +70,7 @@ struct DeckView: View {
 /// A view that shows a game's setup after hands have been dealt, and includes a "Play" button.
 ///
 /// The game doesn't start until the user presses "Play," so they can analyze the game first.
-struct Turn1SetupGroup(setup: Setup, playFunction: () -> Void): View {
+struct Turn1SetupGroup: View {
     /// The game's setup after hands have been dealt.
     let setup: Setup
     

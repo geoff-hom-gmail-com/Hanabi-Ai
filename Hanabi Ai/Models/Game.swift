@@ -21,8 +21,6 @@ class Game: ObservableObject {
 //        return description
 //    }
     
-    //TODO: May need to update which properties are Published. Think about it.
-    
     /// The number of players.
     let numberOfPlayers: Int
 
@@ -139,14 +137,14 @@ class Game: ObservableObject {
     /// Plays turns until the game ends.
     func play() {
         while !isOver {
-            /// The current turn, awaiting the player's action.
-            var currentTurn = turns.last!
+            /// The index of the last turn.
+            let lastIndex = turns.count - 1
             
-            currentTurn.action = currentTurn.setup.chooseAction()
+            turns[lastIndex].action = turns[lastIndex].setup.chooseAction()
             
             /// The next turn's setup.
-            let nextSetup = currentTurn.doAction()
-            
+            let nextSetup = turns[lastIndex].doAction()
+
             if nextSetup.isGameOver() {
                 isOver = true
                 // TODO: at game end, populate results. e.g., self.results = X
