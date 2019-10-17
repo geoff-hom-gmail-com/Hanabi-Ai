@@ -14,31 +14,14 @@ import SwiftUI
 struct OneGameView: View {
     /// The game to set up and play.
     @ObservedObject var game: Game
-//    @ObservedObject var game2: Game
-//    var game3: Game
-    
-    /// The number of players in the game.
-//    private let numberOfPlayers: Int
-    
-    /// The deck setup to use.
-//    private let deckSetup: DeckSetup
-    
-    /// The card order to use if the deck setup is "custom."
-    ///
-    /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
-//    private let customDeckDescription: String
-    
 
     /// Creates a one-game view, including a game with the specified parameters.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
         
-        //TODO: Instead of making a game in init, make a model in sceneDelegate. Then use Environmental observing to access the model. Then make/populate the game in onAppear(). This should eliminate the chance of any view making a game/model more than needed.
+        //TODO:
         // instead of setting the game settings here in init, we could get rid of the init by having APV set the game settings in the model. It can just bind to them.
         // getting rid of this init will reduce the chance of errors a lot.
         print("OGV init called")
-//        self.numberOfPlayers = numberOfPlayers
-//        self.deckSetup = deckSetup
-//        self.customDeckDescription = customDeckDescription
         self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
     
@@ -73,16 +56,10 @@ struct OneGameView: View {
             
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
+            // TODO: once we get the model working and game init() called from APV, we shouldn't need onAppear() and can remove it.
         .onAppear {
             print("OGV onAppear() called")
             self.game.setUp()
-            
-            /// Makes a game.
-            /// / is it using parameters from APView?
-            /// model.numberOfplayers?
-            /// model.oneGameSettings.numberOfPlayers?
-            /// try model.makeGame()
-//            game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         }
     }
 }
@@ -332,7 +309,7 @@ struct OneGameView_Previews: PreviewProvider {
             // TODO: When I have other modes working, like 3+ players, will have to check if Live Preview works with that, or if code below needs to be modified.
 
             OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
-//            OneGameView(numberOfPlayers: 2, deckSetup: .custom, customDeckDescription: "")
+//            OneGameView(numberOfPlayers: 2, deckSetup: .custom, customDeckDescription: "???")
         }
     }
 }

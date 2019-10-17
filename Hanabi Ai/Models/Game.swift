@@ -30,7 +30,7 @@ class Game: ObservableObject {
     /// A human-readable description of the starting deck, used if the deck setup is "custom".
     let customDeckDescription: String
     
-    // hmm, make this a var that starts empty? well, we can't know the random deck in init (too much computation), so it's either a var or a lazy var. and if a lazy var, it's called right when a view first asks for it, which may be before onAppear, which could be messy. But it should work. Just call a method, like self.makeStartingDeck()
+    // TODO: Once we get game.init() called correctly (not in a view's init(), then we can make this a let again and just make the starting deck in the init.
     /// The deck before any cards are dealt.
 //    let startingDeck: Deck
     lazy var startingDeck = makeStartingDeck()
@@ -75,7 +75,7 @@ class Game: ObservableObject {
             // Deck(custom: ???)
             //            deck = Deck()
         }
-        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
+        
         return deck
     }
 
@@ -116,6 +116,7 @@ class Game: ObservableObject {
         func setUp() {
             print("game.setUp() called")
 
+            // TODO: keep this code, as it's closest to what we had in init() and we'll want it back when we make sure init() isn't being called from any views. (ie., by making sure that views don't have init() ).
     //        /// The deck for the game.
     //        var deck: Deck
     //

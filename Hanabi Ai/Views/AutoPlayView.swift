@@ -32,11 +32,6 @@ struct OneGameGroup: View {
     
     /// The deck setup to use.
     @State private var deckSetup: DeckSetup = .random
-    
-//    @State private var deckSetupIndex: Int = 0
-
-//    @State private var deckSetup2: DeckSetup2 = .random
-//    @State private var deckSetup3: DeckSetup3 = .random
 
     /// The card order to use if the deck setup is "custom."
     ///
@@ -46,42 +41,17 @@ struct OneGameGroup: View {
     var body: some View {
         Group {
             NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
-            //
-//            Picker("Deck Setup3", selection: $deckSetup3) {
-//                ForEach(DeckSetup3.allCases) {
-//                    Text($0.name).tag($0)
-//                }
-//            }
-            //works
-//            Picker("Deck Setup2", selection: $deckSetup2) {
-//                ForEach(DeckSetup2.allCases) {
-//                    Text($0.name).tag($0)
-//                }
-//            }
-            // doesn't work for custom?! ah, there's cross talk somewhere; OGV call
-//            Picker("Deck Setup", selection: $deckSetup) {
-//                ForEach(DeckSetup.allCases) {
-//                    Text($0.name).tag($0)
-//                }
-//            }
-           
-            
-            // so it's all my fault. what's the lesssons here?
-            // if I had implemented custom decks, this might've been more clear. or maybe we wouldn't have found this "bug."
-            // let's think about what to fix. We need to figure out how to not have a game made and dealt each time we change a freaking option. I know it's declarative code, but this is model stuff.
-            
-//            Picker("Deck Setup indices", selection: $deckSetupIndex) {
-//                ForEach(DeckSetup.allCases.indices) {
-//                    Text(DeckSetup.allCases[$0].name).tag($0)
-//                }
-//            }
             
             DeckSetupPicker(deckSetup: $deckSetup)
             // TODO: if Custom deck, then need ability to enter that
             // E.g., if Custom, show text field. pre-populate with ordered deck, then user can customize
-//            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: DeckSetup.allCases[deckSetupIndex], customDeckDescription: customDeckDescription)) {
+            
+            /// Makes a game.
+            /// / is it using parameters from APView?
+            /// model.numberOfplayers?
+            /// try model.makeGame()
+            
             NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
-                
                 Spacer()
                 Text("Go")
             }
