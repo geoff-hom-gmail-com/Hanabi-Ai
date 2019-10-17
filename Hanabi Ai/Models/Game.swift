@@ -30,8 +30,10 @@ class Game: ObservableObject {
     /// A human-readable description of the starting deck, used if the deck setup is "custom".
     let customDeckDescription: String
     
+    // hmm, make this a var that starts empty? well, we can't know the random deck in init (too much computation), so it's either a var or a lazy var. and if a lazy var, it's called right when a view first asks for it, which may be before onAppear, which could be messy. But it should work. Just call a method, like self.makeStartingDeck()
     /// The deck before any cards are dealt.
-    let startingDeck: Deck
+//    let startingDeck: Deck
+    lazy var startingDeck = makeStartingDeck()
     
     /// Each turn in the game.
     @Published var turns: [Turn] = []
@@ -41,31 +43,42 @@ class Game: ObservableObject {
     
     /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
     let results = "testing"
-    
-    /// Creates a game with the specified number of players and deck setup.
+        
+    /// Creates a game with the specified parameters.
+    ///
+    /// Currently, a game may be initialized from a SwiftUI view. This can lead to many initializations (e.g., if the view is a navigation link's destination). So, initialization is kept minimal.
     init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
+        print("Game.init() called")
+        
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
         self.customDeckDescription = customDeckDescription
-        
-        /// The deck for the game.
-        var deck: Deck
-        
-        switch self.deckSetup {
-        case .random:
-            deck = Game.makeRandomDeck()
-            deck.shuffle()
-        // TODO: add Custom deck setup. Read in custom deck description.
-        case .custom:
-            // Deck(custom: ???)
-            deck = Deck()
-        }
-        self.startingDeck = deck
-        dealHands()
     }
     
     // MARK: Setup
     
+    /// Makes and returns a starting deck based on this game's settings.
+    func makeStartingDeck() -> Deck {
+        print("game.makeStartingDeck() called")
+
+        /// The deck for the game.
+        var deck: Deck
+        
+        switch deckSetup {
+        case .random:
+            deck = Game.makeRandomDeck()
+        // TODO: add Custom deck setup. Read in custom deck description.
+        case .custom:
+            print("game.makeStartingDeck(): .custom called")
+            // temp: to avoid crashes, we'll make this .random
+            deck = Game.makeRandomDeck()
+            // Deck(custom: ???)
+            //            deck = Deck()
+        }
+        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
+        return deck
+    }
+
     /// Returns a random deck.
     static func makeRandomDeck() -> Deck {
         /// An array of 1s, as many as in a Hanabi suit.
@@ -99,8 +112,33 @@ class Game: ObservableObject {
         return deck
     }
     
+    /// Sets up the game, including the deck and starting hands.
+        func setUp() {
+            print("game.setUp() called")
+
+    //        /// The deck for the game.
+    //        var deck: Deck
+    //
+    //        switch deckSetup {
+    //        case .random:
+    //            deck = Game.makeRandomDeck()
+    //        // TODO: add Custom deck setup. Read in custom deck description.
+    //        case .custom:
+    //            print("game.setUp(): .custom called")
+    //            // temp: to avoid crashes, we'll make this .random
+    //            deck = Game.makeRandomDeck()
+    //            // Deck(custom: ???)
+    ////            deck = Deck()
+    //        }
+    //        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
+    //        self.startingDeck = deck
+            dealHands()
+        }
+    
     /// Deals starting hands.
     func dealHands() {
+        print("game.dealHands() called")
+
         /// An empty hand for each player.
         var hands = Array(repeating: Hand(), count: numberOfPlayers)
         

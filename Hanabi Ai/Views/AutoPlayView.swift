@@ -33,6 +33,11 @@ struct OneGameGroup: View {
     /// The deck setup to use.
     @State private var deckSetup: DeckSetup = .random
     
+//    @State private var deckSetupIndex: Int = 0
+
+//    @State private var deckSetup2: DeckSetup2 = .random
+//    @State private var deckSetup3: DeckSetup3 = .random
+
     /// The card order to use if the deck setup is "custom."
     ///
     /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
@@ -41,15 +46,48 @@ struct OneGameGroup: View {
     var body: some View {
         Group {
             NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
-            DeckSetupPicker(deckSetupSelection: $deckSetup)
+            //
+//            Picker("Deck Setup3", selection: $deckSetup3) {
+//                ForEach(DeckSetup3.allCases) {
+//                    Text($0.name).tag($0)
+//                }
+//            }
+            //works
+//            Picker("Deck Setup2", selection: $deckSetup2) {
+//                ForEach(DeckSetup2.allCases) {
+//                    Text($0.name).tag($0)
+//                }
+//            }
+            // doesn't work for custom?! ah, there's cross talk somewhere; OGV call
+//            Picker("Deck Setup", selection: $deckSetup) {
+//                ForEach(DeckSetup.allCases) {
+//                    Text($0.name).tag($0)
+//                }
+//            }
+           
+            
+            // so it's all my fault. what's the lesssons here?
+            // if I had implemented custom decks, this might've been more clear. or maybe we wouldn't have found this "bug."
+            // let's think about what to fix. We need to figure out how to not have a game made and dealt each time we change a freaking option. I know it's declarative code, but this is model stuff.
+            
+//            Picker("Deck Setup indices", selection: $deckSetupIndex) {
+//                ForEach(DeckSetup.allCases.indices) {
+//                    Text(DeckSetup.allCases[$0].name).tag($0)
+//                }
+//            }
+            
+            DeckSetupPicker(deckSetup: $deckSetup)
             // TODO: if Custom deck, then need ability to enter that
             // E.g., if Custom, show text field. pre-populate with ordered deck, then user can customize
-            PlayGameNavigationLink(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+//            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: DeckSetup.allCases[deckSetupIndex], customDeckDescription: customDeckDescription)) {
+            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
+                
+                Spacer()
+                Text("Go")
+            }
         }
     }
 }
-
-// TODO: unextract this? Extractions for single calls seems silly. just gotta figure out how to do the binding/state in one line?
 
 /// A view that shows a stepper for selecting the number of players in a game.
 struct NumberOfPlayersStepper: View {
@@ -62,35 +100,18 @@ struct NumberOfPlayersStepper: View {
 }
 
 /// A view that shows a picker for selecting the deck setup.
+///
+/// This may be used in other areas (e.g., MultipleGamesGroup), so keep it extracted.
 struct DeckSetupPicker: View {
     /// The deck setup to use.
-    @Binding var deckSetupSelection: DeckSetup
-    
+    @Binding var deckSetup: DeckSetup
+
     var body: some View {
-        // We don't add ":" at the end of the label, because the picker's in a form.
-        Picker("Deck Setup", selection: $deckSetupSelection) {
+        // The label doesn't end with `":"`, because the picker's in a form.
+        Picker("Deck Setup", selection: $deckSetup) {
             ForEach(DeckSetup.allCases) {
                 Text($0.name).tag($0)
             }
-        }
-    }
-}
-
-/// A view that shows a navigation link that goes to a screen for playing one game.
-struct PlayGameNavigationLink: View {
-    /// The number of players in the game.
-    var numberOfPlayers: Int
-    
-    /// The deck setup to use.
-    var deckSetup: DeckSetup
-    
-    /// The card order to use if the deck setup is "custom."
-    var customDeckDescription: String
-    
-    var body: some View {
-        NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
-            Spacer()
-            Text("Go")
         }
     }
 }

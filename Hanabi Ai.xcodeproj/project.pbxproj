@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		81129CC82357E97C00E601CC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81129CC72357E97C00E601CC /* Model.swift */; };
 		81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81231A1D231B39B400B5EAD0 /* AutoPlayView.swift */; };
 		812F8CCC2342E6D7000D8925 /* DeckSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8CCB2342E6D7000D8925 /* DeckSetup.swift */; };
 		812F8CCE2342E701000D8925 /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812F8CCD2342E701000D8925 /* Turn.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		81129CC72357E97C00E601CC /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		81231A1D231B39B400B5EAD0 /* AutoPlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPlayView.swift; sourceTree = "<group>"; };
 		812F8CCB2342E6D7000D8925 /* DeckSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckSetup.swift; sourceTree = "<group>"; };
 		812F8CCD2342E701000D8925 /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				812F8CCB2342E6D7000D8925 /* DeckSetup.swift */,
 				815749D52331C2DA008E95CF /* Game.swift */,
 				812F8CCF2342F424000D8925 /* Hand.swift */,
+				81129CC72357E97C00E601CC /* Model.swift */,
 				81DD08CF23480CDF009D314F /* ScorePile.swift */,
 				81A9E6E3234F08D0001429B8 /* Setup.swift */,
 				812F8CD123433C93000D8925 /* Suit.swift */,
@@ -354,6 +357,7 @@
 				81A9E6DA234E8B47001429B8 /* Suit+View.swift in Sources */,
 				81231A1E231B39B400B5EAD0 /* AutoPlayView.swift in Sources */,
 				8160C5E02319E08100550C54 /* HomeView.swift in Sources */,
+				81129CC82357E97C00E601CC /* Model.swift in Sources */,
 				812F8CCC2342E6D7000D8925 /* DeckSetup.swift in Sources */,
 				81465FB62343FC4200DD67C8 /* Card.swift in Sources */,
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
