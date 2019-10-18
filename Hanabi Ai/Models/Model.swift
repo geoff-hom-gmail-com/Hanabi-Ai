@@ -25,12 +25,13 @@ class Model: ObservableObject {
     @Published var game = Game()
     
     /// Creates a model.
-    init() {
-        print("Model.init() called")
-    }
+//    init() {
+//        print("model.init() called")
+//    }
     
     /// Replaces the current game with a new one.
     func makeGame() {
+        print("model.makeGame() called")
         game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
 }

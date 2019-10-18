@@ -29,38 +29,20 @@ struct AutoPlayView: View {
 struct OneGameGroup: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
-    
+
     var body: some View {
         Group {
             NumberOfPlayersStepper()
             DeckSetupPicker()
             // TODO: if Custom deck, then need ability to enter that
             // E.g., if Custom, show text field. pre-populate with ordered deck, then user can customize
-            
-            
-            
-//            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
-//                Spacer()
-//                Text("Go")
-//            }
+
+            // TODO: (As of Xcode 11.1) I wanted to have a button that will first call model.makeGame() and then trigger a navigation link programmatically, like with isActive or tag/selection. However, all navigation links I make result in a row that can be activated by pressing.
+            // Tried .hidden(), EmptyView(), Text(""), .frame(width: 0, height: 0), Spacer(): The row is always pressable.
+            // Instead, will use the navigation link below and call model.makeGame() in the destination's .onAppear().
             NavigationLink( destination: OneGameView() ) {
-                            Spacer()
-                            Text("Go")
-                        }
-            NavigationLink( destination: OneGameView() ) {
-                EmptyView()
-            }
-            Button(action: {
-                // prep
-                self.model.makeGame()
-                // trigger navLink
-                
-            }) {
-                // TODO: This doesn't have the ">" arrow like a NavLink has, but that's a UI issue we can deal with later if desired.
-                HStack {
-                    Spacer()
-                    Text("Go")
-                }
+                Spacer()
+                Text("Go")
             }
         }
     }

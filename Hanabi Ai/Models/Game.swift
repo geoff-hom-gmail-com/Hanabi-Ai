@@ -46,7 +46,7 @@ class Game: ObservableObject {
     ///
     /// The defaults are chosen for computational simplicity.
     init(numberOfPlayers: Int = 2, deckSetup: DeckSetup = .suitOrdered, customDeckDescription: String = "") {
-        print("Game.init() called")
+        print("game.init() called")
         
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
@@ -163,7 +163,7 @@ class Game: ObservableObject {
     
     /// Deals starting hands.
     func dealHands() {
-        print("game.dealHands() called")
+//        print("game.dealHands() called")
 
         /// An empty hand for each player.
         var hands = Array(repeating: Hand(), count: numberOfPlayers)
@@ -200,7 +200,12 @@ class Game: ObservableObject {
         
     /// Plays turns until the game ends.
     func play() {
+        print("game.play() called")
+        print("game.play() deckSetup.name: \(deckSetup.name)")
+
         while !isOver {
+            print("game.play() isOver called")
+
             /// The index of the last turn.
             let lastIndex = turns.count - 1
             

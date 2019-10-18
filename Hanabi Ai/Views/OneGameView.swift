@@ -15,21 +15,6 @@ struct OneGameView: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
     
-    /// The game to set up and play.
-//    @ObservedObject var game: Game
-
-    /// Creates a one-game view, including a game with the specified parameters.
-//    init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
-//
-//        print("OGV init called")
-//        self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
-//    }
-    
-    /// Creates a one-game view, including a game with the specified parameters.
-//    init() {
-//        print("OGV init called")
-//    }
-    
     var body: some View {
         /// The game. For convenience.
         let game = model.game
@@ -50,10 +35,9 @@ struct OneGameView: View {
             }
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
-            // TODO: once we get the model working and game init() called from APV, we shouldn't need onAppear() and can remove it.
         .onAppear {
             print("OGV onAppear() called")
-//            self.game.setUp()
+            self.model.makeGame()
         }
     }
 }
