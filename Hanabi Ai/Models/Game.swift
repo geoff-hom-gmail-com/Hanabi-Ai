@@ -10,20 +10,22 @@ import Foundation
 
 /// A game of Hanabi, played by the computer against itself.
 ///
-/// This is a class (vs. struct), because we want to use `ObservableObject`?
+/// This is a class (vs. struct), because the `play()` method mutates, and we can't pass it into a button if this is a struct.
+// TODO: Do I need ObservableObject to work with Combine? Yep.
 class Game: ObservableObject {
-    // TODO: deprecate?
+//class Game {
+    // TODO: deprecate? might use later if user wants a random string/deck to play for herself.
     // Returns a string defining a random deck.
-//    static var randomDeckDescription: String {
-//        var deck = Deck()
-//        deck.shuffle()
-//        let description = deck.description
-//        return description
-//    }
+    //    static var randomDeckDescription: String {
+    //        var deck = Deck()
+    //        deck.shuffle()
+    //        let description = deck.description
+    //        return description
+    //    }
     
     /// The number of players.
     let numberOfPlayers: Int
-
+    
     /// The method of arranging the deck; e.g., randomly, or with a specific order.
     let deckSetup: DeckSetup
     
@@ -33,15 +35,20 @@ class Game: ObservableObject {
     /// The deck before any cards are dealt.
     let startingDeck: Deck
     
+    // TODO: OGV isn't updating anymore, whether published or not. It must be because the game (reference) isn't changing, even though the properties of game are.
+    // There's probably a way for me to tell Model that Game changed when turns changes. The Combine framework?
+    // what if I try making Game a struct?!!
     /// Each turn in the game.
-    @Published var turns: [Turn] = []
+        @Published var turns: [Turn] = []
+//    var turns: [Turn] = []
     
     /// A Boolean value that indicates whether this game is over.
-    @Published var isOver = false
+        @Published var isOver = false
+//    var isOver = false
     
     /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
     let results = "testing"
-        
+    
     /// Creates a game with the specified parameters.
     ///
     /// The defaults are chosen for computational simplicity.
@@ -77,26 +84,26 @@ class Game: ObservableObject {
     // MARK: Setup
     
     /// Makes and returns a starting deck based on this game's settings.
-//    func makeStartingDeck() -> Deck {
-//        print("game.makeStartingDeck() called")
-//
-//        /// The deck for the game.
-//        var deck: Deck
-//
-//        switch deckSetup {
-//        case .random:
-//            deck = Game.makeRandomDeck()
-//        // TODO: add Custom deck setup. Read in custom deck description.
-//        case .custom:
-//            print("game.makeStartingDeck(): .custom called")
-//            // temp: to avoid crashes, we'll make this .random
-//            deck = Game.makeRandomDeck()
-//            // Deck(custom: ???)
-//            //            deck = Deck()
-//        }
-//
-//        return deck
-//    }
+    //    func makeStartingDeck() -> Deck {
+    //        print("game.makeStartingDeck() called")
+    //
+    //        /// The deck for the game.
+    //        var deck: Deck
+    //
+    //        switch deckSetup {
+    //        case .random:
+    //            deck = Game.makeRandomDeck()
+    //        // TODO: add Custom deck setup. Read in custom deck description.
+    //        case .custom:
+    //            print("game.makeStartingDeck(): .custom called")
+    //            // temp: to avoid crashes, we'll make this .random
+    //            deck = Game.makeRandomDeck()
+    //            // Deck(custom: ???)
+    //            //            deck = Deck()
+    //        }
+    //
+    //        return deck
+    //    }
     
     /// Returns a deck with no shuffling.
     static func makeSimpleDeck() -> Deck {
@@ -129,7 +136,7 @@ class Game: ObservableObject {
         
         return deck
     }
-
+    
     /// Returns a random deck.
     static func makeRandomDeck() -> Deck {
         var deck = makeSimpleDeck()
@@ -138,10 +145,10 @@ class Game: ObservableObject {
     }
     
     /// Sets up the game, including the deck and starting hands.
-//        func setUp() {
-//            print("game.setUp() called")
-
-            // TODO: keep this code, as it's closest to what we had in init() and we'll want it back when we make sure init() isn't being called from any views. (ie., by making sure that views don't have init() ).
+    //        func setUp() {
+    //            print("game.setUp() called")
+    
+    // TODO: keep this code, as it's closest to what we had in init() and we'll want it back when we make sure init() isn't being called from any views. (ie., by making sure that views don't have init() ).
     //        /// The deck for the game.
     //        var deck: Deck
     //
@@ -158,13 +165,13 @@ class Game: ObservableObject {
     //        }
     //        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
     //        self.startingDeck = deck
-//            dealHands()
-//        }
+    //            dealHands()
+    //        }
     
     /// Deals starting hands.
     func dealHands() {
-//        print("game.dealHands() called")
-
+        //        print("game.dealHands() called")
+        
         /// An empty hand for each player.
         var hands = Array(repeating: Hand(), count: numberOfPlayers)
         
@@ -192,20 +199,20 @@ class Game: ObservableObject {
         
         /// The first turn.
         let turn1 = Turn(number: 1, setup: setup)
-
+        
         turns += [turn1]
     }
     
     // MARK: Play
-        
+    
     /// Plays turns until the game ends.
     func play() {
         print("game.play() called")
         print("game.play() deckSetup.name: \(deckSetup.name)")
-
+        
         while !isOver {
             print("game.play() isOver called")
-
+            
             /// The index of the last turn.
             let lastIndex = turns.count - 1
             
@@ -213,7 +220,7 @@ class Game: ObservableObject {
             
             /// The next turn's setup.
             let nextSetup = turns[lastIndex].doAction()
-
+            
             if nextSetup.isGameOver() {
                 isOver = true
                 // TODO: at game end, populate results. e.g., self.results = X

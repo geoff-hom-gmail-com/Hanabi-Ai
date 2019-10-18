@@ -28,7 +28,7 @@ struct AutoPlayView: View {
 /// A view that shows controls for selecting how the computer will play one game against itself.
 struct OneGameGroup: View {
     /// The model for this app.
-    @EnvironmentObject var model: Model
+//    @EnvironmentObject var model: Model
 
     var body: some View {
         Group {

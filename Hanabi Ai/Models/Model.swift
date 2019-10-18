@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 /// This app's data.
 class Model: ObservableObject {
@@ -24,14 +25,25 @@ class Model: ObservableObject {
     /// The current game.
     @Published var game = Game()
     
-    /// Creates a model.
-//    init() {
-//        print("model.init() called")
-//    }
+    /// comment
+    var anyCancellable: AnyCancellable? = nil
+    
+    /// comment
+    init() {
+        print("model.init called")
+        anyCancellable = game.objectWillChange.sink {
+            print("game.objectWillChange sunk1")
+            self.objectWillChange.send()
+        }
+    }
     
     /// Replaces the current game with a new one.
     func makeGame() {
         print("model.makeGame() called")
         game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+        anyCancellable = game.objectWillChange.sink {
+            print("game.objectWillChange sunk2")
+            self.objectWillChange.send()
+        }
     }
 }
