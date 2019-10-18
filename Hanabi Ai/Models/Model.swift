@@ -8,36 +8,29 @@
 
 import Foundation
 
-// TODO: We may not need this, though a lot of examples seem to use this idea of setting a model in the scene delegate.
-/// A class for storing the data.
+/// This app's data.
 class Model: ObservableObject {
-    /// The number of players.
-    let numberOfPlayers: Int
+    /// The next game's number of players.
+    @Published var numberOfPlayers = 2
 
-    /// The method of arranging the deck; e.g., randomly, or with a specific order.
-    let deckSetup: DeckSetup
+    /// The next game's deck setup.
+    @Published var deckSetup = DeckSetup.random
     
-    /// A human-readable description of the starting deck, used if the deck setup is "custom".
-    let customDeckDescription: String
+    /// The next game's deck order if the deck setup is "custom."
+    ///
+    /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
+    @Published var customDeckDescription = ""
     
-//    var game: Game
+    /// The current game.
+    @Published var game = Game()
     
-    lazy var game2 = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup)
-    
-//    var game3: Game?
-    
-    @Published var game4: Game?
-//    var game3 = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup)
-    
-    // doesn't work; can't be published and lazy
-//    @Published lazy var game3 = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup)
-    
-    /// Creates a model with ??.
-    init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
+    /// Creates a model.
+    init() {
         print("Model.init() called")
-        self.numberOfPlayers = numberOfPlayers
-        self.deckSetup = deckSetup
-        self.customDeckDescription = customDeckDescription
-        
+    }
+    
+    /// Replaces the current game with a new one.
+    func makeGame() {
+        game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
     }
 }

@@ -27,33 +27,40 @@ struct AutoPlayView: View {
 
 /// A view that shows controls for selecting how the computer will play one game against itself.
 struct OneGameGroup: View {
-    /// The number of players in the game.
-    @State private var numberOfPlayers = 2
-    
-    /// The deck setup to use.
-    @State private var deckSetup: DeckSetup = .random
-
-    /// The card order to use if the deck setup is "custom."
-    ///
-    /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
-    @State private var customDeckDescription: String = ""
+    /// The model for this app.
+    @EnvironmentObject var model: Model
     
     var body: some View {
         Group {
-            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
-            
-            DeckSetupPicker(deckSetup: $deckSetup)
+            NumberOfPlayersStepper()
+            DeckSetupPicker()
             // TODO: if Custom deck, then need ability to enter that
             // E.g., if Custom, show text field. pre-populate with ordered deck, then user can customize
             
-            /// Makes a game.
-            /// / is it using parameters from APView?
-            /// model.numberOfplayers?
-            /// try model.makeGame()
             
-            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
-                Spacer()
-                Text("Go")
+            
+//            NavigationLink(destination: OneGameView(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)) {
+//                Spacer()
+//                Text("Go")
+//            }
+            NavigationLink( destination: OneGameView() ) {
+                            Spacer()
+                            Text("Go")
+                        }
+            NavigationLink( destination: OneGameView() ) {
+                EmptyView()
+            }
+            Button(action: {
+                // prep
+                self.model.makeGame()
+                // trigger navLink
+                
+            }) {
+                // TODO: This doesn't have the ">" arrow like a NavLink has, but that's a UI issue we can deal with later if desired.
+                HStack {
+                    Spacer()
+                    Text("Go")
+                }
             }
         }
     }
@@ -61,11 +68,11 @@ struct OneGameGroup: View {
 
 /// A view that shows a stepper for selecting the number of players in a game.
 struct NumberOfPlayersStepper: View {
-    /// The number of players in the game.
-    @Binding var numberOfPlayers: Int
+    /// The model for this app.
+    @EnvironmentObject var model: Model
     
     var body: some View {
-        Stepper("Players: \(numberOfPlayers)", value: $numberOfPlayers, in: 2...5)
+        Stepper("Players: \(model.numberOfPlayers)", value: $model.numberOfPlayers, in: 2...5)
     }
 }
 
@@ -73,12 +80,12 @@ struct NumberOfPlayersStepper: View {
 ///
 /// This may be used in other areas (e.g., MultipleGamesGroup), so keep it extracted.
 struct DeckSetupPicker: View {
-    /// The deck setup to use.
-    @Binding var deckSetup: DeckSetup
-
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+    
     var body: some View {
         // The label doesn't end with `":"`, because the picker's in a form.
-        Picker("Deck Setup", selection: $deckSetup) {
+        Picker("Deck Setup", selection: $model.deckSetup) {
             ForEach(DeckSetup.allCases) {
                 Text($0.name).tag($0)
             }
@@ -98,7 +105,7 @@ struct MultipleGamesGroup: View {
     
     var body: some View {
         Group {
-            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
+//            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
             NumberOfGamesChooser(numberOfGames: $numberOfGames)
             PlayMultipleGamesNavigationLink()
         }
@@ -147,10 +154,23 @@ struct PlayMultipleGamesNavigationLink: View {
 
 // MARK: Previews
 
+//struct AutoPlayView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            AutoPlayView()
+//        }
+//    }
+//}
+
+// TODO: not sure if I like this. here, we give the preview a brand new model. But in the real app, this view would be using a model influenced by previous views. So for example, in OGV, the preview has just Model(). But in reality we'd have that Model have game already set from APV. I guess I need to modify this model. Hmm...
+/// A preview provider that shows a preview of the auto-play view.
 struct AutoPlayView_Previews: PreviewProvider {
+    /// The model for this app.
+    static var model = Model()
+    
     static var previews: some View {
         NavigationView {
-            AutoPlayView()
+            AutoPlayView().environmentObject(model)
         }
     }
 }

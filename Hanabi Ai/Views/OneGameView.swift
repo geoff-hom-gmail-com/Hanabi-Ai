@@ -12,54 +12,48 @@ import SwiftUI
 ///
 /// So the user can analyze the game first, the game doesn't start immediately.
 struct OneGameView: View {
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+    
     /// The game to set up and play.
-    @ObservedObject var game: Game
+//    @ObservedObject var game: Game
 
     /// Creates a one-game view, including a game with the specified parameters.
-    init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
-        
-        //TODO:
-        // instead of setting the game settings here in init, we could get rid of the init by having APV set the game settings in the model. It can just bind to them.
-        // getting rid of this init will reduce the chance of errors a lot.
-        print("OGV init called")
-        self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
-    }
+//    init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String) {
+//
+//        print("OGV init called")
+//        self.game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+//    }
+    
+    /// Creates a one-game view, including a game with the specified parameters.
+//    init() {
+//        print("OGV init called")
+//    }
     
     var body: some View {
-        Form {
-            /// so here, we have model as an enviro var, and it's got model.game?
-//            game.map { game in
-//                Section(header: Text("Deck Setup")) {
-//                    DeckView(deck: game.startingDeck, label: game.deckSetup.name)
-//                        .font(.caption)
-//                }
-//            }
+        /// The game. For convenience.
+        let game = model.game
+        
+        return Form {
             Section(header: Text("Deck Setup")) {
                 DeckView(deck: game.startingDeck, label: game.deckSetup.name)
                     .font(.caption)
             }
-            
             Section(header: Text("Turn 1 Setup")) {
-                if !game.turns.isEmpty {
-                    
-                    Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
-                }
+                Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
             }
-            
             Section(header: TurnsSectionHeader()) {
                 TurnsGroup(turns: game.turns)
             }
             Section(header: Text("Results")) {
                 ResultsGroup(gameIsOver: game.isOver, results: game.results)
             }
-            
-            
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
             // TODO: once we get the model working and game init() called from APV, we shouldn't need onAppear() and can remove it.
         .onAppear {
             print("OGV onAppear() called")
-            self.game.setUp()
+//            self.game.setUp()
         }
     }
 }
@@ -72,10 +66,10 @@ struct OneGameView: View {
 struct DeckView: View {
     /// A string for labeling the deck.
     let label: String
-    
+
     /// The deck.
     let deck: Deck
-    
+
     /// Creates a deck view that shows the specified label and deck.
     ///
     /// Default label: `"Deck"`.
@@ -83,7 +77,7 @@ struct DeckView: View {
         self.deck = deck
         self.label = label
     }
-    
+
     var body: some View {
         Text("\(label): ") + deck.coloredText
     }
@@ -304,11 +298,14 @@ struct ResultsGroup: View {
 // MARK: Previews
 
 struct OneGameView_Previews: PreviewProvider {
+    /// The model for this app.
+    static var model = Model()
+
     static var previews: some View {
         NavigationView {
             // TODO: When I have other modes working, like 3+ players, will have to check if Live Preview works with that, or if code below needs to be modified.
-
-            OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
+            OneGameView().environmentObject(model)
+//            OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
 //            OneGameView(numberOfPlayers: 2, deckSetup: .custom, customDeckDescription: "???")
         }
     }

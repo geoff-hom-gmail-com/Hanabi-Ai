@@ -30,10 +30,8 @@ class Game: ObservableObject {
     /// A human-readable description of the starting deck, used if the deck setup is "custom".
     let customDeckDescription: String
     
-    // TODO: Once we get game.init() called correctly (not in a view's init(), then we can make this a let again and just make the starting deck in the init.
     /// The deck before any cards are dealt.
-//    let startingDeck: Deck
-    lazy var startingDeck = makeStartingDeck()
+    let startingDeck: Deck
     
     /// Each turn in the game.
     @Published var turns: [Turn] = []
@@ -46,41 +44,62 @@ class Game: ObservableObject {
         
     /// Creates a game with the specified parameters.
     ///
-    /// Currently, a game may be initialized from a SwiftUI view. This can lead to many initializations (e.g., if the view is a navigation link's destination). So, initialization is kept minimal.
-    init(numberOfPlayers: Int, deckSetup: DeckSetup, customDeckDescription: String = "") {
+    /// The defaults are chosen for computational simplicity.
+    init(numberOfPlayers: Int = 2, deckSetup: DeckSetup = .suitOrdered, customDeckDescription: String = "") {
         print("Game.init() called")
         
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
         self.customDeckDescription = customDeckDescription
-    }
-    
-    // MARK: Setup
-    
-    /// Makes and returns a starting deck based on this game's settings.
-    func makeStartingDeck() -> Deck {
-        print("game.makeStartingDeck() called")
-
+        
         /// The deck for the game.
         var deck: Deck
         
         switch deckSetup {
         case .random:
             deck = Game.makeRandomDeck()
+        case .suitOrdered:
+            deck = Game.makeSimpleDeck()
+            
         // TODO: add Custom deck setup. Read in custom deck description.
         case .custom:
-            print("game.makeStartingDeck(): .custom called")
-            // temp: to avoid crashes, we'll make this .random
-            deck = Game.makeRandomDeck()
+            print("game.setUp(): .custom called")
+            // temp: to avoid crashes
+            deck = Game.makeSimpleDeck()
             // Deck(custom: ???)
             //            deck = Deck()
         }
         
-        return deck
+        self.startingDeck = deck
+        dealHands()
     }
-
-    /// Returns a random deck.
-    static func makeRandomDeck() -> Deck {
+    
+    // MARK: Setup
+    
+    /// Makes and returns a starting deck based on this game's settings.
+//    func makeStartingDeck() -> Deck {
+//        print("game.makeStartingDeck() called")
+//
+//        /// The deck for the game.
+//        var deck: Deck
+//
+//        switch deckSetup {
+//        case .random:
+//            deck = Game.makeRandomDeck()
+//        // TODO: add Custom deck setup. Read in custom deck description.
+//        case .custom:
+//            print("game.makeStartingDeck(): .custom called")
+//            // temp: to avoid crashes, we'll make this .random
+//            deck = Game.makeRandomDeck()
+//            // Deck(custom: ???)
+//            //            deck = Deck()
+//        }
+//
+//        return deck
+//    }
+    
+    /// Returns a deck with no shuffling.
+    static func makeSimpleDeck() -> Deck {
         /// An array of 1s, as many as in a Hanabi suit.
         let suitOnes = Array(repeating: 1, count: 3)
         
@@ -102,19 +121,25 @@ class Game: ObservableObject {
         /// An array of all cards in a deck.
         ///
         /// How: For each suit, make its cards. Then flatten.
-        var deck = Suit.allCases.flatMap { suit in
+        let deck = Suit.allCases.flatMap { suit in
             suitNumbers.map {
                 Card(suit: suit, number: $0)
             }
         }
         
+        return deck
+    }
+
+    /// Returns a random deck.
+    static func makeRandomDeck() -> Deck {
+        var deck = makeSimpleDeck()
         deck.shuffle()
         return deck
     }
     
     /// Sets up the game, including the deck and starting hands.
-        func setUp() {
-            print("game.setUp() called")
+//        func setUp() {
+//            print("game.setUp() called")
 
             // TODO: keep this code, as it's closest to what we had in init() and we'll want it back when we make sure init() isn't being called from any views. (ie., by making sure that views don't have init() ).
     //        /// The deck for the game.
@@ -133,8 +158,8 @@ class Game: ObservableObject {
     //        }
     //        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
     //        self.startingDeck = deck
-            dealHands()
-        }
+//            dealHands()
+//        }
     
     /// Deals starting hands.
     func dealHands() {
