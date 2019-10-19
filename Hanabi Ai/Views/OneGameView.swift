@@ -25,24 +25,17 @@ struct OneGameView: View {
                     .font(.caption)
             }
             Section(header: Text("Turn 1 Setup")) {
-//                Turn1SetupGroup(setup: game.turns[0].setup, playFunction: game.play)
                 Turn1SetupGroup()
             }
-//            Section(header: TurnsSectionHeader()) {
-//                TurnsGroup(turns: game.turns)
-//            }
             Section(header: TurnsSectionHeader()) {
-//                TurnsGroup(turns: game.turns)
                 TurnsGroup()
             }
-            // TODO: Can use EO here and below. After I get it refreshing again on turns. if kept, should update doc comments for methods.
             Section(header: Text("Results")) {
-                ResultsGroup(gameIsOver: game.isOver, results: game.results)
+                ResultsGroup()
             }
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
         .onAppear {
-            print("OGV onAppear() called")
             self.model.makeGame()
         }
     }
@@ -81,14 +74,9 @@ struct DeckView: View {
 struct Turn1SetupGroup: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
-    
-    /// The game's setup after hands have been dealt.
-//    let setup: Setup
 
-    /// A function that plays a game from its turn 1 setup.
-//    let playFunction: () -> Void
-    
     var body: some View {
+        /// The game's setup after hands have been dealt.
         let setup = model.game.turns[0].setup
         return Group {
             Group {
@@ -96,8 +84,7 @@ struct Turn1SetupGroup: View {
                 DeckView(deck: setup.deck)
             }
             .font(.caption)
-//            PlayButtonView(playFunction: playFunction)
-            PlayButtonView()
+            PlayButtonView(playFunction: model.game.play)
         }
     }
 }
@@ -119,21 +106,16 @@ struct HandsView: View {
     }
 }
 
-// TODO: trying specific function, just because. So the method isn't as generic right now.
 /// A  view that shows a button that plays something.
 struct PlayButtonView: View {
-    /// The model for this app.
-    @EnvironmentObject var model: Model
-    
     /// A function that plays something.
-//    let playFunction: () -> Void
+    let playFunction: () -> Void
     
     var body: some View {
         // The spacers are to center the button.
         HStack {
             Spacer()
-//            Button(action: playFunction) {
-            Button(action: model.game.play) {
+            Button(action: playFunction) {
                 Text("Play")
             }
             Spacer()
@@ -155,21 +137,17 @@ struct TurnsSectionHeader: View {
     }
 }
 
-/// A view that shows the specified turns.
+/// A view that shows a game's turns.
 struct TurnsGroup: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
     
-    /// The turns to show.
-//    let turns: [Turn]
-
     var body: some View {
-        let turns = model.game.turns
-        return Group {
+        Group {
             //  TODO: Align header and rows. E.g., Turn takes 40% of row, grwby takes 40%, cs takes 20%
             //  Ugh. Alignment can be done with GR and PreferenceKey, which is available but undocumented. Will wait for Apple to document better and move on to other stuff.
             TurnViewHeader()
-            ForEach(turns, id: \.number) {
+            ForEach(model.game.turns, id: \.number) {
                 TurnView(turn: $0)
             }
         }
@@ -280,38 +258,43 @@ struct ActionView: View {
     }
 }
 
-
-
 // MARK: Section: Results
 
 // TODO: Update doc when working on this. What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues, Kinda like an F turn
 /// A view that shows the final state of the game, and a summary.
 struct ResultsGroup: View {
-    /// A Boolean value that indicates whether the game is over.
-    let gameIsOver: Bool
-    
-    /// temp def
-    /// hmm, not sure what type this will be yet
-    let results: String
+    /// The model for this app.
+    @EnvironmentObject var model: Model
     
     var body: some View {
-        Text(gameIsOver ? "Game done!" : "??")
+        /// The game. For convenience.
+        let game = model.game
+        
+        /// A Boolean value that indicates whether the game is over.
+        let gameIsOver = game.isOver
+        
+        /// hmm, not sure what this will be yet
+//        let results = game.results
+        
+        return Text(gameIsOver ? "Game done!" : "??")
             .font(.caption)
     }
 }
 
 // MARK: Previews
 
+// TODO: May need to update this. In the real app, the model will be updated by the previous view, setting the type of game.
+// Currently, this preview is running an empty model, which gets updated in onAppear() to create a new, default game with model.makeGame().
+// So, all we see is the default game (2 players, random deck).
+
+/// A preview of the one-game view.
 struct OneGameView_Previews: PreviewProvider {
     /// The model for this app.
     static var model = Model()
 
     static var previews: some View {
         NavigationView {
-            // TODO: When I have other modes working, like 3+ players, will have to check if Live Preview works with that, or if code below needs to be modified.
             OneGameView().environmentObject(model)
-//            OneGameView(numberOfPlayers: 2, deckSetup: .random, customDeckDescription: "")
-//            OneGameView(numberOfPlayers: 2, deckSetup: .custom, customDeckDescription: "???")
         }
     }
 }

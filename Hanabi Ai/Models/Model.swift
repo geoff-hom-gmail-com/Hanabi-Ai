@@ -25,24 +25,19 @@ class Model: ObservableObject {
     /// The current game.
     @Published var game = Game()
     
-    /// comment
-    var anyCancellable: AnyCancellable? = nil
-    
-    /// comment
-    init() {
-        print("model.init called")
-        anyCancellable = game.objectWillChange.sink {
-            print("game.objectWillChange sunk1")
-            self.objectWillChange.send()
-        }
-    }
+    /// A subscriber that publishes changes from the current game.
+    var gameSubscriber: AnyCancellable? = nil
     
     /// Replaces the current game with a new one.
+    ///
+    /// Also subscribes to the new game.
     func makeGame() {
-        print("model.makeGame() called")
         game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
-        anyCancellable = game.objectWillChange.sink {
-            print("game.objectWillChange sunk2")
+        
+        // Learning about Combine: objectWillChange is the Publisher from ObservableObject.
+        // sink(receiveValue:) creates and returns a subscriber to the publisher.
+        // In this case, when the game will change, the model says it will also change.
+        gameSubscriber = game.objectWillChange.sink {
             self.objectWillChange.send()
         }
     }

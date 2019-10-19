@@ -10,10 +10,8 @@ import Foundation
 
 /// A game of Hanabi, played by the computer against itself.
 ///
-/// This is a class (vs. struct), because the `play()` method mutates, and we can't pass it into a button if this is a struct.
-// TODO: Do I need ObservableObject to work with Combine? Yep.
+/// This is a class (vs. struct) for several reasons. One is that the model observes this, so the game needs to conform to `ObservableObject`.
 class Game: ObservableObject {
-//class Game {
     // TODO: deprecate? might use later if user wants a random string/deck to play for herself.
     // Returns a string defining a random deck.
     //    static var randomDeckDescription: String {
@@ -34,76 +32,46 @@ class Game: ObservableObject {
     
     /// The deck before any cards are dealt.
     let startingDeck: Deck
-    
-    // TODO: OGV isn't updating anymore, whether published or not. It must be because the game (reference) isn't changing, even though the properties of game are.
-    // There's probably a way for me to tell Model that Game changed when turns changes. The Combine framework?
-    // what if I try making Game a struct?!!
+
     /// Each turn in the game.
         @Published var turns: [Turn] = []
-//    var turns: [Turn] = []
     
     /// A Boolean value that indicates whether this game is over.
         @Published var isOver = false
-//    var isOver = false
     
     /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
     let results = "testing"
     
     /// Creates a game with the specified parameters.
     ///
-    /// The defaults are chosen for computational simplicity.
+    /// The defaults are chosen for computational simplicity. The game is set up to the start of the first turn.
     init(numberOfPlayers: Int = 2, deckSetup: DeckSetup = .suitOrdered, customDeckDescription: String = "") {
-        print("game.init() called")
-        
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
         self.customDeckDescription = customDeckDescription
-        
-        /// The deck for the game.
-        var deck: Deck
-        
-        switch deckSetup {
-        case .random:
-            deck = Game.makeRandomDeck()
-        case .suitOrdered:
-            deck = Game.makeSimpleDeck()
-            
-        // TODO: add Custom deck setup. Read in custom deck description.
-        case .custom:
-            print("game.setUp(): .custom called")
-            // temp: to avoid crashes
-            deck = Game.makeSimpleDeck()
-            // Deck(custom: ???)
-            //            deck = Deck()
-        }
-        
-        self.startingDeck = deck
+        self.startingDeck = Game.makeStartingDeck(deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         dealHands()
     }
     
     // MARK: Setup
     
-    /// Makes and returns a starting deck based on this game's settings.
-    //    func makeStartingDeck() -> Deck {
-    //        print("game.makeStartingDeck() called")
-    //
-    //        /// The deck for the game.
-    //        var deck: Deck
-    //
-    //        switch deckSetup {
-    //        case .random:
-    //            deck = Game.makeRandomDeck()
-    //        // TODO: add Custom deck setup. Read in custom deck description.
-    //        case .custom:
-    //            print("game.makeStartingDeck(): .custom called")
-    //            // temp: to avoid crashes, we'll make this .random
-    //            deck = Game.makeRandomDeck()
-    //            // Deck(custom: ???)
-    //            //            deck = Deck()
-    //        }
-    //
-    //        return deck
-    //    }
+    /// Makes and returns a deck based on the specified settings.
+    class func makeStartingDeck(deckSetup: DeckSetup, customDeckDescription: String) -> Deck {
+        switch deckSetup {
+        case .random:
+            return Game.makeRandomDeck()
+        case .suitOrdered:
+            return Game.makeSimpleDeck()
+
+        // TODO: add Custom deck setup. Read in custom deck description.
+        case .custom:
+            print("game.makeStartingDeck(): .custom called")
+            // temp: to avoid crashes
+            return Game.makeSimpleDeck()
+            // Deck(custom: ???)
+            //            deck = Deck()
+        }
+    }
     
     /// Returns a deck with no shuffling.
     static func makeSimpleDeck() -> Deck {
@@ -139,39 +107,15 @@ class Game: ObservableObject {
     
     /// Returns a random deck.
     static func makeRandomDeck() -> Deck {
+        /// A deck with all the cards.
         var deck = makeSimpleDeck()
+        
         deck.shuffle()
         return deck
     }
     
-    /// Sets up the game, including the deck and starting hands.
-    //        func setUp() {
-    //            print("game.setUp() called")
-    
-    // TODO: keep this code, as it's closest to what we had in init() and we'll want it back when we make sure init() isn't being called from any views. (ie., by making sure that views don't have init() ).
-    //        /// The deck for the game.
-    //        var deck: Deck
-    //
-    //        switch deckSetup {
-    //        case .random:
-    //            deck = Game.makeRandomDeck()
-    //        // TODO: add Custom deck setup. Read in custom deck description.
-    //        case .custom:
-    //            print("game.setUp(): .custom called")
-    //            // temp: to avoid crashes, we'll make this .random
-    //            deck = Game.makeRandomDeck()
-    //            // Deck(custom: ???)
-    ////            deck = Deck()
-    //        }
-    //        // hmm, we need a starting deck so views can call it and show it. I guess it can be a var that starts empty?
-    //        self.startingDeck = deck
-    //            dealHands()
-    //        }
-    
     /// Deals starting hands.
-    func dealHands() {
-        //        print("game.dealHands() called")
-        
+    func dealHands() {        
         /// An empty hand for each player.
         var hands = Array(repeating: Hand(), count: numberOfPlayers)
         
@@ -207,12 +151,7 @@ class Game: ObservableObject {
     
     /// Plays turns until the game ends.
     func play() {
-        print("game.play() called")
-        print("game.play() deckSetup.name: \(deckSetup.name)")
-        
         while !isOver {
-            print("game.play() isOver called")
-            
             /// The index of the last turn.
             let lastIndex = turns.count - 1
             

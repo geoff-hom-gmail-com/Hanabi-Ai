@@ -27,9 +27,6 @@ struct AutoPlayView: View {
 
 /// A view that shows controls for selecting how the computer will play one game against itself.
 struct OneGameGroup: View {
-    /// The model for this app.
-//    @EnvironmentObject var model: Model
-
     var body: some View {
         Group {
             NumberOfPlayersStepper()
@@ -76,6 +73,10 @@ struct DeckSetupPicker: View {
 }
 
 // MARK: MultipleGamesGroup
+
+// TODO: This all needs to be updated to use
+//     @EnvironmentObject var model: Model
+// When I'm ready to actually play multiple games.
 
 /// A view that shows controls for selecting how the computer will play multiple games against itself.
 struct MultipleGamesGroup: View {
@@ -136,16 +137,7 @@ struct PlayMultipleGamesNavigationLink: View {
 
 // MARK: Previews
 
-//struct AutoPlayView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationView {
-//            AutoPlayView()
-//        }
-//    }
-//}
-
-// TODO: not sure if I like this. here, we give the preview a brand new model. But in the real app, this view would be using a model influenced by previous views. So for example, in OGV, the preview has just Model(). But in reality we'd have that Model have game already set from APV. I guess I need to modify this model. Hmm...
-/// A preview provider that shows a preview of the auto-play view.
+/// A preview of the auto-play view.
 struct AutoPlayView_Previews: PreviewProvider {
     /// The model for this app.
     static var model = Model()
