@@ -19,8 +19,8 @@ class Model: ObservableObject {
     
     /// The next game's deck order if the deck setup is "custom."
     ///
-    /// This isn't implemented yet, but it should be a human-readable string, so one can test it manually.
-    @Published var customDeckDescription = ""
+    /// This is a human-readable string, so one can check it manually.
+    @Published var customDeckDescription = Deck.suitOrderedString
     
     /// The current game.
     @Published var game = Game()

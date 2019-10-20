@@ -27,13 +27,19 @@ struct AutoPlayView: View {
 
 /// A view that shows controls for selecting how the computer will play one game against itself.
 struct OneGameGroup: View {
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+    
     var body: some View {
         Group {
             NumberOfPlayersStepper()
             DeckSetupPicker()
-            // TODO: if Custom deck, then need ability to enter that
-            // E.g., if Custom, show text field. pre-populate with ordered deck, then user can customize
-
+            
+            // Note: This results in a UITableView warning, even if showing only a text.
+            if model.deckSetup == .custom {
+                CustomDeckTextField()
+            }
+            
             // TODO: (As of Xcode 11.1) I wanted to have a button that will first call model.makeGame() and then trigger a navigation link programmatically, like with isActive or tag/selection. However, all navigation links I make result in a row that can be activated by pressing.
             // Tried .hidden(), EmptyView(), Text(""), .frame(width: 0, height: 0), Spacer(): The row is always pressable.
             // Instead, will use the navigation link below and call model.makeGame() in the destination's .onAppear().
@@ -68,6 +74,30 @@ struct DeckSetupPicker: View {
             ForEach(DeckSetup.allCases) {
                 Text($0.name).tag($0)
             }
+        }
+    }
+}
+
+/// A view that shows a text field for entering a custom deck.
+///
+/// The text field initially shows the model's default custom deck.
+struct CustomDeckTextField: View {
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+    
+    var body: some View {
+        Group {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Custom deck: ")
+                TextField("", text: $model.customDeckDescription)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .lineLimit(nil)
+            }.font(.caption)
+            
+            // This is temporary until `TextField()` works with `.lineLimit(nil)`.
+            (Text("Custom deck: ")
+                + Text(model.customDeckDescription))
+                .font(.caption)
         }
     }
 }
@@ -143,8 +173,10 @@ struct AutoPlayView_Previews: PreviewProvider {
     static var model = Model()
     
     static var previews: some View {
-        NavigationView {
+//        model.deckSetup = .custom
+        return NavigationView {
             AutoPlayView().environmentObject(model)
         }
     }
 }
+

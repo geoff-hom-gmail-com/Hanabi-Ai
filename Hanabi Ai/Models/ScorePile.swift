@@ -17,7 +17,7 @@ typealias ScorePile = Card
 extension ScorePile {
     /// The current score for the pile.
     var score: Int {
-        self.number
+        number
     }
     
     /// The max score a pile can have.

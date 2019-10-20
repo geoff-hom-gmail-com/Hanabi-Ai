@@ -13,11 +13,6 @@ import SwiftUI
 extension Array where Element == Card {
     /// A text that is the concatenation of each card's colored text.
     var coloredText: Text {
-        /// An array of each card's colored text.
-        let coloredCardTexts = self.map {
-            $0.coloredText
-        }
-        
-        return coloredCardTexts.concatenated()
+         map{$0.coloredText}.concatenated()
     }
 }

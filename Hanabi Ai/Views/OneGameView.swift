@@ -41,31 +41,6 @@ struct OneGameView: View {
     }
 }
 
-// MARK: Section: Deck Setup
-
-/// A view that shows a label and a deck.
-///
-/// The format is `label`, `": "` (which has a non-breaking space), and the deck.
-struct DeckView: View {
-    /// A string for labeling the deck.
-    let label: String
-
-    /// The deck.
-    let deck: Deck
-
-    /// Creates a deck view that shows the specified label and deck.
-    ///
-    /// Default label: `"Deck"`.
-    init(deck: Deck, label: String = "Deck") {
-        self.deck = deck
-        self.label = label
-    }
-
-    var body: some View {
-        Text("\(label): ") + deck.coloredText
-    }
-}
-
 // MARK: Section: Turn 1 Setup
 
 /// A view that shows a game's setup after hands have been dealt, and includes a "Play" button.

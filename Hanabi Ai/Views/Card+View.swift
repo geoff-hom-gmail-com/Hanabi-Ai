@@ -13,7 +13,7 @@ import SwiftUI
 extension Card {
     /// A text that shows a card's description, with color.
     var coloredText: Text {
-        Text("\(self.description)")
-            .foregroundColor(self.suit.color)
+        Text("\(description)")
+            .foregroundColor(suit.color)
     }
 }
