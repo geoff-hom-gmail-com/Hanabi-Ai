@@ -241,8 +241,7 @@ struct ActionView: View {
 
 // MARK: Section: Results
 
-// TODO: Update doc when working on this. What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues, Kinda like an F turn
-/// A view that shows the final state of the game, and a summary.
+/// A view that shows the final setup of the game, and a summary.
 struct ResultsGroup: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
@@ -251,16 +250,17 @@ struct ResultsGroup: View {
         /// The game. For convenience.
         let game = model.game
         
-        /// A Boolean value that indicates whether the game is over.
-        let gameIsOver = game.isOver
-        
-        /// hmm, not sure what this will be yet
-//        let results = game.results
-        
-        return Text(gameIsOver ? "Game done!" : "??")
-            .font(.caption)
+        return Group {
+            if game.isOver {
+                ScorePilesView(scorePiles: game.endSetup!.scorePiles)
+            } else {
+                Text("??")
+            }
+        }
+        .font(.caption)
     }
 }
+// TODO: What do we want in the results? Number of turns, score/max, remaining deck, if any, # strikes, # clues
 
 // MARK: Previews
 

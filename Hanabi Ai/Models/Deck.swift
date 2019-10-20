@@ -18,6 +18,9 @@ extension Deck {
     /// A string that describes a suit-ordered deck.
     static let suitOrderedString = "g1g1g1g2g2g3g3g4g4g5r1r1r1r2r2r3r3r4r4r5w1w1w1w2w2w3w3w4w4w5b1b1b1b2b2b3b3b4b4b5y1y1y1y2y2y3y3y4y4y5"
     
+    /// A string that describes a deck that can be won by playing the first card in each hand.
+    static let playFirstCardString = "g1g2g3g4g5r1r2r3r4r5w1w2w3w4w5b1b2b3b4b5y1y2y3y4y5g1g1g2g3g4r1r1r2r3r4w1w1w2w3w4b1b1b2b3b4y1y1y2y3y4"
+    
     /// Makes and returns the deck described by the specified string.
     ///
     /// The string should be concated card descriptions. E.g., "g1b3r3." If the string can't be parsed (TODO: make robust)
@@ -31,19 +34,17 @@ extension Deck {
         ///
         /// This holds the suit until the next loop, when the card is made.
         var suit = Suit.green
-        
+                
         for (index, character) in string.enumerated() {
             if index % 2 == 0 {
                 guard let suit2 = Suit( rawValue: String(character) ) else {
                     print(#"Deck.from() error: Couldn't match "\#(character)" to a suit."#)
-                    print("Full string: \(string)")
                     return deck
                 }
                 suit = suit2
             } else {
                 guard let number = Int( String(character) ) else {
                     print(#"Deck.from() error: Couldn't match "\#(character)" to a number."#)
-                    print("Full string: \(string)")
                     return deck
                 }
                 deck += [Card(suit: suit, number: number)]

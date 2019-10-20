@@ -174,6 +174,7 @@ struct AutoPlayView_Previews: PreviewProvider {
     
     static var previews: some View {
 //        model.deckSetup = .custom
+        model.customDeckDescription = Deck.playFirstCardString
         return NavigationView {
             AutoPlayView().environmentObject(model)
         }

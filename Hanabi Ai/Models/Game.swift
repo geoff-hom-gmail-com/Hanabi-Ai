@@ -32,15 +32,15 @@ class Game: ObservableObject {
     
     /// The deck before any cards are dealt.
     let startingDeck: Deck
-
+    
     /// Each turn in the game.
-        @Published var turns: [Turn] = []
+    @Published var turns: [Turn] = []
     
     /// A Boolean value that indicates whether this game is over.
-        @Published var isOver = false
+    @Published var isOver = false
     
-    /// TODO: Not sure what type this will be. It's everything needed to report the results. Like, the next turnStart, plus maybe more. probably want this @Published.
-    let results = "testing"
+    /// The setup at the end of the game.
+    @Published var endSetup: Setup?
     
     /// Creates a game with the specified parameters.
     ///
@@ -57,14 +57,22 @@ class Game: ObservableObject {
     
     /// Makes and returns a deck based on the specified settings.
     class func makeStartingDeck(deckSetup: DeckSetup, customDeckDescription: String) -> Deck {
+        /// The deck.
+        let deck: Deck
+        
         switch deckSetup {
         case .random:
-            return Game.makeRandomDeck()
+            deck = Game.makeRandomDeck()
         case .suitOrdered:
-            return Game.makeSimpleDeck()
+            deck = Game.makeSimpleDeck()
         case .custom:
-            return Deck.from(customDeckDescription)
+            deck = Deck.from(customDeckDescription)
         }
+        
+        /// If we want to test a deck again, we need to be in Debug Preview and check the console for this.
+        print("Deck: \(deck.description)")
+
+        return deck
     }
     
     /// Returns a deck with no shuffling.
@@ -156,7 +164,7 @@ class Game: ObservableObject {
             
             if nextSetup.isGameOver() {
                 isOver = true
-                // TODO: at game end, populate results. e.g., self.results = X
+                endSetup = nextSetup
             } else {
                 /// The next turn.
                 let nextTurn = Turn(number: turns.last!.number + 1, setup: nextSetup)
