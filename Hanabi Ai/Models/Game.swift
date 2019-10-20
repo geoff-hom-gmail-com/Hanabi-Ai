@@ -62,14 +62,8 @@ class Game: ObservableObject {
             return Game.makeRandomDeck()
         case .suitOrdered:
             return Game.makeSimpleDeck()
-
-        // TODO: add Custom deck setup. Read in custom deck description.
         case .custom:
-            print("game.makeStartingDeck(): .custom called")
-            // temp: to avoid crashes
-            return Game.makeSimpleDeck()
-            // Deck(custom: ???)
-            //            deck = Deck()
+            return Deck.from(customDeckDescription)
         }
     }
     

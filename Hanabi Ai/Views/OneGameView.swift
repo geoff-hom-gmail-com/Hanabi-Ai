@@ -36,7 +36,12 @@ struct OneGameView: View {
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
         .onAppear {
+            print("onAppear called")
             self.model.makeGame()
+        }
+        .onDisappear {
+            print("onDisappear called")
+            self.model.game = Game()
         }
     }
 }
