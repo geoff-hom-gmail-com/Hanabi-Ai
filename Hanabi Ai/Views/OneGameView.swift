@@ -41,6 +41,7 @@ struct OneGameView: View {
         }
         .onDisappear {
             print("onDisappear called")
+            // We shouldn't need this, but the app would crash when playing a game, going back, then trying to play a new game. Creating an unplayed game, below, fixed it.
             self.model.game = Game()
         }
     }

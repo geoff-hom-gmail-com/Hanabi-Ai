@@ -24,7 +24,7 @@ class Card {
     ///
     /// Adding foreground/font color is left to views/extensions.
     var description: String {
-        "\(suit.letter)\(number)"
+        "\(suit.rawValue)\(number)"
     }
     
     /// Creates a card with the specified parameters.

@@ -58,7 +58,7 @@ struct Action {
             if let number = number {
                 clueString = "\(number)"
             } else {
-                clueString = "\(suit!.letter)"
+                clueString = "\(suit!.rawValue)"
             }
             return "\(typeAbbr).\(clueString)"
         }

@@ -32,7 +32,7 @@ extension Suit {
     
     /// A text that shows the suit's letter, with color.
     var coloredLetter: Text {
-        Text("\(letter)")
+        Text("\(rawValue)")
             .foregroundColor(color)
     }
     
