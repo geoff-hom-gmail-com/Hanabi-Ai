@@ -57,15 +57,24 @@ struct Turn1SetupGroup: View {
     @EnvironmentObject var model: Model
 
     var body: some View {
+        /// The game. For convenience.
+        let game = model.game
+        
         /// The game's setup after hands have been dealt.
-        let setup = model.game.turns[0].setup
+        let setup = game.turns[0].setup
+        
         return Group {
             Group {
                 HandsView(hands: setup.hands)
                 DeckView(deck: setup.deck)
             }
             .font(.caption)
-            PlayButtonView(playFunction: model.game.play)
+            
+            // TODO: When Xcode 11.2 is out, see if Picker works better. (See AIPicker.swift.)
+//            AIPicker(index: $game.aiIndex)
+            AIView()
+            
+            PlayButtonView(playFunction: game.play)
         }
     }
 }
@@ -84,6 +93,17 @@ struct HandsView: View {
                 }
             }
         }
+    }
+}
+
+/// A view that shows the AI for the game.
+/// TODO: this is temp, until we can get AI-picking working on a game/turn basis. Wait for Xcode 11.2?
+struct AIView: View {
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+
+    var body: some View {
+        Text("AI: \(Model.AIs[model.game.aiIndex].name)")
     }
 }
 

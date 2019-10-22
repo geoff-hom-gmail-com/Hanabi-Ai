@@ -30,6 +30,9 @@ class Game: ObservableObject {
     /// A human-readable description of the starting deck, used if the deck setup is "custom".
     let customDeckDescription: String
     
+    /// The `AIs` index to use in the game.
+    @Published var aiIndex: Int
+    
     /// The deck before any cards are dealt.
     let startingDeck: Deck
     
@@ -45,10 +48,11 @@ class Game: ObservableObject {
     /// Creates a game with the specified parameters.
     ///
     /// The defaults are chosen for computational simplicity. The game is set up to the start of the first turn.
-    init(numberOfPlayers: Int = 2, deckSetup: DeckSetup = .suitOrdered, customDeckDescription: String = "") {
+    init(numberOfPlayers: Int = 2, deckSetup: DeckSetup = .suitOrdered, customDeckDescription: String = "", aiIndex: Int = 0) {
         self.numberOfPlayers = numberOfPlayers
         self.deckSetup = deckSetup
         self.customDeckDescription = customDeckDescription
+        self.aiIndex = aiIndex
         self.startingDeck = Game.makeStartingDeck(deckSetup: deckSetup, customDeckDescription: customDeckDescription)
         dealHands()
     }
@@ -157,6 +161,10 @@ class Game: ObservableObject {
             /// The index of the last turn.
             let lastIndex = turns.count - 1
             
+            // TODO: after AI protocol made, this will be:
+            // turns[lastIndex].action = ai.action(for: setup)
+            // who tracks the ai? game.ai.action(for: setup) ?
+            // eventually we want turn-based ai: turns[lastIndex].action = turns[lastIndex].ai.action(for: setup)
             turns[lastIndex].action = turns[lastIndex].setup.chooseAction()
             
             /// The next turn's setup.

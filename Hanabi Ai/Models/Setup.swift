@@ -51,7 +51,7 @@ struct Setup {
     }
     
     /// Chooses and returns an action for this setup.
-    /// Under construction. The chosen action will depend on the setup and the AIs.
+    /// todo: Under construction. The chosen action will depend on the setup and the AIs.
     func chooseAction() -> Action {
         //testing
         let action: Action

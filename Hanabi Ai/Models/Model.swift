@@ -22,17 +22,32 @@ class Model: ObservableObject {
     /// This is a human-readable string, so one can check it manually.
     @Published var customDeckDescription = Deck.suitOrderedString
     
+    /// The available AIs.
+    static let AIs: [AI] = [PlayFirstCardAI(), PlaySecondCardAI()]
+    
+    /// The `AIs` index to use in the next game.
+    @Published var aiIndex = AIs.firstIndex { $0 is PlayFirstCardAI }!
+    
     /// The current game.
     @Published var game = Game()
     
     /// A subscriber that publishes changes from the current game.
     var gameSubscriber: AnyCancellable? = nil
     
+    /// Makes an instance.
+    ///
+    /// We won't normally use the initiallly created game, but it's good for testing.
+    init() {
+        gameSubscriber = game.objectWillChange.sink {
+            self.objectWillChange.send()
+        }
+    }
+    
     /// Replaces the current game with a new one.
     ///
     /// Also subscribes to the new game.
     func makeGame() {
-        game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription)
+        game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription, aiIndex: aiIndex)
         
         // Learning about Combine: objectWillChange is the Publisher from ObservableObject.
         // sink(receiveValue:) creates and returns a subscriber to the publisher.
