@@ -161,11 +161,9 @@ class Game: ObservableObject {
             /// The index of the last turn.
             let lastIndex = turns.count - 1
             
-            // TODO: after AI protocol made, this will be:
-            // turns[lastIndex].action = ai.action(for: setup)
-            // who tracks the ai? game.ai.action(for: setup) ?
-            // eventually we want turn-based ai: turns[lastIndex].action = turns[lastIndex].ai.action(for: setup)
-            turns[lastIndex].action = turns[lastIndex].setup.chooseAction()
+            // TODO: eventually we want to track which AI chose each turn's action, and to let the user change a specific turn's ai:
+            // turns[lastIndex].action = turns[lastIndex].ai.action(for: setup)
+            turns[lastIndex].action = Model.AIs[aiIndex].action(for: turns[lastIndex].setup)
             
             /// The next turn's setup.
             let nextSetup = turns[lastIndex].doAction()
