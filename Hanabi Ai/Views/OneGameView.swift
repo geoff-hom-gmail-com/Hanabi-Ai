@@ -36,11 +36,9 @@ struct OneGameView: View {
         }
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
         .onAppear {
-            print("onAppear called")
             self.model.makeGame()
         }
         .onDisappear {
-            print("onDisappear called")
             // We shouldn't need this, but the app would crash when playing a game, going back, then trying to play a new game. Creating an unplayed game, below, fixed it.
             self.model.game = Game()
         }
@@ -104,23 +102,6 @@ struct AIView: View {
 
     var body: some View {
         Text("AI: \(Model.AIs[model.game.aiIndex].name)")
-    }
-}
-
-/// A  view that shows a button that plays something.
-struct PlayButtonView: View {
-    /// A function that plays something.
-    let playFunction: () -> Void
-    
-    var body: some View {
-        // The spacers are to center the button.
-        HStack {
-            Spacer()
-            Button(action: playFunction) {
-                Text("Play")
-            }
-            Spacer()
-        }
     }
 }
 

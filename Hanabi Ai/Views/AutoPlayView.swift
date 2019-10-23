@@ -10,12 +10,29 @@ import SwiftUI
 
 /// A view that shows controls for selecting how the computer will play itself.
 struct AutoPlayView: View {
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+    
     var body: some View {
         Form {
-            Section(header: Text("One Game")) {
+            Section(header: Text("Settings")) {
+                NumberOfPlayersStepper()
+                DeckSetupPicker()
+                
+                // Note: This results in a UITableView warning, even if showing only a text.
+                if model.deckSetup == .custom {
+                    CustomDeckTextField()
+                }
+                
+                AIPicker()
+            }
+            
+//            Section(header: Text("One Game")) {
+            Section {
                 OneGameGroup()
             }
-            Section(header: Text("Multiple Games")) {
+//            Section(header: Text("Multiple Games")) {
+            Section {
                 MultipleGamesGroup()
             }
         }
@@ -28,24 +45,25 @@ struct AutoPlayView: View {
 /// A view that shows controls for selecting how the computer will play one game against itself.
 struct OneGameGroup: View {
     /// The model for this app.
-    @EnvironmentObject var model: Model
+//    @EnvironmentObject var model: Model
     
     var body: some View {
         Group {
-            NumberOfPlayersStepper()
-            DeckSetupPicker()
-            
+//            NumberOfPlayersStepper()
+//            DeckSetupPicker()
+//
             // Note: This results in a UITableView warning, even if showing only a text.
-            if model.deckSetup == .custom {
-                CustomDeckTextField()
-            }
+//            if model.deckSetup == .custom {
+//                CustomDeckTextField()
+//            }
             
-            AIPicker()
+//            AIPicker()
             
             // TODO: (As of Xcode 11.1) I wanted to have a button that will first call model.makeGame() and then trigger a navigation link programmatically, like with isActive or tag/selection. However, all navigation links I make result in a row that can be activated by pressing.
             // Tried .hidden(), EmptyView(), Text(""), .frame(width: 0, height: 0), Spacer(): The row is always pressable.
             // Instead, will use the navigation link below and call model.makeGame() in the destination's .onAppear().
             NavigationLink( destination: OneGameView() ) {
+                Text("One Game")
                 Spacer()
                 Text("Go")
             }
@@ -123,63 +141,36 @@ struct AIPicker: View {
 
 // MARK: MultipleGamesGroup
 
-// TODO: This all needs to be updated to use
-//     @EnvironmentObject var model: Model
-// When I'm ready to actually play multiple games.
-
 /// A view that shows controls for selecting how the computer will play multiple games against itself.
 struct MultipleGamesGroup: View {
-    /// The number of players in the game.
-    @State private var numberOfPlayers = 2
-    
-    /// The number of games to play.
-    @State private var numberOfGames = 101
-    
     var body: some View {
         Group {
-//            NumberOfPlayersStepper(numberOfPlayers: $numberOfPlayers)
-            NumberOfGamesChooser(numberOfGames: $numberOfGames)
-            PlayMultipleGamesNavigationLink()
+            NumberOfGamesChooser()
+            NavigationLink( destination: MultipleGamesView() ) {
+                Spacer()
+                Text("Go")
+            }
         }
     }
 }
 
-/// A `View` that lets the user choose the number of games to play.
+/// A view that shows a text field for selecting the number of games.
+///
+/// TODO: TextField doesn't seem easy-to-use with numbers yet. So we'll use text for now and revisit later.
+/// This works only with numbers. If text is entered, it'll probably just go to some default.
 struct NumberOfGamesChooser: View {
-    /// The number of games to play.
-    @Binding var numberOfGames: Int
-    
-    /// TODO: document
-    @State private var numberOfGamesString: String = "300"
-    
-    //TODO: When user enters new number of games, update the binding. Hmm, user could enter something invalid. So we'll have to check. Could try a picker, like the decimal calorie entry in MFP.
-    /// TODO: Document
-    init(numberOfGames: Binding<Int>) {
-        self._numberOfGames = numberOfGames
-//        self.numberOfGamesString = "\(self.numberOfGames)"
-    }
+    /// The model for this app.
+    @EnvironmentObject var model: Model
+
+    //TODO: User could enter something invalid. So we'll have to check. Could try a picker, like the decimal calorie entry in MFP.
     
     var body: some View {
         HStack {
-            // TODO: Align Text and TextField. May want a custom TextField VerticalAlignment, as in WWDC talk on custom views in SwiftUI. But someone else will probably work on this issue soon. After fixing alignment, remove background colors.
-            Text("Number of games:").background(Color.gray.opacity(0.2))
-            //TODO: what does textfieldstyle do? would one be more appropriate?
-            //TODO: can I tell the texstfield to take in only numbers, and no decimal? e.g., positive integers? textcontent just has stuff like "zip code," etc.
-            // Formatter, as in https://stackoverflow.com/questions/56958974/swiftui-textfield-binding-to-double-not-working-with-custom-formatter? Note there's a bug in Xcode 11 GM so it's not working as of that.
-            TextField("Enter number of games", text: $numberOfGamesString).background(Color.gray.opacity(0.2))
-        }
-    }
-}
-
-/// A `NavigationLink` that goes to another screen to play multiple games in a row.
-///
-/// TODO: Do the games start right away? Or show setup first?
-struct PlayMultipleGamesNavigationLink: View {
-    var body: some View {
-        // TODO: This would be a new view for showing multiple game results.
-        NavigationLink(destination: Text("Placeholder")) {
-            Spacer()
-            Text("Run")
+            Text("Games:")
+            // TODO: Get TextField working with Int.
+            TextField("100", text: $model.numberOfGamesString)
+//            TextField( "100", value: $model.numberOfGames, formatter: NumberFormatter() )
+                .textFieldStyle(RoundedBorderTextFieldStyle())
         }
     }
 }

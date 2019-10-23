@@ -31,6 +31,12 @@ class Model: ObservableObject {
     /// The current game.
     @Published var game = Game()
     
+    /// The number of games to play in a row, if that mode was chosen.
+    @Published var numberOfGames = 10
+    
+    /// Temp string, until TextField becomes easier to enter numbers.
+    @Published var numberOfGamesString = "10"
+
     /// A subscriber that publishes changes from the current game.
     var gameSubscriber: AnyCancellable? = nil
     
