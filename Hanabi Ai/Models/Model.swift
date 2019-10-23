@@ -63,10 +63,6 @@ class Model: ObservableObject {
     /// Also subscribes to the new game.
     func makeGame() {
         game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription, aiIndex: aiIndex)
-        
-        // Learning about Combine: objectWillChange is the Publisher from ObservableObject.
-        // sink(receiveValue:) creates and returns a subscriber to the publisher.
-        // In this case, when the game will change, the model says it will also change.
         gameSubscriber = game.objectWillChange.sink {
             self.objectWillChange.send()
         }
@@ -77,6 +73,14 @@ class Model: ObservableObject {
         // if valid int, update.
         if let number = Int(numberOfGamesString) {
             numberOfGames = number
+        }
+    }
+    
+    /// Resets the stats by making a new instance. 
+    func resetStats() {
+        stats = Stats()
+        statsSubscriber = stats.objectWillChange.sink{
+            self.objectWillChange.send()
         }
     }
     

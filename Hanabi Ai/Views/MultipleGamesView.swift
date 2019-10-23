@@ -40,6 +40,7 @@ struct MultipleGamesView: View {
             
             // TODO: Temp workaround: In APV, we don't check user-entered "number of games" for validity. So we do it here.
             self.model.updateNumberOfGames()
+            self.model.resetStats()
         }
         .onDisappear {
 //            print("onDisappear called")
