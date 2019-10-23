@@ -31,20 +31,29 @@ class Model: ObservableObject {
     /// The current game.
     @Published var game = Game()
     
+    /// A subscriber that publishes changes from the current game.
+    var gameSubscriber: AnyCancellable? = nil
+    
     /// The number of games to play in a row, if that mode was chosen.
     @Published var numberOfGames = 10
     
     /// Temp string, until TextField becomes easier to enter numbers.
-    @Published var numberOfGamesString = "10"
+    var numberOfGamesString = "10"
 
-    /// A subscriber that publishes changes from the current game.
-    var gameSubscriber: AnyCancellable? = nil
+    /// The stats from playing multiple games in a row.
+    @Published var stats = Stats()
     
-    /// Makes an instance.
-    ///
-    /// We won't normally use the initiallly created game, but it's good for testing.
+    /// A subscriber that publishes changes from the stats.
+    var statsSubscriber: AnyCancellable? = nil
+    
+    /// Makes an instance and subscribes to its game and stats.
     init() {
+        /// We won't normally use the initiallly created game, but it's good for testing.
         gameSubscriber = game.objectWillChange.sink {
+            self.objectWillChange.send()
+        }
+        
+        statsSubscriber = stats.objectWillChange.sink{
             self.objectWillChange.send()
         }
     }
@@ -61,5 +70,45 @@ class Model: ObservableObject {
         gameSubscriber = game.objectWillChange.sink {
             self.objectWillChange.send()
         }
+    }
+    
+    /// TODO: temp. Updates the number of games based on the user-entered string.
+    func updateNumberOfGames() {
+        // if valid int, update.
+        if let number = Int(numberOfGamesString) {
+            numberOfGames = number
+        }
+    }
+    
+    /// Plays multiple games in a row.
+    func playGames() {
+        /// The current system time. This is fast and simple (e.g., see https://kandelvijaya.com/2016/10/25/precisiontiminginios/).
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        stats.minScore = 26
+        stats.maxScore = -1
+        
+        (1...numberOfGames).forEach { _ in
+            makeGame()
+            gameSubscriber = nil
+            game.play()
+            stats.gamesPlayed += 1
+            
+            // The current game's score.
+            let score = game.endSetup!.scorePiles.score()
+            
+            if score < stats.minScore {
+                stats.minScore = score
+                stats.minDeck = game.startingDeck.description
+            }
+            if score > stats.maxScore {
+                stats.maxScore = score
+                stats.maxDeck = game.startingDeck.description
+            }
+            stats.totalScore += score
+        }
+        stats.computeTime = CFAbsoluteTimeGetCurrent() - startTime
+        print("Worst: \(stats.minScore) (Deck: \(stats.minDeck))")
+        print("Best: \(stats.maxScore) (Deck: \(stats.maxDeck))")
     }
 }

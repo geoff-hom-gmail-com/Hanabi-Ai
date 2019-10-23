@@ -33,3 +33,16 @@ extension ScorePile {
         (suit == card.suit) && (score < ScorePile.MaxNumber) && (score + 1 == card.number)
     }
 }
+
+/// An extension for an array of score piles.
+extension Array where Element == ScorePile {
+    /// Returns a Boolean value that indicates whether the specified card is one of the next cards to score.
+    func nextIs(_ card: Card) -> Bool {
+        contains{$0.nextIs(card)}
+    }
+    
+    /// Returns the total score for all the piles.
+    func score() -> Int {
+        return reduce(0, {$0 + $1.number})
+    }
+}

@@ -52,18 +52,16 @@ struct Setup {
     
     /// Chooses and returns an action for this setup.
     /// todo: Under construction. The chosen action will depend on the setup and the AIs.
-    func chooseAction() -> Action {
-        //testing
-        let action: Action
-        
-        // For testing: always choose a clue (may not even be a valid clue)
-//        action = Action(type: .clue, card: nil, number: 2, suit: nil)
-
-        // temp; play first card in hand, for testing
-        action = Action(type: .play, card: hands[currentHandIndex].first!, number: nil, suit: nil)
-        
-        return action
-    }
+//    func chooseAction() -> Action {
+//        //testing
+//        let action: Action
+//        
+//
+//        // temp; play first card in hand, for testing
+//        action = Action(type: .play, card: hands[currentHandIndex].first!, number: nil, suit: nil)
+//        
+//        return action
+//    }
     
     // MARK: Game end
     

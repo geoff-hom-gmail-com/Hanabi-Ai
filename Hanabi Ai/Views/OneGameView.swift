@@ -37,6 +37,9 @@ struct OneGameView: View {
         .navigationBarTitle(Text("One Game"), displayMode: .inline)
         .onAppear {
             self.model.makeGame()
+            
+            /// If we want to test a deck again, we need to be in Debug Preview and check the console for this. (Temp workaround until we get text selection working for text views in SwiftUI.)
+            print("Deck: \(self.model.game.startingDeck.description)")
         }
         .onDisappear {
             // We shouldn't need this, but the app would crash when playing a game, going back, then trying to play a new game. Creating an unplayed game, below, fixed it.

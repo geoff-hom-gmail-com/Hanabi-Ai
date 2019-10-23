@@ -72,10 +72,6 @@ class Game: ObservableObject {
         case .custom:
             deck = Deck.from(customDeckDescription)
         }
-        
-        /// If we want to test a deck again, we need to be in Debug Preview and check the console for this.
-        print("Deck: \(deck.description)")
-
         return deck
     }
     

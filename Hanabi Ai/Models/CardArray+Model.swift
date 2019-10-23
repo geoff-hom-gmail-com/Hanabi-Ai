@@ -14,11 +14,4 @@ extension Array where Element == Card {
     var description: String {
         map{$0.description}.joined()
     }
-    
-    /// Returns a Boolean value that indicates whether the specified card is one of the next cards to score.
-    ///
-    /// This is meant for an array of score piles. 
-    func nextIs(_ card: Card) -> Bool {
-        contains{$0.nextIs(card)}
-    }
 }

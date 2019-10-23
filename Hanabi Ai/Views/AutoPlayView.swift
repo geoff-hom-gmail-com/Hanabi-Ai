@@ -168,8 +168,8 @@ struct NumberOfGamesChooser: View {
         HStack {
             Text("Games:")
             // TODO: Get TextField working with Int.
-            TextField("100", text: $model.numberOfGamesString)
 //            TextField( "100", value: $model.numberOfGames, formatter: NumberFormatter() )
+            TextField("100", text: $model.numberOfGamesString)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
         }
     }

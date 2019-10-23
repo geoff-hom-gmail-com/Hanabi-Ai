@@ -19,29 +19,33 @@ struct MultipleGamesView: View {
                 Text("Deck Setup: \(model.deckSetup.name)")
                 Text("AI: \(Model.AIs[model.aiIndex].name)")
                 Text("Games: \(model.numberOfGames)")
-                // TODO: This is the wrong play function. Should be like model.playGames()
-                PlayButtonView(playFunction: model.game.play)
+                PlayButtonView(playFunction: model.playGames)
             }
-            Section(header: Text("Games")) {
-                Text("header? see notebook")
-                // TODO: If we follow OGV, then we should lay out what we want here, and have dummy/empty data at the start.
-                // Like, it would say 0 games played
-                // Time taken: 0
-                // Games won: 0%. Score (avg): 0
-                // Figure out where in model I store data for multiple games
-                // It should be like a struct for stats, like model.stats.gamesPlayed, .stats.gamesWon, .stats.score
+            Section(header: Text("Results")) {
+                HStack {
+                    Text("Games: \(model.stats.gamesPlayed)")
+                    Divider()
+                    Text(#"Time: \#(model.stats.computeTime, specifier: "%.1f")""#)
+                    Divider()
+                    Text("Mean score: \(model.stats.meanScore, specifier: "%.1f")")
+                }
+                Text("Worst: \(model.stats.minScore) (Deck: \(model.stats.minDeck))")
+                Text("Best: \(model.stats.maxScore) (Deck: \(model.stats.maxDeck))")
             }
+            .font(.caption)
         }
         .navigationBarTitle(Text("Multiple Games"), displayMode: .inline)
         .onAppear {
-            print("onAppear called")
-            // todo: set number of games (int) from string. update # games shown above.
-//            self.model.makeGame()
+//            print("onAppear called")
+            
+            // TODO: Temp workaround: In APV, we don't check user-entered "number of games" for validity. So we do it here.
+            self.model.updateNumberOfGames()
         }
         .onDisappear {
-            print("onDisappear called")
+//            print("onDisappear called")
+            
             // We shouldn't need this, but the app would crash when playing a game, going back, then trying to play a new game. Creating an unplayed game, below, fixed it.
-//            self.model.game = Game()
+            self.model.game = Game()
         }
     }
 }
