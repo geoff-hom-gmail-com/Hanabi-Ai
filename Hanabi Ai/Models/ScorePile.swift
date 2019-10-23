@@ -30,6 +30,6 @@ extension ScorePile {
     
     /// Returns a Boolean value that indicates whether the next card to score is the specified card.
     func nextIs(_ card: Card) -> Bool {
-        (score < ScorePile.MaxNumber) && (score + 1 == card.number)
+        (suit == card.suit) && (score < ScorePile.MaxNumber) && (score + 1 == card.number)
     }
 }

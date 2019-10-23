@@ -13,8 +13,7 @@ import Foundation
 /// If it can't discard (e.g., max clues), then it gives a clue.
 struct DiscardFirstAI: AI {
     /// The AI's name.
-    // TODO: Make name ("discard 1") an adjective? Like, "He's ___."
-    let name = "Discard 1 (discards 1st card)"
+    let name = "Discarder 1 (discards 1st card)"
     
     /// Returns an action for the specified setup.
     ///

@@ -59,11 +59,10 @@ struct Turn {
             let card = action!.card!
             
             newHands[currentHandIndex].remove(card)
-            
-            /// The index of the matching score pile.
-            let scorePileIndex = newScorePiles.firstIndex { $0.suit == card.suit }!
-            
-            if newScorePiles[scorePileIndex].nextIs(card) {
+            if newScorePiles.nextIs(card) {
+                /// The index of the matching score pile.
+                let scorePileIndex = newScorePiles.firstIndex{$0.suit == card.suit}!
+                
                 newScorePiles[scorePileIndex] = card
                             
                 // If finishing a pile, then gain a clue.
