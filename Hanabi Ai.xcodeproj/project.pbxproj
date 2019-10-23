@@ -39,6 +39,7 @@
 		81A9E6DE234E9522001429B8 /* CardArray+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DD234E9522001429B8 /* CardArray+View.swift */; };
 		81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */; };
 		81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E3234F08D0001429B8 /* Setup.swift */; };
+		81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */; };
 		81DD08D023480CDF009D314F /* ScorePile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81DD08CF23480CDF009D314F /* ScorePile.swift */; };
 		81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F0165D23555B9D00BDF352 /* ActionType.swift */; };
 /* End PBXBuildFile section */
@@ -99,6 +100,7 @@
 		81A9E6DD234E9522001429B8 /* CardArray+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardArray+View.swift"; sourceTree = "<group>"; };
 		81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextArray+Concatenated.swift"; sourceTree = "<group>"; };
 		81A9E6E3234F08D0001429B8 /* Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setup.swift; sourceTree = "<group>"; };
+		81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardFirstAI.swift; sourceTree = "<group>"; };
 		81DD08CF23480CDF009D314F /* ScorePile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorePile.swift; sourceTree = "<group>"; };
 		81F0165D23555B9D00BDF352 /* ActionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -232,6 +234,7 @@
 		81A0C80F235ECC9F005C83B1 /* AIs */ = {
 			isa = PBXGroup;
 			children = (
+				81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */,
 				81A0C810235ECCB6005C83B1 /* PlayFirstCardAI.swift */,
 				81A0C812235ED15A005C83B1 /* PlaySecondCardAI.swift */,
 			);
@@ -372,6 +375,7 @@
 				815749D82331C915008E95CF /* Deck.swift in Sources */,
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
+				81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */,
