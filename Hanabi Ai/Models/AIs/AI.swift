@@ -13,9 +13,10 @@ import Foundation
 /// Use AI instances (vs static), so they can have different perspectives.
 protocol AI {
     /// The AI's name.
-    ///
-    /// This should describe and distinguish the AI to the user.
     var name: String { get }
+    
+    /// Summary of the AI.
+    var description: String { get }
     
     /// Returns an action for the specified setup.
     func action(for setup: Setup) -> Action

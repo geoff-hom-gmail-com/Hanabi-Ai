@@ -16,6 +16,7 @@
 		81314E5C235BD0AF00798935 /* DeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81314E5B235BD0AF00798935 /* DeckView.swift */; };
 		81314E5E235BD6FF00798935 /* CardArray+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81314E5D235BD6FF00798935 /* CardArray+Model.swift */; };
 		81465FB62343FC4200DD67C8 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81465FB52343FC4200DD67C8 /* Card.swift */; };
+		81475F3723616229009DD0F6 /* PlayableV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3623616229009DD0F6 /* PlayableV2.swift */; };
 		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
 		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
 		815749FC233226D2008E95CF /* OneGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749FB233226D2008E95CF /* OneGameView.swift */; };
@@ -75,6 +76,7 @@
 		81314E5B235BD0AF00798935 /* DeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckView.swift; sourceTree = "<group>"; };
 		81314E5D235BD6FF00798935 /* CardArray+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardArray+Model.swift"; sourceTree = "<group>"; };
 		81465FB52343FC4200DD67C8 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		81475F3623616229009DD0F6 /* PlayableV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV2.swift; sourceTree = "<group>"; };
 		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		815749FB233226D2008E95CF /* OneGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneGameView.swift; sourceTree = "<group>"; };
@@ -223,7 +225,6 @@
 			children = (
 				819A9310234567F0001B28C5 /* Action.swift */,
 				81F0165D23555B9D00BDF352 /* ActionType.swift */,
-				81A0C80D235ECA77005C83B1 /* AI.swift */,
 				81A0C80F235ECC9F005C83B1 /* AIs */,
 				8160C60C2319FFB700550C54 /* AppInfo.swift */,
 				81465FB52343FC4200DD67C8 /* Card.swift */,
@@ -245,10 +246,12 @@
 		81A0C80F235ECC9F005C83B1 /* AIs */ = {
 			isa = PBXGroup;
 			children = (
+				81A0C80D235ECA77005C83B1 /* AI.swift */,
 				81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */,
-				81A0C810235ECCB6005C83B1 /* PlayFirstCardAI.swift */,
 				81B3390F235FD74000541E10 /* FirstPlayableAI.swift */,
+				81A0C810235ECCB6005C83B1 /* PlayFirstCardAI.swift */,
 				81A0C812235ED15A005C83B1 /* PlaySecondCardAI.swift */,
+				81475F3623616229009DD0F6 /* PlayableV2.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 			files = (
 				815749D82331C915008E95CF /* Deck.swift in Sources */,
 				81B339162360EF2700541E10 /* Stats.swift in Sources */,
+				81475F3723616229009DD0F6 /* PlayableV2.swift in Sources */,
 				81B33910235FD74000541E10 /* FirstPlayableAI.swift in Sources */,
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,

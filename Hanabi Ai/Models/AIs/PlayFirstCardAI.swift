@@ -11,7 +11,10 @@ import Foundation
 /// An AI that always plays the first card in its hand.
 struct PlayFirstCardAI: AI {
     /// The AI's name.
-    let name = "Impulsive 1 (plays 1st card)"
+    let name = "Impulsive 1"
+    
+    /// Summary of the AI.
+    let description = "plays 1st card"
     
     /// Returns an action for the specified setup.
     ///

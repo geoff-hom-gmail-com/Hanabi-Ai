@@ -12,9 +12,13 @@ import Foundation
 ///
 /// If it can't play, then it discards the first card.
 /// If it can't discard, then it clues.
+/// Stats from 10,000 games: Avg. 20.9; 11–25.
 struct FirstPlayableAI: AI {
     /// The AI's name.
-    let name = "Playable 1 (plays 1st playable)"
+    let name = "Playable 1"
+    
+    /// Summary of the AI.
+    let description = "plays 1st playable; else, like \(DiscardFirstAI().name)"
     
     /// Returns an action for the specified setup.
     ///

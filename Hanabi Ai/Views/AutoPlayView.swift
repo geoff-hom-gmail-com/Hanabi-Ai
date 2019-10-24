@@ -124,16 +124,20 @@ struct CustomDeckTextField: View {
 
 /// A view that shows a picker for selecting the AI.
 ///
-/// When Xcode 11.2 comes out, see if it fixes Picker bugs (see AIPicker.swift).
+/// When Xcode 11.2 comes out, see if it fixes Picker bugs (see AIPicker.swift). TODO: Want Picker to show only the AI name in the main row, and to show the description when selecting.
 struct AIPicker: View {
     /// The model for this app.
     @EnvironmentObject var model: Model
     
     var body: some View {
+        // All AIs.
+        let AIs = Model.AIs
+        
         // The label doesn't end with `":"`, because the picker's in a form.
-        Picker("AI", selection: $model.aiIndex) {
-            ForEach(Model.AIs.indices) {
-                Text(Model.AIs[$0].name)
+        return Picker("AI", selection: $model.aiIndex) {
+            ForEach(AIs.indices) {
+                Text("\(AIs[$0].name) (\(AIs[$0].description))")
+                    .font(.caption)
             }
         }
     }

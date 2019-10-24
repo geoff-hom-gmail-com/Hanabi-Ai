@@ -11,8 +11,11 @@ import Foundation
 /// An AI that always plays the second card in its hand.
 struct PlaySecondCardAI: AI {
     /// The AI's name.
-    let name = "Impulsive 2 (plays 2nd card)"
-
+    let name = "Impulsive 2"
+    
+    /// Summary of the AI.
+    let description = "plays 2nd card"
+    
     /// Returns an action for the specified setup.
     ///
     /// Returns the action to play the second card in its hand.
