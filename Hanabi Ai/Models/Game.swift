@@ -69,6 +69,8 @@ class Game: ObservableObject {
             deck = Game.makeRandomDeck()
         case .suitOrdered:
             deck = Game.makeSimpleDeck()
+        case .tough:
+            deck = Deck.from(Deck.toughDescription)
         case .custom:
             deck = Deck.from(customDeckDescription)
         }

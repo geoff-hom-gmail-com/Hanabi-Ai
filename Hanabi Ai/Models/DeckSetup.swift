@@ -14,11 +14,10 @@ enum DeckSetup: CaseIterable, Identifiable {
     /// The deck-setup options.
     ///
     /// Random: A randomly shuffled deck.
-    ///
     /// Suit-Ordered: Cards in suit order. (For "empty" game.)
-    ///
+    /// Tough: Cards in an unfortunate order.
     /// Custom: A user-specified order for the entire deck.
-    case random, suitOrdered, custom
+    case random, suitOrdered, tough, custom
 
     /// The id for `Identifiable`.
     var id: DeckSetup { self }
@@ -32,6 +31,8 @@ enum DeckSetup: CaseIterable, Identifiable {
             // This hyphen is non-breaking.
             return "Suit‑Ordered"
             
+        case .tough:
+            return "Tough"
         case .custom:
             return "Custom"
         }

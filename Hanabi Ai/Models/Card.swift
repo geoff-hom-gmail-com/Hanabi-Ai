@@ -11,7 +11,7 @@ import Foundation
 /// A Hanabi card.
 ///
 /// A card has a suit (i.e., color) and a number. There are multiples of some cards (e.g., three green 1s).
-class Card {
+class Card: Equatable {
     /// The card's suit.
     let suit: Suit
     
@@ -31,5 +31,12 @@ class Card {
     init(suit: Suit, number: Int) {
         self.suit = suit
         self.number = number
+    }
+    
+    /// Two cards are equal if their suits and numbers are equal.
+    ///
+    /// For the equatable protocol.
+    static func == (lhs: Card, rhs: Card) -> Bool {
+        (lhs.suit == rhs.suit) && (lhs.number == rhs.number)
     }
 }

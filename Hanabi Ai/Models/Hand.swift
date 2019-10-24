@@ -20,3 +20,13 @@ extension Hand {
         removeAll { $0 === card }
     }
 }
+
+/// An extension for an array of hands.
+extension Array where Element == Hand {
+    /// Returns the number of times the specified card is in the hands.
+    func count(for card: Card) -> Int {
+        reduce(0, { total, hand in
+            total + hand.filter{$0 == card}.count
+        })
+    }
+}
