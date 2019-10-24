@@ -50,6 +50,91 @@ struct Setup {
         self.turnsLeft = turnsLeft
     }
     
+    // MARK: Actions
+    
+    /// Returns the first playable card in the specified hand; if none, `nil`.
+    func firstPlayableCard(in hand: Hand) -> Card? {
+        hand.first(where: {scorePiles.nextIs($0)})
+    }
+    
+    /// Returns the first scored card in the specified hand; if none, `nil`.
+    func firstScoredCard(in hand: Hand) -> Card? {
+        hand.first(where: {scorePiles.alreadyHave($0)})
+    }
+    
+    /// Returns the first card in the specified hand that appears again in any hand (including itself); if none, `nil`.
+    func firstHandDuplicateCard(in hand: Hand) -> Card? {
+        hand.first(where: {hands.count(for: $0) > 1})
+    }
+    
+    /// Returns the cards in the specified hand that appear again in the deck.
+    func deckDuplicates(in hand: Hand) -> Array<Card> {
+        hand.filter{deck.contains($0)}
+    }
+    
+    /// Returns the cards in the specified hand that are now unique.
+    ///
+    /// I.e., if discarded, a perfect score is impossible.
+    func singletons(in hand: Hand) -> Array<Card> {
+        // Return cards that are only found once in all hands, and are not in the deck.
+        hand.filter{hands.count(for: $0) == 1}
+            .filter{!deck.contains($0)}
+    }
+    
+    /// Returns the card that will take the most turns to play.
+    ///
+    /// Looks at the deck and assumes optimal play. If none playable, returns `nil`.
+    ///
+    /// To estimate how slow a card is, we look at the cards that have to score first, and which of those is deepest in the deck.
+    // TODO: Right now there are some approximations made. We don't count explicitly who has which cards or the order they're drawn. It's mostly a function of how deeply cards are buried in the deck.
+    func slowestPlayableCard(cards: Array<Card>) -> Card? {
+        /// The slowest playable card.
+        var slowestCard: Card?
+        
+        /// The number of turns to play the slowest card.
+        var turnsToPlaySlowestCard = 0
+        
+        for card in cards {
+            /// The matching score pile.
+            let scorePile = scorePiles.first{$0.suit == card.suit}!
+            
+            // If unplayable, skip.
+            guard card.number > scorePile.number else {
+                continue
+            }
+            
+            /// The number of turns to play this card.
+            var turnsToPlay = 0
+            
+            /// The number of cards to draw to be able to play this card.
+            var turnsToDraw = 0
+            
+            /// The card that has to score before this card.
+            var beforeCard = Card(suit: card.suit, number: card.number - 1)
+            
+            while beforeCard.number > scorePile.number {
+                // 1 turn to play the "before" card.
+                turnsToPlay += 1
+                
+                // We'll worry only about cards not in a hand.
+                if !hands.contain(beforeCard), let index = deck.firstIndex(of: beforeCard) {
+                    
+                    // One "before" card will be deepest. Once we have that, we'll have the others.
+                    turnsToDraw = max(turnsToDraw, index + 1)
+                }
+                beforeCard = Card(suit: card.suit, number: beforeCard.number - 1)
+            }
+            turnsToPlay += turnsToDraw
+            
+            if turnsToPlay > turnsToPlaySlowestCard {
+                slowestCard = card
+                turnsToPlaySlowestCard = turnsToPlay
+            }
+        }
+    
+        return slowestCard
+    }
+
     /// Chooses and returns an action for this setup.
     /// todo: Under construction. The chosen action will depend on the setup and the AIs.
 //    func chooseAction() -> Action {

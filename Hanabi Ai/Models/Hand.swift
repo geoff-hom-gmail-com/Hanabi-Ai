@@ -29,4 +29,9 @@ extension Array where Element == Hand {
             total + hand.filter{$0 == card}.count
         })
     }
+    
+    /// Returns a Boolean value that indicates whether any hands contain the specified card.
+    func contain(_ card: Card) -> Bool {
+        contains{$0.contains(card)}
+    }
 }

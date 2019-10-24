@@ -19,6 +19,7 @@
 		81475F3723616229009DD0F6 /* PlayableV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3623616229009DD0F6 /* PlayableV2.swift */; };
 		81475F3923616AB3009DD0F6 /* PlayableV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3823616AB3009DD0F6 /* PlayableV3.swift */; };
 		81475F3B23617C3E009DD0F6 /* PlayableV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3A23617C3E009DD0F6 /* PlayableV4.swift */; };
+		81475F3D23618627009DD0F6 /* ProphetV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3C23618627009DD0F6 /* ProphetV1.swift */; };
 		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
 		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
 		815749FC233226D2008E95CF /* OneGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749FB233226D2008E95CF /* OneGameView.swift */; };
@@ -43,7 +44,7 @@
 		81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */; };
 		81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A9E6E3234F08D0001429B8 /* Setup.swift */; };
 		81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */; };
-		81B33910235FD74000541E10 /* FirstPlayableAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B3390F235FD74000541E10 /* FirstPlayableAI.swift */; };
+		81B33910235FD74000541E10 /* PlayableV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B3390F235FD74000541E10 /* PlayableV1.swift */; };
 		81B339122360475100541E10 /* MultipleGamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B339112360475100541E10 /* MultipleGamesView.swift */; };
 		81B33914236048BA00541E10 /* PlayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B33913236048BA00541E10 /* PlayButtonView.swift */; };
 		81B339162360EF2700541E10 /* Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B339152360EF2700541E10 /* Stats.swift */; };
@@ -81,6 +82,7 @@
 		81475F3623616229009DD0F6 /* PlayableV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV2.swift; sourceTree = "<group>"; };
 		81475F3823616AB3009DD0F6 /* PlayableV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV3.swift; sourceTree = "<group>"; };
 		81475F3A23617C3E009DD0F6 /* PlayableV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV4.swift; sourceTree = "<group>"; };
+		81475F3C23618627009DD0F6 /* ProphetV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV1.swift; sourceTree = "<group>"; };
 		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		815749FB233226D2008E95CF /* OneGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneGameView.swift; sourceTree = "<group>"; };
@@ -111,7 +113,7 @@
 		81A9E6DF234E957A001429B8 /* TextArray+Concatenated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextArray+Concatenated.swift"; sourceTree = "<group>"; };
 		81A9E6E3234F08D0001429B8 /* Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setup.swift; sourceTree = "<group>"; };
 		81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscardFirstAI.swift; sourceTree = "<group>"; };
-		81B3390F235FD74000541E10 /* FirstPlayableAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstPlayableAI.swift; sourceTree = "<group>"; };
+		81B3390F235FD74000541E10 /* PlayableV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV1.swift; sourceTree = "<group>"; };
 		81B339112360475100541E10 /* MultipleGamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleGamesView.swift; sourceTree = "<group>"; };
 		81B33913236048BA00541E10 /* PlayButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButtonView.swift; sourceTree = "<group>"; };
 		81B339152360EF2700541E10 /* Stats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stats.swift; sourceTree = "<group>"; };
@@ -252,12 +254,13 @@
 			children = (
 				81A0C80D235ECA77005C83B1 /* AI.swift */,
 				81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */,
-				81B3390F235FD74000541E10 /* FirstPlayableAI.swift */,
 				81A0C810235ECCB6005C83B1 /* PlayFirstCardAI.swift */,
 				81A0C812235ED15A005C83B1 /* PlaySecondCardAI.swift */,
+				81B3390F235FD74000541E10 /* PlayableV1.swift */,
 				81475F3623616229009DD0F6 /* PlayableV2.swift */,
 				81475F3823616AB3009DD0F6 /* PlayableV3.swift */,
 				81475F3A23617C3E009DD0F6 /* PlayableV4.swift */,
+				81475F3C23618627009DD0F6 /* ProphetV1.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -397,11 +400,12 @@
 				81B339162360EF2700541E10 /* Stats.swift in Sources */,
 				81475F3723616229009DD0F6 /* PlayableV2.swift in Sources */,
 				81475F3B23617C3E009DD0F6 /* PlayableV4.swift in Sources */,
-				81B33910235FD74000541E10 /* FirstPlayableAI.swift in Sources */,
+				81B33910235FD74000541E10 /* PlayableV1.swift in Sources */,
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
 				81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
+				81475F3D23618627009DD0F6 /* ProphetV1.swift in Sources */,
 				81B339122360475100541E10 /* MultipleGamesView.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */,
