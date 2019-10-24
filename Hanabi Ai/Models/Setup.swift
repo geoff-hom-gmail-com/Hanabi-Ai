@@ -81,6 +81,38 @@ struct Setup {
             .filter{!deck.contains($0)}
     }
     
+    /// Returns a Boolean value that indicates whether any card in the specified hand is a duplicate.
+    ///
+    /// A duplicate can be in the deck, in another hand, or in even the same hand.
+    func duplicatesAre(in hand: Hand) -> Bool {
+        deckDuplicatesAre(in: hand) || handDuplicatesAre(in: hand)
+    }
+    
+    /// Returns a Boolean value that indicates whether any card in the specified hand is a deck duplicate.
+    func deckDuplicatesAre(in hand: Hand) -> Bool {
+        hand.contains{deck.contains($0)}
+    }
+    
+    /// Returns a Boolean value that indicates whether any card in the specified hand is a hand duplicate.
+    ///
+    /// A hand duplicate can be in any hand, including itself.
+    func handDuplicatesAre(in hand: Hand) -> Bool {
+        hand.contains{hands.count(for: $0) > 1}
+    }
+    
+    /// Returns a Boolean value that indicates whether the other players have only singletons.
+    func othersHaveOnlySingletons() -> Bool {
+        for (index, hand) in hands.enumerated() {
+            guard index != currentHandIndex else {
+                continue
+            }
+            if duplicatesAre(in: hand) {
+                return false
+            }
+        }
+        return true
+    }
+    
     /// Returns the card that will take the most turns to play.
     ///
     /// Looks at the deck and assumes optimal play. If none playable, returns `nil`.

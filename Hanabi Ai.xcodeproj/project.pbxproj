@@ -20,6 +20,7 @@
 		81475F3923616AB3009DD0F6 /* PlayableV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3823616AB3009DD0F6 /* PlayableV3.swift */; };
 		81475F3B23617C3E009DD0F6 /* PlayableV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3A23617C3E009DD0F6 /* PlayableV4.swift */; };
 		81475F3D23618627009DD0F6 /* ProphetV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3C23618627009DD0F6 /* ProphetV1.swift */; };
+		81475F3F2361BD66009DD0F6 /* ProphetV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81475F3E2361BD66009DD0F6 /* ProphetV2.swift */; };
 		815749D62331C2DA008E95CF /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D52331C2DA008E95CF /* Game.swift */; };
 		815749D82331C915008E95CF /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749D72331C915008E95CF /* Deck.swift */; };
 		815749FC233226D2008E95CF /* OneGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815749FB233226D2008E95CF /* OneGameView.swift */; };
@@ -83,6 +84,7 @@
 		81475F3823616AB3009DD0F6 /* PlayableV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV3.swift; sourceTree = "<group>"; };
 		81475F3A23617C3E009DD0F6 /* PlayableV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayableV4.swift; sourceTree = "<group>"; };
 		81475F3C23618627009DD0F6 /* ProphetV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV1.swift; sourceTree = "<group>"; };
+		81475F3E2361BD66009DD0F6 /* ProphetV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV2.swift; sourceTree = "<group>"; };
 		815749D52331C2DA008E95CF /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		815749D72331C915008E95CF /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		815749FB233226D2008E95CF /* OneGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneGameView.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				81475F3823616AB3009DD0F6 /* PlayableV3.swift */,
 				81475F3A23617C3E009DD0F6 /* PlayableV4.swift */,
 				81475F3C23618627009DD0F6 /* ProphetV1.swift */,
+				81475F3E2361BD66009DD0F6 /* ProphetV2.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -434,6 +437,7 @@
 				819A9311234567F0001B28C5 /* Action.swift in Sources */,
 				81A9E6DE234E9522001429B8 /* CardArray+View.swift in Sources */,
 				815749D62331C2DA008E95CF /* Game.swift in Sources */,
+				81475F3F2361BD66009DD0F6 /* ProphetV2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
