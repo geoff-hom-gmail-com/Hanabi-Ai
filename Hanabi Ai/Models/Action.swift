@@ -24,8 +24,11 @@ struct Action {
     /// The suit chosen if the action is clue; else, `nil`.
     let suit: Suit?
     
+    /// The AI step number used to choose the action.
+    let aiStep: Int
+    
     /// Creates an action with the specified parameters.
-    init(type: ActionType, card: Card?, number: Int?, suit: Suit?) {
+    init(type: ActionType, card: Card?, number: Int?, suit: Suit?, aiStep: Int = 0) {
         self.type = type
         switch self.type {
         case .play, .discard:
@@ -37,6 +40,7 @@ struct Action {
             self.number = number
             self.suit = suit
         }
+        self.aiStep = aiStep
     }
     
     // TODO: If 3+ players, clues need to indicate target player. We don't want this for 2-player games, because that's obvious.
@@ -44,12 +48,12 @@ struct Action {
     ///
     /// E.g., "P.r1," "D.w3," "C.p1.3," "C.p3.r," "C.g," "C.3"
     var abbr: String {
-        /// The type's abbreviation.
-        let typeAbbr = type.abbr
+        /// The string to return.
+        var returnString = type.abbr
         
         switch type {
         case .play, .discard:
-            return "\(typeAbbr).\(card!.description)"
+            returnString += ".\(card!.description)"
         case .clue:
             /// A string that describes the type of clue given.
             let clueString: String
@@ -60,7 +64,9 @@ struct Action {
             } else {
                 clueString = "\(suit!.rawValue)"
             }
-            return "\(typeAbbr).\(clueString)"
+            returnString += ".\(clueString)"
         }
+        returnString += (aiStep != 0) ? " (\(aiStep))" : ""
+        return returnString
     }
 }
