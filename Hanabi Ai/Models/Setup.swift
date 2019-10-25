@@ -57,6 +57,27 @@ struct Setup {
         hand.first{scorePiles.nextIs($0)}
     }
     
+    /// Returns the first unscorable card in the specified hand; if none, `nil`.
+    ///
+    /// The card may have already scored, or all of a lower card may have been discarded.
+    func firstUnscorableCard(in hand: Hand) -> Card? {
+        hand.first { card in
+            if scorePiles.alreadyHave(card) {return true}
+            
+            /// The matching score pile.
+            let scorePile = scorePiles.first{$0.suit == card.suit}!
+            
+            /// The card that has to score prior.
+            var beforeCard = Card(suit: card.suit, number: card.number - 1)
+            
+            while beforeCard.number > scorePile.number {
+                if !hands.contain(beforeCard) && !deck.contains(beforeCard) {return true}
+                beforeCard = Card(suit: card.suit, number: beforeCard.number - 1)
+            }
+            return false
+        }
+    }
+    
     /// Returns the first scored card in the specified hand; if none, `nil`.
     func firstScoredCard(in hand: Hand) -> Card? {
         hand.first{scorePiles.alreadyHave($0)}

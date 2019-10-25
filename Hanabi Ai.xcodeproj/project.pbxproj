@@ -31,6 +31,7 @@
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
 		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
 		818ECD882362DA9E00783D08 /* ProphetV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD872362DA9E00783D08 /* ProphetV3.swift */; };
+		818ECD8A2362F44B00783D08 /* ProphetV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD892362F44B00783D08 /* ProphetV4.swift */; };
 		819A9311234567F0001B28C5 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A9310234567F0001B28C5 /* Action.swift */; };
 		81A0C80C235EC81A005C83B1 /* AIPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A0C80B235EC81A005C83B1 /* AIPicker.swift */; };
 		81A0C80E235ECA77005C83B1 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A0C80D235ECA77005C83B1 /* AI.swift */; };
@@ -98,6 +99,7 @@
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		818ECD872362DA9E00783D08 /* ProphetV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV3.swift; sourceTree = "<group>"; };
+		818ECD892362F44B00783D08 /* ProphetV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV4.swift; sourceTree = "<group>"; };
 		819A9310234567F0001B28C5 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		81A0C80B235EC81A005C83B1 /* AIPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPicker.swift; sourceTree = "<group>"; };
 		81A0C80D235ECA77005C83B1 /* AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AI.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 				81B3390F235FD74000541E10 /* PlayableV1.swift */,
 				81475F3823616AB3009DD0F6 /* PlayableV3.swift */,
 				818ECD872362DA9E00783D08 /* ProphetV3.swift */,
+				818ECD892362F44B00783D08 /* ProphetV4.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */,
 				812F8CCE2342E701000D8925 /* Turn.swift in Sources */,
 				812F8CD223433C93000D8925 /* Suit.swift in Sources */,
+				818ECD8A2362F44B00783D08 /* ProphetV4.swift in Sources */,
 				819A9311234567F0001B28C5 /* Action.swift in Sources */,
 				81A9E6DE234E9522001429B8 /* CardArray+View.swift in Sources */,
 				815749D62331C2DA008E95CF /* Game.swift in Sources */,
