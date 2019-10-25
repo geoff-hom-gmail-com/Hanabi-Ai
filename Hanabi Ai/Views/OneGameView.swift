@@ -254,9 +254,15 @@ struct ResultsGroup: View {
         /// The game. For convenience.
         let game = model.game
         
+        /// The score piles at the end of the game. For convenience.
+        let scorePiles = game.endSetup?.scorePiles
+        
         return Group {
             if game.isOver {
-                ScorePilesView(scorePiles: game.endSetup!.scorePiles)
+                HStack(spacing: 0) {
+                    ScorePilesView(scorePiles: scorePiles!)
+                    Text(" = \(scorePiles!.score())")
+                }
             } else {
                 Text("??")
             }

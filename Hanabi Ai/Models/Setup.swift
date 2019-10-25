@@ -54,17 +54,48 @@ struct Setup {
     
     /// Returns the first playable card in the specified hand; if none, `nil`.
     func firstPlayableCard(in hand: Hand) -> Card? {
-        hand.first(where: {scorePiles.nextIs($0)})
+        hand.first{scorePiles.nextIs($0)}
     }
     
     /// Returns the first scored card in the specified hand; if none, `nil`.
     func firstScoredCard(in hand: Hand) -> Card? {
-        hand.first(where: {scorePiles.alreadyHave($0)})
+        hand.first{scorePiles.alreadyHave($0)}
     }
     
     /// Returns the first card in the specified hand that appears again in any hand (including itself); if none, `nil`.
     func firstHandDuplicateCard(in hand: Hand) -> Card? {
-        hand.first(where: {hands.count(for: $0) > 1})
+        hand.first{hands.count(for: $0) > 1}
+    }
+    
+    /// Returns the first card in the specified hand that would be a future duplicate; if none, `nil`.
+    ///
+    /// The card is a duplicate if one of its scoring predecessors won't come until after.
+    func firstFutureDuplicate(in hand: Hand) -> Card? {
+        hand.first { card in
+            switch card.number {
+            case 1, 5:
+                return false
+            default:
+                /// The deck index of the card's duplicate.
+                guard let duplicateIndex = deck.firstIndex(of: card) else {return false}
+                
+                /// The matching score pile.
+                let scorePile = scorePiles.first{$0.suit == card.suit}!
+                
+                /// The card that has to score prior.
+                var beforeCard = Card(suit: card.suit, number: card.number - 1)
+                
+                while beforeCard.number > scorePile.number {
+                    // The "before" card has to not be in a hand, and be in the deck.
+                    if !hands.contain(beforeCard), let index = deck.firstIndex(of: beforeCard) {
+                        
+                        if index > duplicateIndex {return true}
+                    }
+                    beforeCard = Card(suit: card.suit, number: beforeCard.number - 1)
+                }
+                return false
+            }
+        }
     }
     
     /// Returns the cards in the specified hand that appear again in the deck.
