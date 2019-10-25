@@ -136,7 +136,7 @@ struct AIPicker: View {
         // The label doesn't end with `":"`, because the picker's in a form.
         return Picker("AI", selection: $model.aiIndex) {
             ForEach(AIs.indices) {
-                Text("\(AIs[$0].name) (\(AIs[$0].description))")
+                Text("\(AIs[$0].name): \(AIs[$0].description)")
                     .font(.caption)
             }
         }

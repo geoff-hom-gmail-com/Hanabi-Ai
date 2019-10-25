@@ -16,8 +16,8 @@ struct DiscardFirstAI: AI {
     let name = "Discarder 1"
     
     /// Summary of the AI.
-    let description = "discards 1st card; else, clues; else, plays 1st"
-    
+    let description = "1) discards 1st card; 2) clues; 3) plays 1st"
+
     /// Returns an action for the specified setup.
     ///
     /// Discard first card, if possible. Else, clue.

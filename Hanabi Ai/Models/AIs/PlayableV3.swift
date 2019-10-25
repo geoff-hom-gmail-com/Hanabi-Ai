@@ -17,7 +17,7 @@ struct PlayableV3: AI {
     let name = "Playable v3"
     
     /// Summary of the AI.
-    let description = "plays 1st playable; else, discards scored card; else, discards duplicate card in hand; else, clues; else, discards duplicate card in deck; else, discards highest card"
+    let description = "1) plays 1st playable; 2) discards scored card; 3) discards duplicate card in hand; 4) clues; 5) discards duplicate card in deck; 6) discards highest card"
     
     /// Returns an action for the specified setup.
     func action(for setup: Setup) -> Action {
