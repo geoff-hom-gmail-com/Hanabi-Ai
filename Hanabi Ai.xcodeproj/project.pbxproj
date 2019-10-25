@@ -30,8 +30,8 @@
 		8160C5FE2319E08500550C54 /* Hanabi_AiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5FD2319E08500550C54 /* Hanabi_AiUITests.swift */; };
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
 		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
-		818ECD882362DA9E00783D08 /* ProphetV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD872362DA9E00783D08 /* ProphetV3.swift */; };
 		818ECD8A2362F44B00783D08 /* ProphetV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD892362F44B00783D08 /* ProphetV4.swift */; };
+		818ECD8C2362FB6100783D08 /* ProphetV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD8B2362FB6100783D08 /* ProphetV5.swift */; };
 		819A9311234567F0001B28C5 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A9310234567F0001B28C5 /* Action.swift */; };
 		81A0C80C235EC81A005C83B1 /* AIPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A0C80B235EC81A005C83B1 /* AIPicker.swift */; };
 		81A0C80E235ECA77005C83B1 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A0C80D235ECA77005C83B1 /* AI.swift */; };
@@ -98,8 +98,8 @@
 		8160C5FF2319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
-		818ECD872362DA9E00783D08 /* ProphetV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV3.swift; sourceTree = "<group>"; };
 		818ECD892362F44B00783D08 /* ProphetV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV4.swift; sourceTree = "<group>"; };
+		818ECD8B2362FB6100783D08 /* ProphetV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV5.swift; sourceTree = "<group>"; };
 		819A9310234567F0001B28C5 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		81A0C80B235EC81A005C83B1 /* AIPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPicker.swift; sourceTree = "<group>"; };
 		81A0C80D235ECA77005C83B1 /* AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AI.swift; sourceTree = "<group>"; };
@@ -256,8 +256,8 @@
 				81A0C812235ED15A005C83B1 /* PlaySecondCardAI.swift */,
 				81B3390F235FD74000541E10 /* PlayableV1.swift */,
 				81475F3823616AB3009DD0F6 /* PlayableV3.swift */,
-				818ECD872362DA9E00783D08 /* ProphetV3.swift */,
 				818ECD892362F44B00783D08 /* ProphetV4.swift */,
+				818ECD8B2362FB6100783D08 /* ProphetV5.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -396,7 +396,6 @@
 				815749D82331C915008E95CF /* Deck.swift in Sources */,
 				81B339162360EF2700541E10 /* Stats.swift in Sources */,
 				81B33910235FD74000541E10 /* PlayableV1.swift in Sources */,
-				818ECD882362DA9E00783D08 /* ProphetV3.swift in Sources */,
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
 				81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */,
@@ -408,6 +407,7 @@
 				81A0C813235ED15A005C83B1 /* PlaySecondCardAI.swift in Sources */,
 				81A0C80C235EC81A005C83B1 /* AIPicker.swift in Sources */,
 				81314E5E235BD6FF00798935 /* CardArray+Model.swift in Sources */,
+				818ECD8C2362FB6100783D08 /* ProphetV5.swift in Sources */,
 				8160C5DE2319E08100550C54 /* SceneDelegate.swift in Sources */,
 				81A0C811235ECCB6005C83B1 /* PlayFirstCardAI.swift in Sources */,
 				812F8CD02342F424000D8925 /* Hand.swift in Sources */,

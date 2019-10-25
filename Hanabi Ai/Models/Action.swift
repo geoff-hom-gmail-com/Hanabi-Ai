@@ -24,11 +24,11 @@ struct Action {
     /// The suit chosen if the action is clue; else, `nil`.
     let suit: Suit?
     
-    /// The AI step number used to choose the action.
-    let aiStep: Int
+    /// The AI step used to choose the action.
+    let aiStep: String
     
     /// Creates an action with the specified parameters.
-    init(type: ActionType, card: Card?, number: Int?, suit: Suit?, aiStep: Int = 0) {
+    init(type: ActionType, card: Card?, number: Int?, suit: Suit?, aiStep: String = "") {
         self.type = type
         switch self.type {
         case .play, .discard:
@@ -66,7 +66,7 @@ struct Action {
             }
             returnString += ".\(clueString)"
         }
-        returnString += (aiStep != 0) ? " (\(aiStep))" : ""
+        returnString += (aiStep != "") ? " (\(aiStep))" : ""
         return returnString
     }
 }

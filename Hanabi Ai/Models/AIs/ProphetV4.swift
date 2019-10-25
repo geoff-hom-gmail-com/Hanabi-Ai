@@ -27,22 +27,22 @@ struct ProphetV4: AI {
         /// 1) The first playable card, if any.
         if let playableCard = setup.firstPlayableCard(in: hand) {
             
-            return Action(type: .play, card: playableCard, number: nil, suit: nil, aiStep: 1)
+            return Action(type: .play, card: playableCard, number: nil, suit: nil, aiStep: "1")
             
             /// 2) The first card that is unscorable.
         } else if setup.clues < Setup.MaxClues, let unscorableCard = setup.firstUnscorableCard(in: hand) {
             
-            return Action(type: .discard, card: unscorableCard, number: nil, suit: nil, aiStep: 2)
+            return Action(type: .discard, card: unscorableCard, number: nil, suit: nil, aiStep: "2")
             
             /// 3) The first card that is duplicated in a hand (including own).
         } else if setup.clues < Setup.MaxClues, let duplicateCard = setup.firstHandDuplicateCard(in: hand) {
             
-            return Action(type: .discard, card: duplicateCard, number: nil, suit: nil, aiStep: 3)
+            return Action(type: .discard, card: duplicateCard, number: nil, suit: nil, aiStep: "3")
                         
             /// 4) The first card that is a future duplicate.
         } else if setup.clues < Setup.MaxClues, let futureDuplicate = setup.firstFutureDuplicate(in: hand) {
             
-            return Action(type: .discard, card: futureDuplicate, number: nil, suit: nil, aiStep: 4)
+            return Action(type: .discard, card: futureDuplicate, number: nil, suit: nil, aiStep: "4")
         } else {
             /// The hand index for the next player.
             let nextHandIndex = (setup.currentHandIndex == setup.hands.count - 1) ? 0 : (setup.currentHandIndex + 1)
@@ -55,27 +55,27 @@ struct ProphetV4: AI {
             if setup.clues > 0, setup.firstPlayableCard(in: nextHand) != nil ||
                     setup.firstUnscorableCard(in: nextHand) != nil || setup.firstHandDuplicateCard(in: nextHand) != nil || setup.firstFutureDuplicate(in: nextHand) != nil {
                 
-                return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: 5)
+                return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "5")
                 // TODO: would try recursive action prediction, except the turn makes the next setup, and an AI can't access a turn right now.
                 // I could try to expose another function for this purpose, and move part of turn's function to setup.
                 
                 /// 6) The deck duplicate that will take the longest to play.
             } else if setup.clues < Setup.MaxClues, let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.deckDuplicates(in: hand)) {
                 
-                return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: 6)
+                return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "6")
                 
                 /// 7) If other players have only singletons, discards singleton that will take longest to play.
             } else if setup.clues < Setup.MaxClues, setup.othersHaveOnlySingletons(), let slowestSingleton = setup.slowestPlayableCard(cards: setup.singletons(in: hand)) {
                 
-                return Action(type: .discard, card: slowestSingleton, number: nil, suit: nil, aiStep: 7)
+                return Action(type: .discard, card: slowestSingleton, number: nil, suit: nil, aiStep: "7")
                 
                 /// 8) Clues.
             } else if setup.clues > 0 {
-                return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: 8)
+                return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "8")
                 
                 /// 9) Play the first card. (This shouldn't be possible.)
             } else {
-                return Action(type: .play, card: setup.hands[setup.currentHandIndex].first!, number: nil, suit: nil, aiStep: 9)
+                return Action(type: .play, card: hand.first!, number: nil, suit: nil, aiStep: "9")
             }
         }
     }
