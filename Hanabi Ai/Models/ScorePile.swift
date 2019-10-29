@@ -43,7 +43,7 @@ extension ScorePile {
 extension Array where Element == ScorePile {
     /// Returns the total score for all the piles.
     func score() -> Int {
-        return reduce(0, {$0 + $1.number})
+        reduce(0, {$0 + $1.number})
     }
     
     /// Returns a Boolean value that indicates whether the specified card is one of the next cards to score.

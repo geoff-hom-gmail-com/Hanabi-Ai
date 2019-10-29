@@ -30,6 +30,7 @@
 		8160C5FE2319E08500550C54 /* Hanabi_AiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C5FD2319E08500550C54 /* Hanabi_AiUITests.swift */; };
 		8160C60D2319FFB700550C54 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60C2319FFB700550C54 /* AppInfo.swift */; };
 		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
+		816397FE23680F9E00C10D38 /* ProphetV6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816397FD23680F9E00C10D38 /* ProphetV6.swift */; };
 		818ECD8A2362F44B00783D08 /* ProphetV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD892362F44B00783D08 /* ProphetV4.swift */; };
 		818ECD8C2362FB6100783D08 /* ProphetV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD8B2362FB6100783D08 /* ProphetV5.swift */; };
 		819A9311234567F0001B28C5 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A9310234567F0001B28C5 /* Action.swift */; };
@@ -98,6 +99,7 @@
 		8160C5FF2319E08500550C54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8160C60C2319FFB700550C54 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		816397FD23680F9E00C10D38 /* ProphetV6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV6.swift; sourceTree = "<group>"; };
 		818ECD892362F44B00783D08 /* ProphetV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV4.swift; sourceTree = "<group>"; };
 		818ECD8B2362FB6100783D08 /* ProphetV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV5.swift; sourceTree = "<group>"; };
 		819A9310234567F0001B28C5 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				81475F3823616AB3009DD0F6 /* PlayableV3.swift */,
 				818ECD892362F44B00783D08 /* ProphetV4.swift */,
 				818ECD8B2362FB6100783D08 /* ProphetV5.swift */,
+				816397FD23680F9E00C10D38 /* ProphetV6.swift */,
 			);
 			path = AIs;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 				81A9E6DC234E923A001429B8 /* Card+View.swift in Sources */,
 				81A9E6E4234F08D0001429B8 /* Setup.swift in Sources */,
 				81B3390E235FD3D400541E10 /* DiscardFirstAI.swift in Sources */,
+				816397FE23680F9E00C10D38 /* ProphetV6.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
 				81B339122360475100541E10 /* MultipleGamesView.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,

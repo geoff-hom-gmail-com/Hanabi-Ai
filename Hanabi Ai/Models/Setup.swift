@@ -52,6 +52,27 @@ struct Setup {
     
     // MARK: Actions
     
+    
+    /// Returns the number of cards that are still scorable in the game.
+    func numberOfScorablesLeft() -> Int {
+        /// The number of scorables left.
+        var count = 0
+        
+        for scorePile in scorePiles {
+            /// The next card to score.
+            var nextCard = Card(suit: scorePile.suit, number: scorePile.score + 1)
+            
+            while nextCard.number <= 5 {
+                guard hands.contain(nextCard) || deck.contains(nextCard) else {
+                    break
+                }
+                count += 1
+                nextCard = Card(suit: nextCard.suit, number: nextCard.number + 1)
+            }
+        }
+        return count
+    }
+    
     /// Returns the first playable card in the specified hand; if none, `nil`.
     func firstPlayableCard(in hand: Hand) -> Card? {
         hand.first{scorePiles.nextIs($0)}
