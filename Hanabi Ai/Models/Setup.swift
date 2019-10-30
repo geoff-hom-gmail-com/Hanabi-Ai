@@ -114,8 +114,8 @@ struct Setup {
         hand.first{hasFutureHandDuplicate($0)}
     }
     
-    /// Returns the cards in the specified hand that appear again in the deck.
-    func deckDuplicates(in hand: Hand) -> Array<Card> {
+    /// Returns the cards in the specified hand that have deck duplicates.
+    func cardsWithDeckDuplicates(in hand: Hand) -> Array<Card> {
         hand.filter{deck.contains($0)}
     }
     
@@ -128,32 +128,98 @@ struct Setup {
             .filter{!deck.contains($0)}
     }
     
+    /// Returns an array of tuples, each containing the indices of a non-trivial deck pair.
+    func nonTrivialDeckPairIndices() -> Array<(Int, Int)> {
+        /// The indices to return.
+        var indices: [(Int, Int)] = []
+        
+        for (index, card) in deck.enumerated() {
+            /// A Boolean value that indicates whether a deck pair was already counted.
+            var alreadyCounted = false
+            
+            for (_, index2) in indices {
+                if index == index2 {
+                    alreadyCounted = true
+                    break
+                }
+            }
+            
+            /// The pair indices for this card.
+            if !alreadyCounted, let pairIndices = nonTrivialDeckPairIndices(for: card) {
+                indices += [pairIndices]
+            }
+        }
+        return indices
+    }
+    
+    /// Returns a tuple containing the indices of a non-trivial deck pair for the specified card; if none, returns `nil`.
+    ///
+    /// A non-trivial pair can have its predecessor score in between when the pair is seen. Thus which of the pair to keep is non-trivial.
+    func nonTrivialDeckPairIndices(for card: Card) -> (Int, Int)? {
+        guard card.number != 1 && card.number != 5 else {return nil}
+        guard deck.filter({$0 == card}).count == 2 else {return nil}
+        
+        /// The indices of the pair.
+        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return nil}
+        
+        /// The range between the pair.
+        let inBetween = firstIndex + 1..<secondIndex
+        
+        /// The matching score pile.
+        let scorePile = scorePiles.first{$0.suit == card.suit}!
+        
+        /// The card that has to score prior.
+        var priorCard = Card(suit: card.suit, number: card.number - 1)
+        
+        // Check each prior's first occurrence: It can't be after the pair. One prior's must be between the pair.
+        
+        /// A Boolean value that indicates whether a prior's first occurrence is between the pair.
+        var aPriorIsFirstInBetween = false
+        
+        while priorCard.number > scorePile.number {
+            /// The first occurrence of the prior card.
+            if !hands.contain(priorCard), let index = deck.firstIndex(of: priorCard) {
+                if index > secondIndex {
+                    return nil
+                } else if inBetween.contains(index) {
+                    aPriorIsFirstInBetween = true
+                }
+            }
+            priorCard = Card(suit: card.suit, number: priorCard.number - 1)
+        }
+        if aPriorIsFirstInBetween {
+            return (firstIndex, secondIndex)
+        } else {
+            return nil
+        }
+    }
+    
     /// Returns all duplicates where it's unclear whether to keep the first one or wait for the second.
     ///
     /// This includes duplicates where both are currently in the deck.
     ///
     /// 1s are trivial because we play the first one. Duplicates in hand are moot. Future hand duplicates are trivial.
-    func nonTrivialDuplicates() -> Array<Card> {
-        /// The non-trivial duplicates.
-        var nonTrivialDuplicates: [Card] = []
-        
-        /// All players' cards.
-        let handsCards = Array(hands.joined())
-        
-        for card in handsCards {
-            guard card.number != 1 && card.number != 5 else {continue}
-            guard deck.contains(card) else {continue}
-            guard !hasFutureHandDuplicate(card) else {continue}
-            nonTrivialDuplicates += [card]
-        }
-        nonTrivialDuplicates += deck.filter{hasNonTrivialPair(of: $0)}
-        return nonTrivialDuplicates
-    }
+//    func nonTrivialDuplicates() -> Array<Card> {
+//        /// The non-trivial duplicates.
+//        var nonTrivialDuplicates: [Card] = []
+//
+//        /// All players' cards.
+//        let handsCards = Array(hands.joined())
+//
+//        for card in handsCards {
+//            guard card.number != 1 && card.number != 5 else {continue}
+//            guard deck.contains(card) else {continue}
+//            guard !hasFutureHandDuplicate(card) else {continue}
+//            nonTrivialDuplicates += [card]
+//        }
+//        nonTrivialDuplicates += deck.filter{hasNonTrivialPair(of: $0)}
+//        return nonTrivialDuplicates
+//    }
     
-    /// Returns a Boolean value that indicates whether the specified card is a non-trivial pair in the deck.
+    /// Returns a Boolean value that indicates whether the specified card has a non-trivial pair in the deck.
     ///
     /// A non-trivial pair can have its predecessor score in between when the pair is seen. Thus which of the pair to keep is non-trivial.
-    func hasNonTrivialPair(of card: Card) -> Bool {
+    func hasNonTrivialDeckPair(for card: Card) -> Bool {
         guard card.number != 1 && card.number != 5 else {return false}
         guard deck.filter({$0 == card}).count == 2 else {return false}
         
@@ -217,15 +283,15 @@ struct Setup {
         }
     }
     
-    /// Returns a Boolean value that indicates whether any card in the specified hand is a duplicate.
+    /// Returns a Boolean value that indicates whether any card in the specified hand has a duplicate.
     ///
     /// A duplicate can be in the deck, in another hand, or in even the same hand.
-    func hasDuplicates(in hand: Hand) -> Bool {
-        hasDeckDuplicates(in: hand) || hasHandDuplicates(in: hand)
+    func hasDuplicates(for hand: Hand) -> Bool {
+        hasDeckDuplicates(for: hand) || hasHandDuplicates(in: hand)
     }
     
-    /// Returns a Boolean value that indicates whether any card in the specified hand is a deck duplicate.
-    func hasDeckDuplicates(in hand: Hand) -> Bool {
+    /// Returns a Boolean value that indicates whether any card in the specified hand has a deck duplicate.
+    func hasDeckDuplicates(for hand: Hand) -> Bool {
         hand.contains{deck.contains($0)}
     }
     

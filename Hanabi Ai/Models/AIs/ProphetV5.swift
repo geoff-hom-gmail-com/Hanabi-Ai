@@ -72,7 +72,7 @@ struct ProphetV5: AI {
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
                 /// The deck duplicate that will take the longest to play.
-                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.deckDuplicates(in: handsCards)) {
+                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
                     /// 8a) if has slowest deck duplicate, discards
                     if hand.contains(slowestDeckDuplicate) {
                         return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "8a")

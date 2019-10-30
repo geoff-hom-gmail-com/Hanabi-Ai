@@ -10,7 +10,7 @@ import Foundation
 
 /// An AI that can see the deck.
 ///
-/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues.
+/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has slowest card with deck duplicate, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues.
 ///
 /// Stats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
 struct ProphetV6: AI {
@@ -18,7 +18,7 @@ struct ProphetV6: AI {
     let name = "Prophet v6"
     
     /// Summary of the AI.
-    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues"
+    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has slowest card with deck duplicate, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
     
     /// Returns an action for the specified setup.
     func action(for setup: Setup) -> Action {
@@ -78,14 +78,14 @@ struct ProphetV6: AI {
                 // I could try to expose another function for this purpose, and move part of turn's function to setup.
                 // Hmm, but what a player would do and what a player could do are different.
                 
-                /// At this point, all players should have only deck duplicates or singletons. And we can clue or discard.
+                /// At this point, all players should have only cards with non-trivial deck duplicates, or singletons. And we can clue or discard.
             } else {
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
-                /// The deck duplicate that will take the longest to play.
-                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.deckDuplicates(in: handsCards)) {
-                    /// 6a) if has slowest deck duplicate, discards
+                /// The card with a deck duplicate that will take the longest to play.
+                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
+                    /// 6a) if self has slowest card with deck duplicate, discards
                     if hand.contains(slowestDeckDuplicate) {
                         return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "6a")
                         

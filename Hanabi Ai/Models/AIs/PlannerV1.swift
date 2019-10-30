@@ -19,8 +19,8 @@ struct PlannerV1: AI {
     
     // todo: before 6a, x) plans
     /// Summary of the AI.
-    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future hand duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues"
-    
+    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has slowest card with deck duplicate, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
+
     /// Returns an action for the specified setup.
     func action(for setup: Setup) -> Action {
         /// The current hand.
@@ -79,7 +79,7 @@ struct PlannerV1: AI {
                 // I could try to expose another function for this purpose, and move part of turn's function to setup.
                 // Hmm, but what a player would do and what a player could do are different.
                 
-                /// At this point, all players should have only deck duplicates or singletons. And we can clue or discard.
+                /// At this point, all players should have only cards with non-trivial deck duplicates, or singletons. And we can clue or discard.
             } else {
                 // todo: plan
                 // for now, we'll just print all deck dups to make sure we're right.
@@ -88,12 +88,30 @@ struct PlannerV1: AI {
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
                 // TODO: temp; nonTrivialDuplicates
-                let nonTrivialDuplicates = setup.nonTrivialDuplicates()
-                print(nonTrivialDuplicates.description)
+                // Going thru one's hand, we assume only singletons and non-trivial deck duplicates. a 5 is a keeper. A non-trivial dup is (both indices)
+                // hmm, maybe it's better to just go thru each deck card one at a time... with the non-trivials known, then the rest is trivial... 5, keep; 1st scorable 1, keep; non-trivial, keep if flagged; trivial, keep if all priors seen, else discard; yeah, that should get the indices
+           
+                // yeah, we get the cards, then use that to get the indices
                 
-                /// The deck duplicate that will take the longest to play.
-                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.deckDuplicates(in: handsCards)) {
-                    /// 6a) if has slowest deck duplicate, discards
+                /// The indices of all non-trivial deck pairs.
+                let nonTrivialDeckPairIndices = setup.nonTrivialDeckPairIndices()
+                print(nonTrivialDeckPairIndices)
+
+                // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
+                let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
+               
+                print(handCardsWithNonTrivialDeckDuplicates.description)
+
+                /// Returns an array of indices of deck cards that will score.
+                ///
+                /// This doesn't account for hand-size limits or running out of turns. Non-trivial deck pairs are not included.
+                /// The deck indices of cards that will score.
+                // TODO WILO: use the above to get the below
+                // let scorableDeckIndices = setup.scorableDeckIndices()
+                
+                /// The card with a deck duplicate that will take the longest to play.
+                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
+                    /// 6a) if self has slowest card with deck duplicate, discards
                     if hand.contains(slowestDeckDuplicate) {
                         return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "6a")
                         
