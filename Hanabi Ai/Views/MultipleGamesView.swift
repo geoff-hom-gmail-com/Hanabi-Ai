@@ -27,7 +27,10 @@ struct MultipleGamesView: View {
                     Divider()
                     Text(#"Time: \#(model.stats.computeTime, specifier: "%.1f")""#)
                     Divider()
-                    Text("Mean score: \(model.stats.meanScore, specifier: "%.2f")")
+                    VStack(alignment: .leading) {
+                        Text("Mean score: \(model.stats.meanScore, specifier: "%.2f")")
+                        Text("Won: \(model.stats.percentWon, specifier: "%.1f")%")
+                    }
                 }
                 Text("Worst: \(model.stats.minScore) (Deck: \(model.stats.minDeck))")
                 Text("Best: \(model.stats.maxScore) (Deck: \(model.stats.maxDeck))")

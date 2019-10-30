@@ -21,8 +21,11 @@ extension Deck {
     /// A string that describes a deck that can be won by playing the first card in each hand.
     static let playFirstCardString = "g1g2g3g4g5r1r2r3r4r5w1w2w3w4w5b1b2b3b4b5y1y2y3y4y5g1g1g2g3g4r1r1r2r3r4w1w1w2w3w4b1b1b2b3b4y1y1y2y3y4"
     
-    /// A string that describes a deck that is tough to win. (But is it impossible? What's the max score anyway?)
+    /// A string that describes a deck that is tough to win. (Max 2p: 21?)
     static let toughDescription = "w5y4r4r3w1y3r5y2r2y3g3w3g1g4w4r4g1b4w4g1y5b1b4w3b5g5r3y4b2w2y1g4b1w1b2w2b1r1r1w1y1g2g3y2b3b3g2r2r1y1"
+    
+    /// A string that describes a deck that is tough to win. (Max 2p: 24?)
+    static let tough2Description = "b2r3w4g1g3y4b4g3b5r3w5g5w2w3b4w4g4b1r1b1y2b1r4w1y5y3w2r4w1y3r1g1r1w1r2g1y1r5g4y1y1b2b3g2b3y2r2w3g2y4"
     
     /// Makes and returns the deck described by the specified string.
     ///

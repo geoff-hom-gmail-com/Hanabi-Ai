@@ -101,6 +101,10 @@ class Model: ObservableObject {
             // The current game's score.
             let score = game.endSetup!.scorePiles.score()
             
+            if score == ScorePile.MaxNumber * 5 {
+                stats.gamesWon += 1
+            }
+            
             if score < stats.minScore {
                 stats.minScore = score
                 stats.minDeck = game.startingDeck.description

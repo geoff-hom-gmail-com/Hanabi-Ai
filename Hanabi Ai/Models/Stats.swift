@@ -28,6 +28,14 @@ class Stats: ObservableObject {
         (gamesPlayed == 0) ? 0 : ( Double(totalScore) / Double(gamesPlayed) )
     }
     
+    /// The number of games won.
+    var gamesWon = 0
+    
+    /// The percent of games won.
+    var percentWon: Double {
+        (gamesPlayed == 0) ? 0 : ( Double(gamesWon) * 100 / Double(gamesPlayed) )
+    }
+    
     /// The lowest score.
     var minScore = 0
     

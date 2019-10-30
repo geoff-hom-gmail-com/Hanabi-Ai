@@ -12,7 +12,7 @@ import Foundation
 ///
 /// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues.
 ///
-/// Stats from 10,000 games: Avg. 24.93 (20–25).
+/// Stats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
 struct ProphetV6: AI {
     /// The AI's name.
     let name = "Prophet v6"
