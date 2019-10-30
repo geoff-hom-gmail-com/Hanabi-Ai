@@ -1,8 +1,8 @@
 //
-//  ProphetV6.swift
+//  PlannerV1.swift
 //  Hanabi Ai
 //
-//  Created by Geoff Hom on 10/28/19.
+//  Created by Geoff Hom on 10/30/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
 //
 
@@ -10,15 +10,16 @@ import Foundation
 
 /// An AI that can see the deck.
 ///
-/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues.
+/// TODO1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues.
 ///
-/// Stats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
-struct ProphetV6: AI {
+/// TODOStats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
+struct PlannerV1: AI {
     /// The AI's name.
-    let name = "Prophet v6"
+    let name = "Planner v1"
     
+    // todo: before 6a, x) plans
     /// Summary of the AI.
-    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues"
+    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future hand duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues"
     
     /// Returns an action for the specified setup.
     func action(for setup: Setup) -> Action {
@@ -80,8 +81,15 @@ struct ProphetV6: AI {
                 
                 /// At this point, all players should have only deck duplicates or singletons. And we can clue or discard.
             } else {
+                // todo: plan
+                // for now, we'll just print all deck dups to make sure we're right.
+                
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
+                
+                // TODO: temp; nonTrivialDuplicates
+                let nonTrivialDuplicates = setup.nonTrivialDuplicates()
+                print(nonTrivialDuplicates.description)
                 
                 /// The deck duplicate that will take the longest to play.
                 if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.deckDuplicates(in: handsCards)) {

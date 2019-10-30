@@ -168,7 +168,7 @@ class Game: ObservableObject {
             /// The next turn's setup.
             let nextSetup = turns[lastIndex].doAction()
             
-            if nextSetup.isGameOver() {
+            if nextSetup.isAtGameOver() {
                 isOver = true
                 endSetup = nextSetup
             } else {

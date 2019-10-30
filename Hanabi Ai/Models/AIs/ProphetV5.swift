@@ -42,7 +42,7 @@ struct ProphetV5: AI {
             return Action(type: .discard, card: duplicateCard, number: nil, suit: nil, aiStep: "4")
                         
             /// 5) The first card that is a future duplicate.
-        } else if let futureDuplicate = setup.firstFutureDuplicate(in: hand) {
+        } else if let futureDuplicate = setup.firstFutureHandDuplicate(in: hand) {
             return Action(type: .discard, card: futureDuplicate, number: nil, suit: nil, aiStep: "5")
             
             /// 6) if no clues, discard 1st
@@ -60,7 +60,7 @@ struct ProphetV5: AI {
             
             /// 7) If another player can do a safe play/discard, clue.
             if setup.firstPlayableCard(in: nextHand) != nil ||
-                    setup.firstUnscorableCard(in: nextHand) != nil || setup.firstHandDuplicateCard(in: nextHand) != nil || setup.firstFutureDuplicate(in: nextHand) != nil {
+                    setup.firstUnscorableCard(in: nextHand) != nil || setup.firstHandDuplicateCard(in: nextHand) != nil || setup.firstFutureHandDuplicate(in: nextHand) != nil {
                 
                 return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "7")
                 // TODO: would try recursive action prediction, except the turn makes the next setup, and an AI can't access a turn right now.

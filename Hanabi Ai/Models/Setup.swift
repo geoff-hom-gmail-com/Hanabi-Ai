@@ -109,35 +109,9 @@ struct Setup {
         hand.first{hands.count(for: $0) > 1}
     }
     
-    /// Returns the first card in the specified hand that would be a future duplicate; if none, `nil`.
-    ///
-    /// The card is a duplicate if one of its scoring predecessors won't come until after.
-    func firstFutureDuplicate(in hand: Hand) -> Card? {
-        hand.first { card in
-            switch card.number {
-            case 1, 5:
-                return false
-            default:
-                /// The deck index of the card's duplicate.
-                guard let duplicateIndex = deck.firstIndex(of: card) else {return false}
-                
-                /// The matching score pile.
-                let scorePile = scorePiles.first{$0.suit == card.suit}!
-                
-                /// The card that has to score prior.
-                var beforeCard = Card(suit: card.suit, number: card.number - 1)
-                
-                while beforeCard.number > scorePile.number {
-                    // The "before" card has to not be in a hand, and be in the deck.
-                    if !hands.contain(beforeCard), let index = deck.firstIndex(of: beforeCard) {
-                        
-                        if index > duplicateIndex {return true}
-                    }
-                    beforeCard = Card(suit: card.suit, number: beforeCard.number - 1)
-                }
-                return false
-            }
-        }
+    /// Returns the first card in the specified hand that is a future hand duplicate; if none, `nil`.
+    func firstFutureHandDuplicate(in hand: Hand) -> Card? {
+        hand.first{hasFutureHandDuplicate($0)}
     }
     
     /// Returns the cards in the specified hand that appear again in the deck.
@@ -154,37 +128,126 @@ struct Setup {
             .filter{!deck.contains($0)}
     }
     
+    /// Returns all duplicates where it's unclear whether to keep the first one or wait for the second.
+    ///
+    /// This includes duplicates where both are currently in the deck.
+    ///
+    /// 1s are trivial because we play the first one. Duplicates in hand are moot. Future hand duplicates are trivial.
+    func nonTrivialDuplicates() -> Array<Card> {
+        /// The non-trivial duplicates.
+        var nonTrivialDuplicates: [Card] = []
+        
+        /// All players' cards.
+        let handsCards = Array(hands.joined())
+        
+        for card in handsCards {
+            guard card.number != 1 && card.number != 5 else {continue}
+            guard deck.contains(card) else {continue}
+            guard !hasFutureHandDuplicate(card) else {continue}
+            nonTrivialDuplicates += [card]
+        }
+        nonTrivialDuplicates += deck.filter{hasNonTrivialPair(of: $0)}
+        return nonTrivialDuplicates
+    }
+    
+    /// Returns a Boolean value that indicates whether the specified card is a non-trivial pair in the deck.
+    ///
+    /// A non-trivial pair can have its predecessor score in between when the pair is seen. Thus which of the pair to keep is non-trivial.
+    func hasNonTrivialPair(of card: Card) -> Bool {
+        guard card.number != 1 && card.number != 5 else {return false}
+        guard deck.filter({$0 == card}).count == 2 else {return false}
+        
+        /// The indices of the pair.
+        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return false}
+        
+        /// The range between the pair.
+        let inBetween = firstIndex + 1..<secondIndex
+        
+        /// The matching score pile.
+        let scorePile = scorePiles.first{$0.suit == card.suit}!
+        
+        /// The card that has to score prior.
+        var priorCard = Card(suit: card.suit, number: card.number - 1)
+        
+        // Check each prior's first occurrence: It can't be after the pair. One prior's must be between the pair.
+        
+        /// A Boolean value that indicates whether a prior's first occurrence is between the pair.
+        var aPriorIsFirstInBetween = false
+        
+        while priorCard.number > scorePile.number {
+            /// The first occurrence of the prior card.
+            if !hands.contain(priorCard), let index = deck.firstIndex(of: priorCard) {
+                if index > secondIndex {
+                    return false
+                } else if inBetween.contains(index) {
+                    aPriorIsFirstInBetween = true
+                }
+            }
+            priorCard = Card(suit: card.suit, number: priorCard.number - 1)
+        }
+        return aPriorIsFirstInBetween
+    }
+    
+    /// Returns a Boolean value that indicates whether the specified card is a future hand duplicate.
+    ///
+    /// A future hand duplicate will see its duplicate in the deck before it can score itself. Thus it can be freely discarded.
+    func hasFutureHandDuplicate(_ card: Card) -> Bool {
+        switch card.number {
+        case 1, 5:
+            return false
+        default:
+            /// The deck index of the card's duplicate.
+            guard let duplicateIndex = deck.firstIndex(of: card) else {return false}
+            
+            /// The matching score pile.
+            let scorePile = scorePiles.first{$0.suit == card.suit}!
+            
+            /// The card that has to score prior.
+            var beforeCard = Card(suit: card.suit, number: card.number - 1)
+            
+            while beforeCard.number > scorePile.number {
+                // The "before" card has to not be in a hand, and be in the deck.
+                if !hands.contain(beforeCard), let index = deck.firstIndex(of: beforeCard) {
+                    
+                    if index > duplicateIndex {return true}
+                }
+                beforeCard = Card(suit: card.suit, number: beforeCard.number - 1)
+            }
+            return false
+        }
+    }
+    
     /// Returns a Boolean value that indicates whether any card in the specified hand is a duplicate.
     ///
     /// A duplicate can be in the deck, in another hand, or in even the same hand.
-    func duplicatesAre(in hand: Hand) -> Bool {
-        deckDuplicatesAre(in: hand) || handDuplicatesAre(in: hand)
+    func hasDuplicates(in hand: Hand) -> Bool {
+        hasDeckDuplicates(in: hand) || hasHandDuplicates(in: hand)
     }
     
     /// Returns a Boolean value that indicates whether any card in the specified hand is a deck duplicate.
-    func deckDuplicatesAre(in hand: Hand) -> Bool {
+    func hasDeckDuplicates(in hand: Hand) -> Bool {
         hand.contains{deck.contains($0)}
     }
     
     /// Returns a Boolean value that indicates whether any card in the specified hand is a hand duplicate.
     ///
     /// A hand duplicate can be in any hand, including itself.
-    func handDuplicatesAre(in hand: Hand) -> Bool {
+    func hasHandDuplicates(in hand: Hand) -> Bool {
         hand.contains{hands.count(for: $0) > 1}
     }
     
     /// Returns a Boolean value that indicates whether the other players have only singletons.
-    func othersHaveOnlySingletons() -> Bool {
-        for (index, hand) in hands.enumerated() {
-            guard index != currentHandIndex else {
-                continue
-            }
-            if duplicatesAre(in: hand) {
-                return false
-            }
-        }
-        return true
-    }
+//    func othersHaveOnlySingletons() -> Bool {
+//        for (index, hand) in hands.enumerated() {
+//            guard index != currentHandIndex else {
+//                continue
+//            }
+//            if hasDuplicates(in: hand) {
+//                return false
+//            }
+//        }
+//        return true
+//    }
     
     /// Returns the card that will take the most turns to play.
     ///
@@ -258,12 +321,12 @@ struct Setup {
     /// Returns a Boolean value that indicates whether this setup has reached the end of the game.
     ///
     /// There are three ways for Hanabi to end: A 3rd strike, a perfect score of 25, or turns run out.
-    func isGameOver() -> Bool {
-        strikes == 3 || scoreIsPerfect() || outOfTurns()
+    func isAtGameOver() -> Bool {
+        strikes == 3 || hasPerfectScore() || isOutOfTurns()
     }
     
     /// Returns a Boolean value that indicates whether the score is maxed out in all score piles.
-    func scoreIsPerfect() -> Bool {
+    func hasPerfectScore() -> Bool {
         for scorePile in scorePiles {
             if scorePile.score < ScorePile.MaxNumber {
                 return false
@@ -275,7 +338,7 @@ struct Setup {
     /// Returns a Booelan value that indicates whether there are no more turns left.
     ///
     /// When the last card has been drawn, each player gets one more turn, then the game ends.
-    func outOfTurns() -> Bool {
+    func isOutOfTurns() -> Bool {
         deck.isEmpty && (turnsLeft == 0)
     }
 }
