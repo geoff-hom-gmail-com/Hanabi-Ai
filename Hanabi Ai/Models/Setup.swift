@@ -39,6 +39,8 @@ struct Setup {
     /// An array of all score piles, in suit order, with each score set to 0.
     static let InitialScorePiles = Suit.allCases.sorted().map { ScorePile(suit: $0, score: 0) }
     
+    // MARK: Creating a Setup
+    
     /// Creates a setup with the specified parameters.
     init(hands: [Hand], currentHandIndex: Int, deck: Deck, clues: Int, strikes: Int, scorePiles: [ScorePile], turnsLeft: Int) {
         self.hands = hands
@@ -50,7 +52,7 @@ struct Setup {
         self.turnsLeft = turnsLeft
     }
     
-    // MARK: Actions
+    // MARK: Actions??
     
     
     /// Returns the number of cards that are still scorable in the game.
@@ -72,6 +74,8 @@ struct Setup {
         }
         return count
     }
+    
+    // MARK: Finding cards
     
     /// Returns the first playable card in the specified hand; if none, `nil`.
     func firstPlayableCard(in hand: Hand) -> Card? {
@@ -115,52 +119,52 @@ struct Setup {
     }
     
     /// Returns the cards in the specified hand that have deck duplicates.
-    func cardsWithDeckDuplicates(in hand: Hand) -> Array<Card> {
+    func cardsWithDeckDuplicates(in hand: Hand) -> [Card] {
         hand.filter{deck.contains($0)}
+    }
+    
+    /// Returns the indices of deck duplicates for the specified hand.
+    func deckDuplicateIndices(for hand: Hand) -> [Int] {
+        hand.compactMap{deck.firstIndex(of: $0)}
     }
     
     /// Returns the cards in the specified hand that are now unique.
     ///
     /// I.e., if discarded, a perfect score is impossible.
-    func singletons(in hand: Hand) -> Array<Card> {
+    func singletons(in hand: Hand) -> [Card] {
         // Return cards that are only found once in all hands, and are not in the deck.
         hand.filter{hands.count(for: $0) == 1}
             .filter{!deck.contains($0)}
     }
     
-    /// Returns an array of tuples, each containing the indices of a non-trivial deck pair.
-    func nonTrivialDeckPairIndices() -> Array<(Int, Int)> {
+    /// Returns an array of arrays, each containing the indices of a non-trivial deck pair.
+    func nonTrivialDeckPairIndices2D() -> [[Int]] {
         /// The indices to return.
-        var indices: [(Int, Int)] = []
+        var indices2D: [[Int]] = []
         
         for (index, card) in deck.enumerated() {
-            /// A Boolean value that indicates whether a deck pair was already counted.
-            var alreadyCounted = false
-            
-            for (_, index2) in indices {
-                if index == index2 {
-                    alreadyCounted = true
-                    break
-                }
+            // If the index wasn't already counted, then add it.
+            if !indices2D.contains{index == $0[1]} {
+                /// The pair indices for this card.
+                let pairIndices = nonTrivialDeckPairIndices(for: card)
+                
+                if !pairIndices.isEmpty {indices2D += [pairIndices]}
             }
+            // todo: I guess this could be a lot faster (and related stuff) if we separated the deck by suit. we do that once, and then we have 5x faster times thru each "deck"
             
-            /// The pair indices for this card.
-            if !alreadyCounted, let pairIndices = nonTrivialDeckPairIndices(for: card) {
-                indices += [pairIndices]
-            }
         }
-        return indices
+        return indices2D
     }
     
-    /// Returns a tuple containing the indices of a non-trivial deck pair for the specified card; if none, returns `nil`.
+    /// Returns an array containing the indices of a non-trivial deck pair for the specified card.
     ///
     /// A non-trivial pair can have its predecessor score in between when the pair is seen. Thus which of the pair to keep is non-trivial.
-    func nonTrivialDeckPairIndices(for card: Card) -> (Int, Int)? {
-        guard card.number != 1 && card.number != 5 else {return nil}
-        guard deck.filter({$0 == card}).count == 2 else {return nil}
+    func nonTrivialDeckPairIndices(for card: Card) -> [Int] {
+        guard card.number != 1 && card.number != 5 else {return []}
+        guard deck.filter({$0 == card}).count == 2 else {return []}
         
         /// The indices of the pair.
-        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return nil}
+        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return []}
         
         /// The range between the pair.
         let inBetween = firstIndex + 1..<secondIndex
@@ -180,7 +184,7 @@ struct Setup {
             /// The first occurrence of the prior card.
             if !hands.contain(priorCard), let index = deck.firstIndex(of: priorCard) {
                 if index > secondIndex {
-                    return nil
+                    return []
                 } else if inBetween.contains(index) {
                     aPriorIsFirstInBetween = true
                 }
@@ -188,10 +192,89 @@ struct Setup {
             priorCard = Card(suit: card.suit, number: priorCard.number - 1)
         }
         if aPriorIsFirstInBetween {
-            return (firstIndex, secondIndex)
+            return [firstIndex, secondIndex]
         } else {
-            return nil
+            return []
         }
+    }
+    
+    // TODO: implement recursive; then check how others do recursive (e.g., https://www.weheartswift.com/recursion/
+    /// Returns a tuple that contains the highest score and the indices to enable that, for the specified non-trivial pair indices with the specified chosen indices.
+    ///
+    /// param pairIndices2D: An array of arrays, each containing the deck indices of a pair to test. If an array has only one index, then the other card must be in a hand.
+    /// chosenIndices: An array of indices that have been chosen to test
+    func highestScore(for pairIndices2D: [[Int]], with chosenIndices: [Int]) -> (score: Int, indices: [Int]) {
+        /// The tuple to return.
+        // TODO: not sure I need this. the score is always better. What I need to do is compare the two scores for a given pair and propagate the better one.
+        // I guess we need it so the loop has something to compare against. But for the end of the branch, we must return it. So we can move this declaration lower
+        var bestScoreTuple: (score: Int, indices: [Int]) = (score: -1, indices: [])
+        
+        if pairIndices2D.isEmpty {
+            print("chosen: \(chosenIndices)")
+            // here, we would calc a score via some function that takes in the indices (including telling to look in hand), then return it
+            // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky.
+            // let score = setup.someFunction(with? for??: chosenIndices)
+            // let scoreTuple = (score: score, indices: chosenIndices)
+            // if better, set it
+        } else {
+            /// A mutable copy.
+            var mutablePairIndices2D = pairIndices2D
+            
+            /// The pair of indices to test.
+            let pairIndices = mutablePairIndices2D.removeFirst()
+            
+            // TODO:
+            // if one elt, then we test the index we have and... we need a way to signal the chosenIndex was in-hand
+            // that will get passed down to the scoring function; it needs to know the card at least; so we could pass in the card
+            // it could also get it by inference, but that's extra computation we already did: if a deck dup index isn't there, then we must mean the card in hand
+            // we could have setup have a cardsWithDeckDuplicates lazy property, so turns which need it would have it
+            
+            // If only one index, then we also have to test the card in hand.
+            if pairIndices.count == 1 {
+                /// The highest score tuple for the card in hand.
+                let highestScoreTupleForHandCard = highestScore(for: mutablePairIndices2D, with: chosenIndices)
+
+                if highestScoreTupleForHandCard.score > bestScoreTuple.score {
+                    bestScoreTuple = highestScoreTupleForHandCard
+                }
+            }
+            for index in pairIndices {
+                /// The highest score tuple for this index.
+                let highestScoreTupleForIndex = highestScore(for: mutablePairIndices2D, with: chosenIndices + [index])
+                
+                if highestScoreTupleForIndex.score > bestScoreTuple.score {
+                    bestScoreTuple = highestScoreTupleForIndex
+                }
+            }
+        }
+        
+        return bestScoreTuple
+    }
+    
+    /// Returns an array of indices of deck cards that will score.
+    ///
+    /// This doesn't account for hand-size limits or running out of turns. Non-trivial deck pairs are not included.
+    func scorableDeckIndices(for card: Card) -> [Int] {
+        /// The indices of deck cards that will score.
+        var scorableDeckIndices: [Int] = []
+        
+        for (index, card) in deck.enumerated() {
+            // 5s will score.
+            if card.number == 5 {scorableDeckIndices += [index]}
+            
+            // The first new 1 will score.
+            if card.number == 1,
+                let scorePile = scorePiles.first(where: {$0.suit == card.suit}),
+                scorePile.score == 0 {
+
+                guard !scorableDeckIndices.contains(where: {deck[$0] == card}) else {continue}
+                scorableDeckIndices += [index]
+            }
+            
+            // 2s/3s/4s: If non-trivial
+            // hmm, the top doc comment isn't good enough. It's not scorables only, as we also include non-trivial deck duplicates; well actually, we want those separately
+        }
+        return scorableDeckIndices
     }
     
     /// Returns all duplicates where it's unclear whether to keep the first one or wait for the second.
@@ -219,40 +302,40 @@ struct Setup {
     /// Returns a Boolean value that indicates whether the specified card has a non-trivial pair in the deck.
     ///
     /// A non-trivial pair can have its predecessor score in between when the pair is seen. Thus which of the pair to keep is non-trivial.
-    func hasNonTrivialDeckPair(for card: Card) -> Bool {
-        guard card.number != 1 && card.number != 5 else {return false}
-        guard deck.filter({$0 == card}).count == 2 else {return false}
-        
-        /// The indices of the pair.
-        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return false}
-        
-        /// The range between the pair.
-        let inBetween = firstIndex + 1..<secondIndex
-        
-        /// The matching score pile.
-        let scorePile = scorePiles.first{$0.suit == card.suit}!
-        
-        /// The card that has to score prior.
-        var priorCard = Card(suit: card.suit, number: card.number - 1)
-        
-        // Check each prior's first occurrence: It can't be after the pair. One prior's must be between the pair.
-        
-        /// A Boolean value that indicates whether a prior's first occurrence is between the pair.
-        var aPriorIsFirstInBetween = false
-        
-        while priorCard.number > scorePile.number {
-            /// The first occurrence of the prior card.
-            if !hands.contain(priorCard), let index = deck.firstIndex(of: priorCard) {
-                if index > secondIndex {
-                    return false
-                } else if inBetween.contains(index) {
-                    aPriorIsFirstInBetween = true
-                }
-            }
-            priorCard = Card(suit: card.suit, number: priorCard.number - 1)
-        }
-        return aPriorIsFirstInBetween
-    }
+//    func hasNonTrivialDeckPair(for card: Card) -> Bool {
+//        guard card.number != 1 && card.number != 5 else {return false}
+//        guard deck.filter({$0 == card}).count == 2 else {return false}
+//
+//        /// The indices of the pair.
+//        guard let firstIndex = deck.firstIndex(of: card), let secondIndex = deck.lastIndex(of: card) else {return false}
+//
+//        /// The range between the pair.
+//        let inBetween = firstIndex + 1..<secondIndex
+//
+//        /// The matching score pile.
+//        let scorePile = scorePiles.first{$0.suit == card.suit}!
+//
+//        /// The card that has to score prior.
+//        var priorCard = Card(suit: card.suit, number: card.number - 1)
+//
+//        // Check each prior's first occurrence: It can't be after the pair. One prior's must be between the pair.
+//
+//        /// A Boolean value that indicates whether a prior's first occurrence is between the pair.
+//        var aPriorIsFirstInBetween = false
+//
+//        while priorCard.number > scorePile.number {
+//            /// The first occurrence of the prior card.
+//            if !hands.contain(priorCard), let index = deck.firstIndex(of: priorCard) {
+//                if index > secondIndex {
+//                    return false
+//                } else if inBetween.contains(index) {
+//                    aPriorIsFirstInBetween = true
+//                }
+//            }
+//            priorCard = Card(suit: card.suit, number: priorCard.number - 1)
+//        }
+//        return aPriorIsFirstInBetween
+//    }
     
     /// Returns a Boolean value that indicates whether the specified card is a future hand duplicate.
     ///
@@ -321,7 +404,7 @@ struct Setup {
     ///
     /// To estimate how slow a card is, we look at the cards that have to score first, and which of those is deepest in the deck.
     // TODO: Right now there are some approximations made. We don't count explicitly who has which cards or the order they're drawn. It's mostly a function of how deeply cards are buried in the deck.
-    func slowestPlayableCard(cards: Array<Card>) -> Card? {
+    func slowestPlayableCard(cards: [Card]) -> Card? {
         /// The slowest playable card.
         var slowestCard: Card?
         

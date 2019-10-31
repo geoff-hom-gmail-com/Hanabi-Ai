@@ -87,27 +87,44 @@ struct PlannerV1: AI {
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
-                // TODO: temp; nonTrivialDuplicates
-                // Going thru one's hand, we assume only singletons and non-trivial deck duplicates. a 5 is a keeper. A non-trivial dup is (both indices)
-                // hmm, maybe it's better to just go thru each deck card one at a time... with the non-trivials known, then the rest is trivial... 5, keep; 1st scorable 1, keep; non-trivial, keep if flagged; trivial, keep if all priors seen, else discard; yeah, that should get the indices
-           
-                // yeah, we get the cards, then use that to get the indices
+                // TODO: when this works, make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
                 
                 /// The indices of all non-trivial deck pairs.
-                let nonTrivialDeckPairIndices = setup.nonTrivialDeckPairIndices()
-                print(nonTrivialDeckPairIndices)
+                let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
+                //indices
+                print(nonTrivialDeckPairIndices2D)
 
                 // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
+                /// todo: comment
+                let nonTrivialDeckDuplicateIndices = setup.deckDuplicateIndices(for: handsCards)
+                // indices
+                print(nonTrivialDeckDuplicateIndices)
+                
+                /// ?an array of arrays, each containing the indices of a non-trivial pair.
+                ///
+                /// If an array has only one index, then the the rest of the pair is in a hand.
+                var nonTrivialPairIndices2D = nonTrivialDeckPairIndices2D
+                
+                /// an array of arrays, each containing the indices of a non-trivial deck duplicate.
+                /// making this compatible
+                let nonTrivialDeckDuplicateIndices2D = nonTrivialDeckDuplicateIndices.map{[$0]}
+                
+                nonTrivialPairIndices2D += nonTrivialDeckDuplicateIndices2D
+                
+                /// todo: rename; hmm, we'll want it to return the optimal indices
+                /// Returns an array of non-trivial indices that results in the highest score.
+                let highestScoreTuple = setup.highestScore(for: nonTrivialPairIndices2D, with: [])
+                print("best indices: \(highestScoreTuple)")
+                
+                
+                // Ah, we can cheat here and use just the indices of deck duplicates, as we already played all the trivial ones.
                 let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
-               
+                // these are cards; don't need them yet, but makes debug output more readable
                 print(handCardsWithNonTrivialDeckDuplicates.description)
 
-                /// Returns an array of indices of deck cards that will score.
-                ///
-                /// This doesn't account for hand-size limits or running out of turns. Non-trivial deck pairs are not included.
                 /// The deck indices of cards that will score.
                 // TODO WILO: use the above to get the below
-                // let scorableDeckIndices = setup.scorableDeckIndices()
+//                let scorableDeckIndices = setup.scorableDeckIndices()
                 
                 /// The card with a deck duplicate that will take the longest to play.
                 if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
