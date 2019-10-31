@@ -19,5 +19,5 @@ protocol AI {
     var description: String { get }
     
     /// Returns an action for the specified setup.
-    func action(for setup: Setup) -> Action
+    mutating func action(for setup: Setup) -> Action
 }

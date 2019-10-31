@@ -20,9 +20,14 @@ struct PlannerV1: AI {
     // todo: before 6a, x) plans
     /// Summary of the AI.
     let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has slowest card with deck duplicate, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
+    
+    /// The cards to play for the max score.
+    ///
+    /// The AI may set this at some point.
+    var cardsForMaxScore: [Card] = []
 
     /// Returns an action for the specified setup.
-    func action(for setup: Setup) -> Action {
+    mutating func action(for setup: Setup) -> Action {
         /// The current hand.
         let hand = setup.hands[setup.currentHandIndex]
 
@@ -81,50 +86,66 @@ struct PlannerV1: AI {
                 
                 /// At this point, all players should have only cards with non-trivial deck duplicates, or singletons. And we can clue or discard.
             } else {
-                // todo: plan
-                // for now, we'll just print all deck dups to make sure we're right.
-                
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
+                // todo: plan
+                
+                /// The cards to play for the max score.
+                if !cardsForMaxScore.isEmpty {
+                    // so, we need the exact cards, so we can use references.
+                    // then if we're here, we have only non-trivial dups and singletons. we should discard the first card that's not in the list. So the list/plan needs the reference of every card to play. So it's an array of cards. It's all the cards that will score for sure.
+                    print("already have plan; enact!")
+                } else {
+                    /// The indices of all non-trivial deck pairs.
+                    let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
+                    //indices
+                    print(nonTrivialDeckPairIndices2D)
+                    
+                    // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
+                    /// todo: comment
+                    let nonTrivialDeckDuplicateIndices = setup.deckDuplicateIndices(for: handsCards)
+                    // indices
+                    print(nonTrivialDeckDuplicateIndices)
+                    
+                    /// ?an array of arrays, each containing the indices of a non-trivial pair.
+                    ///
+                    /// If an array has only one index, then the the rest of the pair is in a hand.
+                    var nonTrivialPairIndices2D = nonTrivialDeckPairIndices2D
+                    
+                    /// an array of arrays, each containing the indices of a non-trivial deck duplicate.
+                    /// making this compatible
+                    let nonTrivialDeckDuplicateIndices2D = nonTrivialDeckDuplicateIndices.map{[$0]}
+                    
+                    nonTrivialPairIndices2D += nonTrivialDeckDuplicateIndices2D
+                    
+                    /// todo: rename?; hmm, we'll want it to return the optimal indices
+                    /// // todo: pass in the trivial indices, so we aren't recalculating them for each branch
+                    /// // though if we do this, it'll be slightly harder to pull out which branch we chose. we could flatmap the 2d, then search for the ones in the final indices. or subtract trivial indices from the final indices. or just pass back the nontrivial indices. yeah. we can pass down the trivial ones as a separate parameter.
+                    /// Returns an array of non-trivial indices that results in the highest score.
+                    /// Returns the cards to play for the max score.
+                    let highestScoreTuple = setup.highestScore(for: nonTrivialPairIndices2D, with: [])
+                    print("best indices: \(highestScoreTuple)")
+                    
+                    // temp; we should send it the output of highestScore(for:)
+                    // ah, we don't set it in setup; we set it for the next setup
+                    // uh, no. we determine it here, so it's part of this turn.
+                    // we can make it part of the turn, not setup. But that doesn't make sense.
+                    // I guess it can be part of the AI; like, the AI figured it out.
+                    self.cardsForMaxScore = setup.hands[0]
+                    
+                    // these are cards; don't need them yet, but makes debug output more readable
+                    // Ah, we can cheat here and use just the indices of deck duplicates, as we already played all the trivial ones.
+                    let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
+                    print(handCardsWithNonTrivialDeckDuplicates.description)
+                    
+                    /// The deck indices of cards that will score.
+                    // TODO WILO: use the above to get the below
+                    //                let scorableDeckIndices = setup.scorableDeckIndices()
+                }
                 // TODO: when this works, make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
                 
-                /// The indices of all non-trivial deck pairs.
-                let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
-                //indices
-                print(nonTrivialDeckPairIndices2D)
-
-                // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
-                /// todo: comment
-                let nonTrivialDeckDuplicateIndices = setup.deckDuplicateIndices(for: handsCards)
-                // indices
-                print(nonTrivialDeckDuplicateIndices)
                 
-                /// ?an array of arrays, each containing the indices of a non-trivial pair.
-                ///
-                /// If an array has only one index, then the the rest of the pair is in a hand.
-                var nonTrivialPairIndices2D = nonTrivialDeckPairIndices2D
-                
-                /// an array of arrays, each containing the indices of a non-trivial deck duplicate.
-                /// making this compatible
-                let nonTrivialDeckDuplicateIndices2D = nonTrivialDeckDuplicateIndices.map{[$0]}
-                
-                nonTrivialPairIndices2D += nonTrivialDeckDuplicateIndices2D
-                
-                /// todo: rename; hmm, we'll want it to return the optimal indices
-                /// Returns an array of non-trivial indices that results in the highest score.
-                let highestScoreTuple = setup.highestScore(for: nonTrivialPairIndices2D, with: [])
-                print("best indices: \(highestScoreTuple)")
-                
-                
-                // Ah, we can cheat here and use just the indices of deck duplicates, as we already played all the trivial ones.
-                let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
-                // these are cards; don't need them yet, but makes debug output more readable
-                print(handCardsWithNonTrivialDeckDuplicates.description)
-
-                /// The deck indices of cards that will score.
-                // TODO WILO: use the above to get the below
-//                let scorableDeckIndices = setup.scorableDeckIndices()
                 
                 /// The card with a deck duplicate that will take the longest to play.
                 if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
@@ -157,3 +178,5 @@ struct PlannerV1: AI {
         }
     }
 }
+
+

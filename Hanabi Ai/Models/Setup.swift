@@ -204,26 +204,23 @@ struct Setup {
     /// param pairIndices2D: An array of arrays, each containing the deck indices of a pair to test. If an array has only one index, then the other card must be in a hand.
     /// chosenIndices: An array of indices that have been chosen to test
     func highestScore(for pairIndices2D: [[Int]], with chosenIndices: [Int]) -> (score: Int, indices: [Int]) {
-        /// The tuple to return.
-        // TODO: not sure I need this. the score is always better. What I need to do is compare the two scores for a given pair and propagate the better one.
-        // I guess we need it so the loop has something to compare against. But for the end of the branch, we must return it. So we can move this declaration lower
-        var bestScoreTuple: (score: Int, indices: [Int]) = (score: -1, indices: [])
-        
         if pairIndices2D.isEmpty {
             print("chosen: \(chosenIndices)")
-            // here, we would calc a score via some function that takes in the indices (including telling to look in hand), then return it
-            // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky.
-            // let score = setup.someFunction(with? for??: chosenIndices)
-            // let scoreTuple = (score: score, indices: chosenIndices)
-            // if better, set it
+            /// The score for the chosen indices.
+            let score = self.score(for: chosenIndices)
+            
+            return (score: score, indices: chosenIndices)
         } else {
+            /// The tuple to return.
+            var highestScoreTuple: (score: Int, indices: [Int]) = (score: -1, indices: [])
+
             /// A mutable copy.
             var mutablePairIndices2D = pairIndices2D
             
             /// The pair of indices to test.
             let pairIndices = mutablePairIndices2D.removeFirst()
             
-            // TODO:
+            // TODO: I think we can simplify this. We are always doing two branches, so just compare them and return the highest one. (ternary op)
             // if one elt, then we test the index we have and... we need a way to signal the chosenIndex was in-hand
             // that will get passed down to the scoring function; it needs to know the card at least; so we could pass in the card
             // it could also get it by inference, but that's extra computation we already did: if a deck dup index isn't there, then we must mean the card in hand
@@ -234,23 +231,51 @@ struct Setup {
                 /// The highest score tuple for the card in hand.
                 let highestScoreTupleForHandCard = highestScore(for: mutablePairIndices2D, with: chosenIndices)
 
-                if highestScoreTupleForHandCard.score > bestScoreTuple.score {
-                    bestScoreTuple = highestScoreTupleForHandCard
+                // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky.
+                if highestScoreTupleForHandCard.score > highestScoreTuple.score {
+                    highestScoreTuple = highestScoreTupleForHandCard
                 }
             }
             for index in pairIndices {
                 /// The highest score tuple for this index.
                 let highestScoreTupleForIndex = highestScore(for: mutablePairIndices2D, with: chosenIndices + [index])
                 
-                if highestScoreTupleForIndex.score > bestScoreTuple.score {
-                    bestScoreTuple = highestScoreTupleForIndex
+                if highestScoreTupleForIndex.score > highestScoreTuple.score {
+                    highestScoreTuple = highestScoreTupleForIndex
                 }
             }
+            return highestScoreTuple
         }
-        
-        return bestScoreTuple
     }
     
+    /// Returns the score that results from keeping the specified cards.
+    ///
+    /// Each index should be for a non-trivial duplicate (well, later we may just pass in the whole array of keepers, as we would've calculated that once).
+    func score(for chosenIndices: [Int]) -> Int {
+        // so, we'll go thru the deck, and keep some or discard others
+        // well, let's not rush this. What's the most straightforward way to do this?
+        // tagged cards? we can get these now from the above: non-trivial dups not mentioned are in hand
+        // or, we could get them earlier; just pass in whether we use the one in hand or not (like also pass in hand cards with dups kept)
+        // so yeah, if a 2/3/4 is not a non-trivial dup, then we keep it if we can play it asap, else we discard
+        // so we don't really need to calc tags beforehand; just each card, check for 1/5, then for non-trivial... well how do we check for play asap? if we have the priors in hand, then ok
+        // ok, calculating tags beforehand means we don't have to do it for each of say 32 branches. But calculating tags here is maybe faster; we don't have to see for a given 2/3/4 where all its priors are; just if they're in hand; yeah, you have to search thru the deck for each prior, so for a 4 that's maybe 3 cards. So maybe 2x slower.
+        // let's not worry about premature optimization. can fix later if it's an issue
+        // actually, once we get the best route, the rest of the game should be trivial: play if can; discard cards not on the route; if need be, discard good card that will score last (that can even be passed back from this function)
+        // what's simplest? do it here
+        // for card in deck: if tagged, then cards to keep: +1; turns left: -1; if can play a card, then cards to keep: -1, that score pile: +1
+        // if cards to keep = 10 and can't play, then cards to keep: -1; discard the card that will take longest to score (should be able to calculate that for the whole route by going backwards, once, as all the keepers are known; or just go from backward, and find the first keeper, and it's the highest held card in that suit)
+        // if cards to keep > turns left, that's fine. when we get to turns left = 0, see how many cards to keep we have (rename: potential scorers? cards to score?) well it's irrelevant; we have our score now; but we can also return # cards to score leftover, and the # of discarded cards to score. that will be handy for comparing same scores.
+        for card in deck {
+            // let's pretend a 5
+            // so keepArray: add it
+            // do we assume all the cards in hand we want to keep? no, as some branches will discard. but we can assume it's all singletons (5s) and non-trivial dups
+            // so, we need to go thru all hands and look at the 2/3/4s. If there's a chosen index which is the same card, then discard the hand card.
+            // ah, there could be others, like if it was a hand dup and it tossed one. well, that's the same
+        }
+        return 0
+    }
+    
+    // todo: rename; scorable could mean it can be scored now, vs potential
     /// Returns an array of indices of deck cards that will score.
     ///
     /// This doesn't account for hand-size limits or running out of turns. Non-trivial deck pairs are not included.
