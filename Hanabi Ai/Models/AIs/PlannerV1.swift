@@ -10,16 +10,15 @@ import Foundation
 
 /// An AI that can see the deck.
 ///
-/// TODO1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if has slowest deck duplicate, discards; 6b) if another player, clues; 7a) if has slowest singleton, discards; 7b) clues.
+/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues.
 ///
 /// TODOStats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
 struct PlannerV1: AI {
     /// The AI's name.
     let name = "Planner v1"
     
-    // todo: before 6a, x) plans
     /// Summary of the AI.
-    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has slowest card with deck duplicate, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
+    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
     
     /// The cards to play for the max score.
     ///
@@ -89,14 +88,9 @@ struct PlannerV1: AI {
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
-                // todo: plan
-                
-                /// The cards to play for the max score.
-                if !cardsForMaxScore.isEmpty {
-                    // so, we need the exact cards, so we can use references.
-                    // then if we're here, we have only non-trivial dups and singletons. we should discard the first card that's not in the list. So the list/plan needs the reference of every card to play. So it's an array of cards. It's all the cards that will score for sure.
-                    print("already have plan; enact!")
-                } else {
+                if cardsForMaxScore.isEmpty {
+                    // TODO: when this works, make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
+                                  
                     /// The indices of all non-trivial deck pairs.
                     let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
                     //indices
@@ -143,20 +137,35 @@ struct PlannerV1: AI {
                     // TODO WILO: use the above to get the below
                     //                let scorableDeckIndices = setup.scorableDeckIndices()
                 }
-                // TODO: when this works, make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
                 
+                                // ok we have a list of the cards to play for max score. how do we use them to craft an action?
+                // our hand is full of non-trivial dups and singletons.
+                // in our hand, find the first card not in the list
+                // if such a card exists, then we discard it
+                // else, we should discard the "worst" singleton, the one that will take longest to play
                 
+                // 6a) if self has card not needed for max score, discards
+                // hmm we're testing if we have it, bu tnot if another player has one. well, there could be multiple.
+                
+                /// 6a) if self has card not needed for max score, discards
+                if let nonMaxCard = hand.first(where: {!cardsForMaxScore.contains($0)}) {
+                    return Action(type: .discard, card: nonMaxCard, number: nil, suit: nil, aiStep: "6a")
+                    
+                    /// 6b) if another player, clues
+                } else if handsCards.contains(where: {!cardsForMaxScore.contains($0)}) {
+                    return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "6b")
+//                }
                 
                 /// The card with a deck duplicate that will take the longest to play.
-                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
-                    /// 6a) if self has slowest card with deck duplicate, discards
-                    if hand.contains(slowestDeckDuplicate) {
-                        return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "6a")
-                        
-                        /// 6b) if another player, clues
-                    } else {
-                        return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "6b")
-                    }
+//                if let slowestDeckDuplicate = setup.slowestPlayableCard(cards: setup.cardsWithDeckDuplicates(in: handsCards)) {
+//                    /// 6a) if self has slowest card with deck duplicate, discards
+//                    if hand.contains(slowestDeckDuplicate) {
+//                        return Action(type: .discard, card: slowestDeckDuplicate, number: nil, suit: nil, aiStep: "6a")
+//
+//                        /// 6b) if another player, clues
+//                    } else {
+//                        return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "6b")
+//                    }
                     
                     /// At this point, all players should have only singletons. And we can clue or discard.
                     /// The singleton that will take the longest to play.
@@ -178,5 +187,3 @@ struct PlannerV1: AI {
         }
     }
 }
-
-
