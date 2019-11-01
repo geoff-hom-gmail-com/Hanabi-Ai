@@ -10,7 +10,7 @@ import Foundation
 
 /// An AI that can see the deck.
 ///
-/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues.
+/// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues.
 ///
 /// TODOStats from 10,000 games: Avg. 24.93 (Won: 95.0%) (20–25).
 struct PlannerV1: AI {
@@ -18,12 +18,12 @@ struct PlannerV1: AI {
     let name = "Planner v1"
     
     /// Summary of the AI.
-    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
+    let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues; 7a) if self has slowest singleton, discards; 7b) clues"
     
-    /// The cards to play for the max score.
+    /// The exact cards to try to score.
     ///
-    /// The AI may set this at some point.
-    var cardsForMaxScore: [Card] = []
+    /// The AI may set this at some point, as advice.
+    var cardsToScore: [Card] = []
 
     /// Returns an action for the specified setup.
     mutating func action(for setup: Setup) -> Action {
@@ -88,71 +88,67 @@ struct PlannerV1: AI {
                 /// All players' cards.
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
-                if cardsForMaxScore.isEmpty {
-                    // TODO: when this works, make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
+                if cardsToScore.isEmpty {
+                    // TODO: make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
                                   
                     /// The indices of all non-trivial deck pairs.
-                    let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
-                    //indices
-                    print(nonTrivialDeckPairIndices2D)
+//                    let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
+//                    //indices
+//                    print(nonTrivialDeckPairIndices2D)
+//
+//                    // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
+//                    /// todo: comment
+//                    let nonTrivialDeckDuplicateIndices = setup.deckDuplicateIndices(for: handsCards)
+//                    // indices
+//                    print(nonTrivialDeckDuplicateIndices)
+//
+//                    /// ?an array of arrays, each containing the indices of a non-trivial pair.
+//                    ///
+//                    /// If an array has only one index, then the the rest of the pair is in a hand.
+//                    var nonTrivialPairIndices2D = nonTrivialDeckPairIndices2D
+//
+//                    /// an array of arrays, each containing the indices of a non-trivial deck duplicate.
+//                    /// making this compatible
+//                    let nonTrivialDeckDuplicateIndices2D = nonTrivialDeckDuplicateIndices.map{[$0]}
+//
+//                    nonTrivialPairIndices2D += nonTrivialDeckDuplicateIndices2D
                     
-                    // ah, we also need to account for hand cards that have deck duplicates. I at least need the deck index of the duplicate.
-                    /// todo: comment
-                    let nonTrivialDeckDuplicateIndices = setup.deckDuplicateIndices(for: handsCards)
-                    // indices
-                    print(nonTrivialDeckDuplicateIndices)
+                    /// The non-trivial pairs in the deck.
+                    let nonTrivialDeckPairs = setup.nonTrivialDeckPairs()
+
+                    /// The non-trivial pairs containing a hand card and its deck duplicate, if any.
+                    let nonTrivialDeckDuplicatePairs = setup.deckDuplicatePairs(for: handsCards)
+
+                    /// The non-trivial pairs left.
+                    let nonTrivialPairs = nonTrivialDeckPairs + nonTrivialDeckDuplicatePairs
                     
-                    /// ?an array of arrays, each containing the indices of a non-trivial pair.
-                    ///
-                    /// If an array has only one index, then the the rest of the pair is in a hand.
-                    var nonTrivialPairIndices2D = nonTrivialDeckPairIndices2D
+                    /// The max score and exact cards to try to play.
+                    let maxScore = setup.maxScore(for: nonTrivialPairs, using: setup.trivialCardsToScore())
+                    print("best score: \(maxScore.score)")
+                    // todo: print indices? well in this case we'll know from the score (t1: 21; t2: 24)
                     
-                    /// an array of arrays, each containing the indices of a non-trivial deck duplicate.
-                    /// making this compatible
-                    let nonTrivialDeckDuplicateIndices2D = nonTrivialDeckDuplicateIndices.map{[$0]}
-                    
-                    nonTrivialPairIndices2D += nonTrivialDeckDuplicateIndices2D
-                    
-                    /// todo: rename?; hmm, we'll want it to return the optimal indices
-                    /// // todo: pass in the trivial indices, so we aren't recalculating them for each branch
-                    /// // though if we do this, it'll be slightly harder to pull out which branch we chose. we could flatmap the 2d, then search for the ones in the final indices. or subtract trivial indices from the final indices. or just pass back the nontrivial indices. yeah. we can pass down the trivial ones as a separate parameter.
-                    /// Returns an array of non-trivial indices that results in the highest score.
-                    /// Returns the cards to play for the max score.
-                    let highestScoreTuple = setup.highestScore(for: nonTrivialPairIndices2D, with: [])
-                    print("best indices: \(highestScoreTuple)")
-                    
-                    // temp; we should send it the output of highestScore(for:)
-                    // ah, we don't set it in setup; we set it for the next setup
-                    // uh, no. we determine it here, so it's part of this turn.
-                    // we can make it part of the turn, not setup. But that doesn't make sense.
-                    // I guess it can be part of the AI; like, the AI figured it out.
-                    self.cardsForMaxScore = setup.hands[0]
+                    cardsToScore = maxScore.cardsToScore
+                    //                    self.cardsForMaxScore = setup.hands[0]
                     
                     // these are cards; don't need them yet, but makes debug output more readable
                     // Ah, we can cheat here and use just the indices of deck duplicates, as we already played all the trivial ones.
-                    let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
-                    print(handCardsWithNonTrivialDeckDuplicates.description)
+//                    let handCardsWithNonTrivialDeckDuplicates = setup.cardsWithDeckDuplicates(in: handsCards)
+//                    print(handCardsWithNonTrivialDeckDuplicates.description)
                     
                     /// The deck indices of cards that will score.
                     // TODO WILO: use the above to get the below
                     //                let scorableDeckIndices = setup.scorableDeckIndices()
                 }
+                                
+                // !!! TODO: after playing a card that is in cardsToScore, we need to remove it, so we have an accurate count of what's left to score. We can use that to determine the slowest, least-valuable card for step 7
                 
-                                // ok we have a list of the cards to play for max score. how do we use them to craft an action?
-                // our hand is full of non-trivial dups and singletons.
-                // in our hand, find the first card not in the list
-                // if such a card exists, then we discard it
-                // else, we should discard the "worst" singleton, the one that will take longest to play
-                
-                // 6a) if self has card not needed for max score, discards
-                // hmm we're testing if we have it, bu tnot if another player has one. well, there could be multiple.
-                
-                /// 6a) if self has card not needed for max score, discards
-                if let nonMaxCard = hand.first(where: {!cardsForMaxScore.contains($0)}) {
+                // TODO: use same closure twice below. Could make DRY. Need to look up closure syntax.
+                /// 6a) if self has specific card not needed for max score, discards
+                if let nonMaxCard = hand.first(where: {handCard in !cardsToScore.contains(where: {$0 === handCard}) }) {
                     return Action(type: .discard, card: nonMaxCard, number: nil, suit: nil, aiStep: "6a")
                     
                     /// 6b) if another player, clues
-                } else if handsCards.contains(where: {!cardsForMaxScore.contains($0)}) {
+                } else if handsCards.contains(where: {handCard in !cardsToScore.contains(where: {$0 === handCard}) }) {
                     return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "6b")
 //                }
                 
@@ -167,6 +163,7 @@ struct PlannerV1: AI {
 //                        return Action(type: .clue, card: nil, number: 1, suit: nil, aiStep: "6b")
 //                    }
                     
+                    // TODO: this isn't great. The slowest could be a 2 because we haven't gotten the 3/4/5 yet. We instead want what's in setup.slowestLeastValuableCard(of:whileHaving:).
                     /// At this point, all players should have only singletons. And we can clue or discard.
                     /// The singleton that will take the longest to play.
                 } else if let slowestSingleton = setup.slowestPlayableCard(cards: setup.singletons(in: handsCards)) {

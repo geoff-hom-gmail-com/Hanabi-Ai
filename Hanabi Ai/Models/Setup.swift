@@ -198,109 +198,201 @@ struct Setup {
         }
     }
     
-    // TODO: implement recursive; then check how others do recursive (e.g., https://www.weheartswift.com/recursion/
-    /// Returns a tuple that contains the highest score and the indices to enable that, for the specified non-trivial pair indices with the specified chosen indices.
+    /// Returns the non-trivial pairs in the deck.
+    func nonTrivialDeckPairs() -> [(Card, Card)] {
+        []
+    }
+    
+    /// Returns the non-trivial pairs containing a specified hand card and its deck duplicate, if any.
+    func deckDuplicatePairs(for: [Card]) -> [(Card, Card)] {
+        []
+    }
+    
+    /// Returns the exact cards to definitely try to score.
     ///
-    /// param pairIndices2D: An array of arrays, each containing the deck indices of a pair to test. If an array has only one index, then the other card must be in a hand.
-    /// chosenIndices: An array of indices that have been chosen to test
-    func highestScore(for pairIndices2D: [[Int]], with chosenIndices: [Int]) -> (score: Int, indices: [Int]) {
-        if pairIndices2D.isEmpty {
-            print("chosen: \(chosenIndices)")
-            /// The score for the chosen indices.
-            let score = self.score(for: chosenIndices)
-            
-            return (score: score, indices: chosenIndices)
+    /// These are cards that are the only option, or clearly the best option. However, scoring them is not guaranteed.
+    func trivialCardsToScore() -> [Card] {
+        // 5s
+        // does this include cards in hand? yes
+        // First 1s
+        /// The indices of deck cards that will score.
+        var cardsToScore: [Card] = []
+        
+//        for (index, card) in deck.enumerated() {
+//            // 5s will score.
+//            if card.number == 5 {scorableDeckIndices += [index]}
+//
+//            // The first new 1 will score.
+//            if card.number == 1,
+//                let scorePile = scorePiles.first(where: {$0.suit == card.suit}),
+//                scorePile.score == 0 {
+//
+//                guard !scorableDeckIndices.contains(where: {deck[$0] == card}) else {continue}
+//                scorableDeckIndices += [index]
+//            }
+//
+//            // 2s/3s/4s: If non-trivial
+//            // hmm, the top doc comment isn't good enough. It's not scorables only, as we also include non-trivial deck duplicates; well actually, we want those separately
+//        }
+        return []
+    }
+    
+    /// Returns a tuple that contains the max score and the exact cards to try to score, given the specified non-trivial pairs and chosen cards.
+    ///
+    /// The max score assumes the AI will try to score the returned cards, but if forced to discard, will discard the slowest least-valuable card.
+    ///
+    /// - Parameter pairs: An array of tuples, each containing a pair to test.
+    /// - Parameter chosen: An array of cards to definitely try to score.
+    func maxScore(for pairs: [(Card, Card)], using chosen: [Card]) -> (score: Int, cardsToScore: [Card]) {
+        if pairs.isEmpty {
+            return (score: score(for: chosen), cardsToScore: chosen)
         } else {
-            /// The tuple to return.
-            var highestScoreTuple: (score: Int, indices: [Int]) = (score: -1, indices: [])
-
             /// A mutable copy.
-            var mutablePairIndices2D = pairIndices2D
+            var mutablePairs = pairs
             
-            /// The pair of indices to test.
-            let pairIndices = mutablePairIndices2D.removeFirst()
+            /// The pair to test.
+            let pair = mutablePairs.removeFirst()
             
-            // TODO: I think we can simplify this. We are always doing two branches, so just compare them and return the highest one. (ternary op)
-            // if one elt, then we test the index we have and... we need a way to signal the chosenIndex was in-hand
-            // that will get passed down to the scoring function; it needs to know the card at least; so we could pass in the card
-            // it could also get it by inference, but that's extra computation we already did: if a deck dup index isn't there, then we must mean the card in hand
-            // we could have setup have a cardsWithDeckDuplicates lazy property, so turns which need it would have it
+            /// The max score for the first of the pair.
+            let maxScore1 = maxScore(for: mutablePairs, using: chosen + [pair.0])
             
-            // If only one index, then we also have to test the card in hand.
-            if pairIndices.count == 1 {
-                /// The highest score tuple for the card in hand.
-                let highestScoreTupleForHandCard = highestScore(for: mutablePairIndices2D, with: chosenIndices)
-
-                // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky.
-                if highestScoreTupleForHandCard.score > highestScoreTuple.score {
-                    highestScoreTuple = highestScoreTupleForHandCard
-                }
-            }
-            for index in pairIndices {
-                /// The highest score tuple for this index.
-                let highestScoreTupleForIndex = highestScore(for: mutablePairIndices2D, with: chosenIndices + [index])
-                
-                if highestScoreTupleForIndex.score > highestScoreTuple.score {
-                    highestScoreTuple = highestScoreTupleForIndex
-                }
-            }
-            return highestScoreTuple
+            /// The max score for the second of the pair.
+            let maxScore2 = maxScore(for: mutablePairs, using: chosen + [pair.1])
+            
+            // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky. Then choose the safest option with the same score.
+            return maxScore1.score >= maxScore2.score ? maxScore1 : maxScore2
         }
     }
     
-    /// Returns the score that results from keeping the specified cards.
+    /// Returns the score that results from trying to score the specified cards.
     ///
-    /// Each index should be for a non-trivial duplicate (well, later we may just pass in the whole array of keepers, as we would've calculated that once).
-    func score(for chosenIndices: [Int]) -> Int {
-        // so, we'll go thru the deck, and keep some or discard others
-        // well, let's not rush this. What's the most straightforward way to do this?
-        // tagged cards? we can get these now from the above: non-trivial dups not mentioned are in hand
-        // or, we could get them earlier; just pass in whether we use the one in hand or not (like also pass in hand cards with dups kept)
-        // so yeah, if a 2/3/4 is not a non-trivial dup, then we keep it if we can play it asap, else we discard
-        // so we don't really need to calc tags beforehand; just each card, check for 1/5, then for non-trivial... well how do we check for play asap? if we have the priors in hand, then ok
-        // ok, calculating tags beforehand means we don't have to do it for each of say 32 branches. But calculating tags here is maybe faster; we don't have to see for a given 2/3/4 where all its priors are; just if they're in hand; yeah, you have to search thru the deck for each prior, so for a 4 that's maybe 3 cards. So maybe 2x slower.
-        // let's not worry about premature optimization. can fix later if it's an issue
-        // actually, once we get the best route, the rest of the game should be trivial: play if can; discard cards not on the route; if need be, discard good card that will score last (that can even be passed back from this function)
-        // what's simplest? do it here
-        // for card in deck: if tagged, then cards to keep: +1; turns left: -1; if can play a card, then cards to keep: -1, that score pile: +1
-        // if cards to keep = 10 and can't play, then cards to keep: -1; discard the card that will take longest to score (should be able to calculate that for the whole route by going backwards, once, as all the keepers are known; or just go from backward, and find the first keeper, and it's the highest held card in that suit)
-        // if cards to keep > turns left, that's fine. when we get to turns left = 0, see how many cards to keep we have (rename: potential scorers? cards to score?) well it's irrelevant; we have our score now; but we can also return # cards to score leftover, and the # of discarded cards to score. that will be handy for comparing same scores.
+    /// Assumes the AI will play the specified cards optimally, but if forced to discard, will discard the slowest least-valuable card.
+    ///
+    /// Also, there may not be enough turns at the end to play everything. However, infinite clues to pass the turn are assumed.
+    func score(for cardsToScore: [Card]) -> Int {
+        /// The score piles for this simulation.
+        var tempScorePiles = scorePiles
+        
+        /// The cards to score among all hands.
+        var handCardsToScore = hands.joined().filter{handCard in cardsToScore.contains{$0 === handCard}}
+        
+        // The cards still to score.
+        var cardsStillToScore = cardsToScore
+
         for card in deck {
-            // let's pretend a 5
-            // so keepArray: add it
-            // do we assume all the cards in hand we want to keep? no, as some branches will discard. but we can assume it's all singletons (5s) and non-trivial dups
-            // so, we need to go thru all hands and look at the 2/3/4s. If there's a chosen index which is the same card, then discard the hand card.
-            // ah, there could be others, like if it was a hand dup and it tossed one. well, that's the same
+            // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a card we want to score. In the last case, we'll discard the slowest least-valuable card.
+            
+            /// If there's a scorable card, score it.
+            if let scorableCard = handCardsToScore.first(where: {scorePiles.nextIs($0)}) {
+                handCardsToScore.remove(scorableCard)
+                tempScorePiles.score(scorableCard)
+                cardsStillToScore.remove(scorableCard)
+            } else if handCardsToScore.count == hands.count * hands[0].count {
+                
+                /// The least-valuable card that will take the longest to score.
+                let slowestLeastValuableCard = self.slowestLeastValuableCard(of: handCardsToScore, whileHaving: cardsStillToScore)
+                handCardsToScore.remove(slowestLeastValuableCard)
+                cardsStillToScore.remove(slowestLeastValuableCard)
+            }
+
+            // Draw the card. If it's a card we still want to score, track it.
+            if cardsStillToScore.contains(where: {$0 === card}) {
+                handCardsToScore += [card]
+            }
         }
-        return 0
+        
+        /// The theoretical score.
+        let score = tempScorePiles.score()
+        
+        // After the last card is drawn, each player gets a turn.
+        return score + hands.count
+    }
+    
+    /// Returns the slowest least-valuable card of the specified hand, assuming only the exact specified cards will be available.
+    ///
+    /// "Least-valuable" takes precedence.
+    func slowestLeastValuableCard(of hand: [Card], whileHaving availableCards: [Card]) -> Card {
+        
+        /// Returns the worth of the specified card.
+        ///
+        /// Worth is how many points that card is worth if it scores along with all available cards above it.
+        func worth(_ card: Card) -> Int {
+            availableCards.filter{$0.suit == card.suit && $0.number > card.number}.count + 1
+        }
+        
+        /// A tuple of the lowest value and the corresponding cards.
+        let leastValuable: (worth: Int, cards: [Card]) = hand.reduce(
+            (worth: 6, cards: []), { leastValuable, card in
+            
+            /// The card's worth.
+            let value = worth(card)
+            
+            if value < leastValuable.worth {
+                return (worth: value, cards: [card])
+            } else if value == leastValuable.worth {
+                return (worth: value, cards: leastValuable.cards + [card])
+            } else {
+                return leastValuable
+            }
+        })
+        
+        /// The least-valuable cards.
+        let leastValuableCards = leastValuable.cards
+        
+        // TODO: If this is rate-limiting, we could pass in the indices of availableCards with the cards, like as tuples.
+        /// Returns the number of turns needed to score the specified card.
+        func turnsToScore(_ card: Card) -> Int {
+            /// The cards that have to score first.
+            let priorCards = availableCards.filter{$0.suit == card.suit && $0.number < card.number}
+            
+            /// The largest index of the cards that have to score first. If all cards in hand, `-1`.
+            let maxIndex = priorCards.reduce(-1, { maxIndex, prior in
+                /// The deck index of the prior, if any.
+                if let index = deck.firstIndex(where: {$0 === prior}), index > maxIndex {return index} else {return maxIndex}
+            })
+            
+            // Turns to play: itself (1) + priors (n) + turns to draw (index + 1)
+            return 1 + priorCards.count + maxIndex + 1
+        }
+        
+        /// The slowest, least valuable card.
+        let slowest = leastValuableCards.reduce(
+            (card: leastValuableCards.first!, turns: 1), { slowest, card in
+                /// The number of turns to score the card.
+                let turns = turnsToScore(card)
+                
+                return (turns > slowest.turns) ? (card: card, turns: turns) : slowest
+        })
+        
+        return slowest.card
     }
     
     // todo: rename; scorable could mean it can be scored now, vs potential
     /// Returns an array of indices of deck cards that will score.
     ///
     /// This doesn't account for hand-size limits or running out of turns. Non-trivial deck pairs are not included.
-    func scorableDeckIndices(for card: Card) -> [Int] {
-        /// The indices of deck cards that will score.
-        var scorableDeckIndices: [Int] = []
-        
-        for (index, card) in deck.enumerated() {
-            // 5s will score.
-            if card.number == 5 {scorableDeckIndices += [index]}
-            
-            // The first new 1 will score.
-            if card.number == 1,
-                let scorePile = scorePiles.first(where: {$0.suit == card.suit}),
-                scorePile.score == 0 {
-
-                guard !scorableDeckIndices.contains(where: {deck[$0] == card}) else {continue}
-                scorableDeckIndices += [index]
-            }
-            
-            // 2s/3s/4s: If non-trivial
-            // hmm, the top doc comment isn't good enough. It's not scorables only, as we also include non-trivial deck duplicates; well actually, we want those separately
-        }
-        return scorableDeckIndices
-    }
+//    func scorableDeckIndices(for card: Card) -> [Int] {
+//        /// The indices of deck cards that will score.
+//        var scorableDeckIndices: [Int] = []
+//
+//        for (index, card) in deck.enumerated() {
+//            // 5s will score.
+//            if card.number == 5 {scorableDeckIndices += [index]}
+//
+//            // The first new 1 will score.
+//            if card.number == 1,
+//                let scorePile = scorePiles.first(where: {$0.suit == card.suit}),
+//                scorePile.score == 0 {
+//
+//                guard !scorableDeckIndices.contains(where: {deck[$0] == card}) else {continue}
+//                scorableDeckIndices += [index]
+//            }
+//
+//            // 2s/3s/4s: If non-trivial
+//            // hmm, the top doc comment isn't good enough. It's not scorables only, as we also include non-trivial deck duplicates; well actually, we want those separately
+//        }
+//        return scorableDeckIndices
+//    }
     
     /// Returns all duplicates where it's unclear whether to keep the first one or wait for the second.
     ///

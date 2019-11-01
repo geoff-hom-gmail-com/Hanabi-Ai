@@ -51,6 +51,16 @@ extension Array where Element == ScorePile {
         contains{$0.nextIs(card)}
     }
     
+    /// Scores the specified card.
+    ///
+    /// The card goes on top of its pile, even if the play is invalid.
+    mutating func score(_ card: Card) {
+        /// The index of the matching score pile.
+        let index = firstIndex{$0.suit == card.suit}!
+        
+        self[index] = card
+    }
+    
     /// Returns a Boolean value that indicates whether the specified card has already scored.
     func alreadyHave(_ card: Card) -> Bool {
         contains{$0.alreadyHas(card)}
