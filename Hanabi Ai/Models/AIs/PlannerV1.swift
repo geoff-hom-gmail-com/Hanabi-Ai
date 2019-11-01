@@ -121,9 +121,11 @@ struct PlannerV1: AI {
 
                     /// The non-trivial pairs left.
                     let nonTrivialPairs = nonTrivialDeckPairs + nonTrivialDeckDuplicatePairs
+                                        
+                    // setup.trivialCardsToScore(nonTrivialPairs: nonTrivialPairs)
                     
                     /// The max score and exact cards to try to play.
-                    let maxScore = setup.maxScore(for: nonTrivialPairs, using: setup.trivialCardsToScore())
+                    let maxScore = setup.maxScore(for: nonTrivialPairs, using: setup.trivialCardsToScore(nonTrivialPairs: nonTrivialPairs))
                     print("best score: \(maxScore.score)")
                     // todo: print indices? well in this case we'll know from the score (t1: 21; t2: 24)
                     

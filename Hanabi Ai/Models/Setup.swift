@@ -201,40 +201,106 @@ struct Setup {
     /// Returns the non-trivial pairs in the deck.
     func nonTrivialDeckPairs() -> [(Card, Card)] {
         []
+        // TODO WILO
+        // ok, this will take some thought. it's similar to the two nonTrivialDeckPairIndices() methods. but as it notes, can it be a lot faster/simpler?
+        // for each card in the deck, we see if it has a pair, then try to assess if it's non-trivial
+        // to check that, we look at the pair indices, then we check each prior scoring card and see where they are.
+        // yeah, makes sense in this case to first take the deck and in one more split it into 5 decks, one for each suit
+        // then analyze each suit separately
+        // it doesn't matter that the indices are different; the relative order of the cards in the same suit is what matters
+        
+        // how do you bin/split an array? 
     }
     
-    /// Returns the non-trivial pairs containing a specified hand card and its deck duplicate, if any.
-    func deckDuplicatePairs(for: [Card]) -> [(Card, Card)] {
-        []
+    /// Returns the pairs containing a specified hand card and its deck duplicate, if any.
+    func deckDuplicatePairs(for hand: [Card]) -> [(Card, Card)] {
+        /// The pairs containing a specified hand card and its deck duplicate.
+        var pairs: [(Card, Card)] = []
+        
+        for card in hand {
+            if let deckDuplicate = deck.first(where: {$0 == card}) {
+                pairs += [(card, deckDuplicate)]
+            }
+        }
+        return pairs
     }
     
-    /// Returns the exact cards to definitely try to score.
+    /// Returns the exact cards to definitely try to score, given the specified non-trivial pairs.
     ///
-    /// These are cards that are the only option, or clearly the best option. However, scoring them is not guaranteed.
-    func trivialCardsToScore() -> [Card] {
-        // 5s
-        // does this include cards in hand? yes
-        // First 1s
-        /// The indices of deck cards that will score.
+    /// Returns cards that are the only option, or clearly the best option. However, scoring them is not guaranteed.
+    ///
+    /// The non-trivial pairs are for simplicity.
+    func trivialCardsToScore(nonTrivialPairs: [(Card, Card)]) -> [Card] {
+        /// The exact cards to definitely try to score
         var cardsToScore: [Card] = []
         
-//        for (index, card) in deck.enumerated() {
-//            // 5s will score.
-//            if card.number == 5 {scorableDeckIndices += [index]}
-//
-//            // The first new 1 will score.
-//            if card.number == 1,
-//                let scorePile = scorePiles.first(where: {$0.suit == card.suit}),
-//                scorePile.score == 0 {
-//
-//                guard !scorableDeckIndices.contains(where: {deck[$0] == card}) else {continue}
-//                scorableDeckIndices += [index]
-//            }
-//
-//            // 2s/3s/4s: If non-trivial
-//            // hmm, the top doc comment isn't good enough. It's not scorables only, as we also include non-trivial deck duplicates; well actually, we want those separately
-//        }
-        return []
+        for hand in hands {
+            for card in hand {
+                switch card.number {
+                case 5:
+                    cardsToScore += [card]
+                case 1:
+                    // The first 1 should score.
+                    if scorePiles.nextIs(card) && !cardsToScore.contains(card) {cardsToScore += [card]}
+                case 2, 3, 4:
+                    // A singleton should score. Else, it's part of a non-trivial duplicate, or it has a trivial deck duplicate that should score instead.
+                    if !deck.contains(card) {cardsToScore += [card]}
+                default:
+                    ()
+                }
+            }
+        }
+        
+        for card in deck {
+            switch card.number {
+            case 5:
+                cardsToScore += [card]
+            case 1:
+                // The first 1 should score.
+                if scorePiles.nextIs(card) && !cardsToScore.contains(card) {cardsToScore += [card]}
+            case 2, 3, 4:
+                // A singleton, should score.
+                if !deck.contains(card) {
+                    cardsToScore += [card]
+                } else {
+                    // If non-trivial, skip.
+                    guard !nonTrivialPairs.map({$0.0}).contains(card) else {continue}
+
+                    // A trivial deck-duplicate should score.
+                    if hands.contain(card) {
+                        cardsToScore += [card]
+                    } else {
+                        // Trivial deck pair. If already counted, skip.
+                        guard !cardsToScore.contains(card) else {continue}
+                        
+                        // If a required scoring card first appears after, then score the second of the pair. Else, score the first of the pair.
+                        
+                        /// The index of the first card in the pair. (Doesn't matter which one since this is a trivial pair.)
+                        let index = deck.firstIndex(of: card)!
+                        
+                        /// The matching score pile.
+                        let scorePile = scorePiles.first{$0.suit == card.suit}!
+                        
+                        /// The card that has to score prior.
+                        var priorCard = Card(suit: card.suit, number: card.number - 1)
+                        
+                        while priorCard.number > scorePile.number {
+                            /// The first occurrence of the prior card.
+                            if !hands.contain(priorCard), let priorIndex = deck.firstIndex(of: priorCard), priorIndex > index {
+                                // The second of the pair should score.
+                                cardsToScore += [deck.last{$0 == card}!]
+                            }
+                            priorCard = Card(suit: card.suit, number: priorCard.number - 1)
+                        }
+                        // The first of the pair should score.
+                        cardsToScore += [deck.first{$0 == card}!]
+                    }
+                }
+            default:
+                ()
+            }
+        }
+        return cardsToScore
     }
     
     /// Returns a tuple that contains the max score and the exact cards to try to score, given the specified non-trivial pairs and chosen cards.
@@ -339,7 +405,7 @@ struct Setup {
         /// The least-valuable cards.
         let leastValuableCards = leastValuable.cards
         
-        // TODO: If this is rate-limiting, we could pass in the indices of availableCards with the cards, like as tuples.
+        // TODO: If this is rate-limiting, we could pass in the indices of availableCards with the cards, like as tuples. actually we can simplify the whole outer function. just get the last card still to score by index, then go up the suit to the last available card. Oh wait, it might not be in the hand.
         /// Returns the number of turns needed to score the specified card.
         func turnsToScore(_ card: Card) -> Int {
             /// The cards that have to score first.
