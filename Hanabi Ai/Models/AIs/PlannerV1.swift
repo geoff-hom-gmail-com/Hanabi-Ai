@@ -91,6 +91,8 @@ struct PlannerV1: AI {
                 if cardsToScore.isEmpty {
                     // TODO: make it cleaner to understand. What do I really need, and what makes the most sense to a reader?
                                   
+                    print("Time to plan! Deck left: \(setup.deck.count)")
+
                     /// The indices of all non-trivial deck pairs.
 //                    let nonTrivialDeckPairIndices2D = setup.nonTrivialDeckPairIndices2D()
 //                    //indices
@@ -121,12 +123,17 @@ struct PlannerV1: AI {
 
                     /// The non-trivial pairs left.
                     let nonTrivialPairs = nonTrivialDeckPairs + nonTrivialDeckDuplicatePairs
-                                        
+                    print("Non-trivial: \(nonTrivialPairs.map{$0.0}.description)")
+                                
+                    /// The cards to definitely try to score.
+                    let trivialCardsToScore = setup.trivialCardsToScore(nonTrivialPairs: nonTrivialPairs)
+                    print("Trivial: \(trivialCardsToScore.description)")
                     // setup.trivialCardsToScore(nonTrivialPairs: nonTrivialPairs)
+                    // I want to see the trivial pairs and the trivial cards. How can I do this?
                     
                     /// The max score and exact cards to try to play.
-                    let maxScore = setup.maxScore(for: nonTrivialPairs, using: setup.trivialCardsToScore(nonTrivialPairs: nonTrivialPairs))
-                    print("best score: \(maxScore.score)")
+                    let maxScore = setup.maxScore(for: nonTrivialPairs, using: trivialCardsToScore)
+                    print("Best score: \(maxScore.score)")
                     // todo: print indices? well in this case we'll know from the score (t1: 21; t2: 24)
                     
                     cardsToScore = maxScore.cardsToScore

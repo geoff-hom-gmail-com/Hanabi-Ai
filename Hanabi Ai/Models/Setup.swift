@@ -200,16 +200,67 @@ struct Setup {
     
     /// Returns the non-trivial pairs in the deck.
     func nonTrivialDeckPairs() -> [(Card, Card)] {
-        []
-        // TODO WILO
-        // ok, this will take some thought. it's similar to the two nonTrivialDeckPairIndices() methods. but as it notes, can it be a lot faster/simpler?
-        // for each card in the deck, we see if it has a pair, then try to assess if it's non-trivial
-        // to check that, we look at the pair indices, then we check each prior scoring card and see where they are.
-        // yeah, makes sense in this case to first take the deck and in one more split it into 5 decks, one for each suit
-        // then analyze each suit separately
-        // it doesn't matter that the indices are different; the relative order of the cards in the same suit is what matters
+        /// The non-trivial pairs.
+        var ntPairs: [(Card, Card)] = []
         
-        // how do you bin/split an array? 
+        /// The deck cards grouped by suit.
+        let deckBySuit: [[Card]] = deck.bySuit
+        
+        deckBySuit.forEach { suitCards in
+            /// The pairs in the suit.
+            var pairs: [(Card, Card)] = []
+            
+            /// Find all pairs.
+            for card in suitCards {
+                guard card.number != 1 && card.number != 5 else {continue}
+
+                // 2s/3s/4s: If a copy exists further down, then it's a pair we haven't counted.
+                if let last = suitCards.last(where: {$0 == card}), last !== card {
+                    pairs += [(card, last)]
+                }
+            }
+            
+            /// The matching score pile.
+            let scorePile = scorePiles.first{$0.suit == suitCards.first!.suit}!
+            
+            // Check if each pair is non-trivial.
+            for pair in pairs {
+                /// The pair indices.
+                let firstIndex = suitCards.firstIndex(of: pair.0)!
+                let secondIndex = suitCards.lastIndex(of: pair.0)!
+                                
+                /// The range between the pair.
+                let inBetween = firstIndex + 1..<secondIndex
+                
+                /// The card that has to score prior.
+                var priorCard = Card(suit: pair.0.suit, number: pair.0.number - 1)
+                
+                // If a prior's first occurrence is between the pair, and no priors are after the pair, then it's NT.
+                
+                /// A Boolean value that indicates whether a prior's first occurrence is between the pair.
+                var aPriorIsFirstInBetween = false
+                
+                /// A Boolean value that indicates whether the pair is trivial.
+                var isTrivial = false
+                
+                while priorCard.number > scorePile.number {
+                    /// The first occurrence of the prior card.
+                    if !hands.contain(priorCard), let index = suitCards.firstIndex(of: priorCard) {
+                        if index > secondIndex {
+                            isTrivial = true
+                            break
+                        } else if inBetween.contains(index) {
+                            aPriorIsFirstInBetween = true
+                        }
+                    }
+                    priorCard = Card(suit: priorCard.suit, number: priorCard.number - 1)
+                }
+                if aPriorIsFirstInBetween, !isTrivial {
+                    ntPairs += [pair]
+                }
+            }
+        }
+        return ntPairs
     }
     
     /// Returns the pairs containing a specified hand card and its deck duplicate, if any.

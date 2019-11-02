@@ -14,4 +14,17 @@ extension Array where Element == Card {
     var description: String {
         map{$0.description}.joined()
     }
+    
+    /// Returns its cards grouped by suit.
+    ///
+    /// Within a suit, the card order is unchanged
+    var bySuit: [[Card]] {
+        /// The cards, grouped by suit.
+        var cards2D: [[Card]] = [[], [], [], [], []]
+        
+        self.forEach { card in
+            cards2D[card.suit.sortIndex] += [card]
+        }
+        return cards2D
+    }
 }
