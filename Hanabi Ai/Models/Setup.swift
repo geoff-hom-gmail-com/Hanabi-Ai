@@ -335,16 +335,23 @@ struct Setup {
                         /// The card that has to score prior.
                         var priorCard = Card(suit: card.suit, number: card.number - 1)
                         
+                        /// A Boolean value that indicates whether a card was added for the pair.
+                        var addedCard = false
+                        
                         while priorCard.number > scorePile.number {
                             /// The first occurrence of the prior card.
                             if !hands.contain(priorCard), let priorIndex = deck.firstIndex(of: priorCard), priorIndex > index {
                                 // The second of the pair should score.
                                 cardsToScore += [deck.last{$0 == card}!]
+                                addedCard = true
+                                break
                             }
                             priorCard = Card(suit: card.suit, number: priorCard.number - 1)
                         }
-                        // The first of the pair should score.
-                        cardsToScore += [deck.first{$0 == card}!]
+                        if !addedCard {
+                            // The first of the pair should score.
+                            cardsToScore += [deck.first{$0 == card}!]
+                        }
                     }
                 }
             default:
@@ -362,7 +369,11 @@ struct Setup {
     /// - Parameter chosen: An array of cards to definitely try to score.
     func maxScore(for pairs: [(Card, Card)], using chosen: [Card]) -> (score: Int, cardsToScore: [Card]) {
         if pairs.isEmpty {
-            return (score: score(for: chosen), cardsToScore: chosen)
+            /// The score for this branch.
+            let branchScore = score(for: chosen)
+            print("score: \(branchScore); cards: \(chosen.count): \(chosen.description)")
+            
+            return (score: branchScore, cardsToScore: chosen)
         } else {
             /// A mutable copy.
             var mutablePairs = pairs
