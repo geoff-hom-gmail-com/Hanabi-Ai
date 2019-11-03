@@ -148,6 +148,11 @@ struct PlannerV1: AI {
                     // TODO WILO: use the above to get the below
                     //                let scorableDeckIndices = setup.scorableDeckIndices()
                 }
+                
+                // At this point, we have a plan, and only non-trivial deck dups or singletons.
+                // If it's a card not in the plan, we discard it.
+                // That leaves in step 7 only nt dups and singletons in our plan.
+                // oh, but the plan chose only from nts. It didn't say which singletons to discard (or I guess which to keep). which it really should
                                 
                 // !!! TODO: after playing a card that is in cardsToScore, we need to remove it, so we have an accurate count of what's left to score. We can use that to determine the slowest, least-valuable card for step 7
                 

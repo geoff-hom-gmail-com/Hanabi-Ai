@@ -369,9 +369,16 @@ struct Setup {
     /// - Parameter chosen: An array of cards to definitely try to score.
     func maxScore(for pairs: [(Card, Card)], using chosen: [Card]) -> (score: Int, cardsToScore: [Card]) {
         if pairs.isEmpty {
+            // todo: return not just the score, but the actual cards to score (not just try to score). then we can pass that as a return for maxscore, and then we have a clear plan.
             /// The score for this branch.
             let branchScore = score(for: chosen)
             print("score: \(branchScore); cards: \(chosen.count): \(chosen.description)")
+            
+            // temp; the deck indices of the chosen cards
+            let indices = chosen.compactMap { chosenCard in
+                    deck.firstIndex{$0 === chosenCard}
+            }
+            print("chosen indices: \(indices)")
             
             return (score: branchScore, cardsToScore: chosen)
         } else {
@@ -401,17 +408,20 @@ struct Setup {
         /// The score piles for this simulation.
         var tempScorePiles = scorePiles
         
+        // The cards still to score.
+        var cardsStillToScore = cardsToScore
+
         /// The cards to score among all hands.
         var handCardsToScore = hands.joined().filter{handCard in cardsToScore.contains{$0 === handCard}}
         
-        // The cards still to score.
-        var cardsStillToScore = cardsToScore
+        print("cardsStillToScore: \(cardsStillToScore.count)")
+        print("handCardsToScore: \(handCardsToScore.count)")
 
         for card in deck {
             // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a card we want to score. In the last case, we'll discard the slowest least-valuable card.
             
             /// If there's a scorable card, score it.
-            if let scorableCard = handCardsToScore.first(where: {scorePiles.nextIs($0)}) {
+            if let scorableCard = handCardsToScore.first(where: {tempScorePiles.nextIs($0)}) {
                 handCardsToScore.remove(scorableCard)
                 tempScorePiles.score(scorableCard)
                 cardsStillToScore.remove(scorableCard)
@@ -431,9 +441,10 @@ struct Setup {
         
         /// The theoretical score.
         let score = tempScorePiles.score()
+        print("tempScorePiles: \(tempScorePiles.description)")
         
         // After the last card is drawn, each player gets a turn.
-        return score + hands.count
+        return score + min(hands.count, handCardsToScore.count)
     }
     
     /// Returns the slowest least-valuable card of the specified hand, assuming only the exact specified cards will be available.
@@ -467,7 +478,6 @@ struct Setup {
         /// The least-valuable cards.
         let leastValuableCards = leastValuable.cards
         
-        // TODO: If this is rate-limiting, we could pass in the indices of availableCards with the cards, like as tuples. actually we can simplify the whole outer function. just get the last card still to score by index, then go up the suit to the last available card. Oh wait, it might not be in the hand.
         /// Returns the number of turns needed to score the specified card.
         func turnsToScore(_ card: Card) -> Int {
             /// The cards that have to score first.
