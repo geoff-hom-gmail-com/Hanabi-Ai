@@ -72,7 +72,9 @@ class Game: ObservableObject {
         case .tough:
             deck = Deck.from(Deck.toughDescription)
         case .tough2:
-                deck = Deck.from(Deck.tough2Description)
+            deck = Deck.from(Deck.tough2Description)
+        case .tough3:
+            deck = Deck.from(Deck.tough3Description)
         case .custom:
             deck = Deck.from(customDeckDescription)
         }
@@ -177,6 +179,13 @@ class Game: ObservableObject {
                 
                 turns += [nextTurn]
             }
+        }
+        
+        // temp; checking for mispredicted scores (the alg may be right, but execution wrong)
+        let score = endSetup!.scorePiles.score()
+        let maxScore = Model.AIs[aiIndex].maxScore
+        if score < maxScore {
+            print("Missed score. Max: \(maxScore). Actual: \(score). (Deck: \(startingDeck.description))")
         }
     }
 }

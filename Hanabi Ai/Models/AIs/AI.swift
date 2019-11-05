@@ -23,6 +23,11 @@ protocol AI {
     /// The AI may set this at some point, as advice.
     var cardsToPlay: [Card] { get }
 
+    /// The max score possible.
+    ///
+    /// The AI may set this at some point.
+    var maxScore: Int { get }
+    
     /// Resets the AI. (E.g., between games.)
     mutating func reset()
     
@@ -31,9 +36,9 @@ protocol AI {
 }
 
 extension AI {
-    var cardsToPlay: [Card] {
-        get {[]}
-    }
+    var cardsToPlay: [Card] { get {[]} }
+    
+    var maxScore: Int { get {0} }
 
     mutating func reset() {}
 }

@@ -13,14 +13,16 @@ import Foundation
 ///
 /// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues.
 ///
-/// Stats from 10,000 games: Avg. 24.78 (Won: 88.9%) (16–25).
+/// Stats from 10,000 games: Avg. 24.95 (Won: 96.0%) (21–25). (2000 in Live Preview: 48")
 struct PlannerV2: AI {
     let name = "Planner v2"
     let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues"
     var cardsToPlay: [Card] = []
-
+    var maxScore: Int = 0
+    
     mutating func reset() {
         cardsToPlay = []
+        maxScore = 0
     }
     
     /// Returns an action for the specified setup.
@@ -87,6 +89,8 @@ struct PlannerV2: AI {
                 let handsCards: [Card] = Array(setup.hands.joined())
                 
                 if cardsToPlay.isEmpty {
+//                    print("Planning: Deck: \(setup.deck.count)")
+                    
                     /// The non-trivial pairs in the deck.
                     let nonTrivialDeckPairs = setup.nonTrivialDeckPairs()
 
@@ -105,6 +109,7 @@ struct PlannerV2: AI {
                     let maxScore = setup.maxScore(for: nonTrivialPairs, using: trivialCardsToScore)
 //                    print("Best score: \(maxScore.score)")
                     
+                    self.maxScore = maxScore.score
                     cardsToPlay = maxScore.cardsToPlay
                 }
                 

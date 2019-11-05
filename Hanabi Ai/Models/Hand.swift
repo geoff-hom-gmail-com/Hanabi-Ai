@@ -9,7 +9,7 @@
 import Foundation
 
 /// A player's cards.
-typealias Hand = Array<Card>
+typealias Hand = [Card]
 
 /// An extension for hands.
 extension Hand {

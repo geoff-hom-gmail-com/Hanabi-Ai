@@ -214,9 +214,11 @@ struct Setup {
     ///
     /// Returns cards that are the only option, or clearly the best option. However, scoring them is not guaranteed.
     ///
-    /// The non-trivial pairs are for simplicity.
+    /// Scored cards are excluded.
+    ///
+    /// The non-trivial pairs are passed in for simplicity.
     func trivialCardsToScore(nonTrivialPairs: [(Card, Card)]) -> [Card] {
-        /// The exact cards to definitely try to score
+        /// The exact cards to definitely try to score.
         var cardsToScore: [Card] = []
         
         for hand in hands {
@@ -228,8 +230,10 @@ struct Setup {
                     // The first 1 should score.
                     if scorePiles.nextIs(card) && !cardsToScore.contains(card) {cardsToScore += [card]}
                 case 2, 3, 4:
-                    // A singleton should score. Else, it's part of a non-trivial duplicate, or it has a trivial deck duplicate that should score instead.
-                    if !deck.contains(card) {cardsToScore += [card]}
+                    // An unscored singleton should score. Else, it's part of a non-trivial duplicate, or it has a trivial deck duplicate that should score instead.
+                    if !deck.contains(card), !scorePiles.alreadyHave(card) {
+                        cardsToScore += [card]
+                    }
                 default:
                     ()
                 }
@@ -244,9 +248,11 @@ struct Setup {
                 // The first 1 should score.
                 if scorePiles.nextIs(card) && !cardsToScore.contains(card) {cardsToScore += [card]}
             case 2, 3, 4:
-                // A singleton, should score.
-                if !deck.contains(card) {
-                    cardsToScore += [card]
+                // An unscored singleton should score.
+                if !hands.contain(card), deck.filter({$0 == card}).count == 1 {
+                    if !scorePiles.alreadyHave(card) {
+                        cardsToScore += [card]
+                    }
                 } else {
                     // If non-trivial, skip.
                     guard !nonTrivialPairs.map({$0.0}).contains(card) else {continue}
@@ -304,6 +310,8 @@ struct Setup {
         if pairs.isEmpty {
             /// The cards to try to score, minus those that can't score in time.
             let cardsAllowedToScore = removingUnscorableCards(from: cardsToTryToScore)
+            
+//            print("cardsAllowedToScore: \(cardsAllowedToScore.description)")
             
             /// The score for this branch.
             let branchScore = score(for: cardsAllowedToScore)
@@ -376,7 +384,7 @@ struct Setup {
         var cardsToPlay = mutableCardsAllowedToScore
         
         /// The hand cards allowed to score. (Any hand.)
-        var handCardsAllowedToScore = hands.joined().filter{handCard in mutableCardsAllowedToScore.contains{$0 === handCard}}
+        var handCardsAllowedToScore = hands.joined().filter{mutableCardsAllowedToScore.containsExact($0)}
         
         for card in deck {
             // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a desirable card because of the hand limit. In the last case, we'll discard the slowest least-valuable card.
@@ -396,7 +404,7 @@ struct Setup {
             }
 
             // Draw the card. If it's a card we still want to score, track it.
-            if mutableCardsAllowedToScore.contains(where: {$0 === card}) {
+            if mutableCardsAllowedToScore.containsExact(card) {
                 handCardsAllowedToScore += [card]
             }
         }
@@ -404,8 +412,8 @@ struct Setup {
         /// The theoretical score. After the last card is drawn, each player gets a turn.
         let score = tempScorePiles.score() + min(hands.count, handCardsAllowedToScore.count)
         
-        // This doesn't include the cards scored after deck empty.
-//        print("tempScorePiles: \(tempScorePiles.description)")
+        // The score doesn't include the cards scored after deck empty.
+//        print("tempScorePiles: \(tempScorePiles.description). handCardsAllowedToScore: \(handCardsAllowedToScore.description)")
         
         return (score: score, cardsToPlay: cardsToPlay)
     }

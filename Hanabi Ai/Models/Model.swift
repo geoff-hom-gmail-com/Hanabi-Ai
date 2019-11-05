@@ -23,7 +23,7 @@ class Model: ObservableObject {
     @Published var customDeckDescription = Deck.suitOrderedString
     
     /// The available AIs.
-    static var AIs: [AI] = [DiscardFirstAI(), PlayFirstCardAI(), PlayableV3(), ProphetV6(), PlannerV1()]
+    static var AIs: [AI] = [DiscardFirstAI(), PlayFirstCardAI(), PlayableV3(), ProphetV6(), PlannerV1(), PlannerV2()]
     
     /// The `AIs` index to use in the next game.
     @Published var aiIndex = AIs.firstIndex { $0 is PlayFirstCardAI }!
