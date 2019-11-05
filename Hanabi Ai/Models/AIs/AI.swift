@@ -18,6 +18,22 @@ protocol AI {
     /// Summary of the AI.
     var description: String { get }
     
+    /// The exact cards to play to the end to get the max score.
+    ///
+    /// The AI may set this at some point, as advice.
+    var cardsToPlay: [Card] { get }
+
+    /// Resets the AI. (E.g., between games.)
+    mutating func reset()
+    
     /// Returns an action for the specified setup.
     mutating func action(for setup: Setup) -> Action
+}
+
+extension AI {
+    var cardsToPlay: [Card] {
+        get {[]}
+    }
+
+    mutating func reset() {}
 }

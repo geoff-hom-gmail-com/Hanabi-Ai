@@ -1,20 +1,21 @@
 //
-//  PlannerV1.swift
+//  PlannerV2.swift
 //  Hanabi Ai
 //
-//  Created by Geoff Hom on 10/30/19.
+//  Created by Geoff Hom on 11/4/19.
 //  Copyright © 2019 Geoff Hom. All rights reserved.
 //
 
 import Foundation
 
+// todo: update stats, description
 /// An AI that can see the deck.
 ///
 /// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues.
 ///
-/// Stats from 10,000 games: Avg. 24.95 (Won: 96.0%) (21–25). (2000 in Live Preview: 48")
-struct PlannerV1: AI {
-    let name = "Planner v1"
+/// Stats from 10,000 games: Avg. 24.78 (Won: 88.9%) (16–25).
+struct PlannerV2: AI {
+    let name = "Planner v2"
     let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues"
     var cardsToPlay: [Card] = []
 

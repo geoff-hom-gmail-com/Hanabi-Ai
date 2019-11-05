@@ -23,7 +23,7 @@ class Model: ObservableObject {
     @Published var customDeckDescription = Deck.suitOrderedString
     
     /// The available AIs.
-    static var AIs: [AI] = [DiscardFirstAI(), PlayFirstCardAI(), PlaySecondCardAI(), PlayableV1(), PlayableV3(), ProphetV5(), ProphetV6(), PlannerV1()]
+    static var AIs: [AI] = [DiscardFirstAI(), PlayFirstCardAI(), PlayableV3(), ProphetV6(), PlannerV1()]
     
     /// The `AIs` index to use in the next game.
     @Published var aiIndex = AIs.firstIndex { $0 is PlayFirstCardAI }!
@@ -62,6 +62,7 @@ class Model: ObservableObject {
     ///
     /// Also subscribes to the new game.
     func makeGame() {
+        Model.AIs[aiIndex].reset()
         game = Game(numberOfPlayers: numberOfPlayers, deckSetup: deckSetup, customDeckDescription: customDeckDescription, aiIndex: aiIndex)
         gameSubscriber = game.objectWillChange.sink {
             self.objectWillChange.send()

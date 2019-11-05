@@ -32,6 +32,7 @@
 		8160C60F231A73B300550C54 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8160C60E231A73B300550C54 /* AboutView.swift */; };
 		816397FE23680F9E00C10D38 /* ProphetV6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816397FD23680F9E00C10D38 /* ProphetV6.swift */; };
 		816398002369789700C10D38 /* PlannerV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816397FF2369789700C10D38 /* PlannerV1.swift */; };
+		816BF0DA2371429900B3BF2F /* PlannerV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816BF0D92371429900B3BF2F /* PlannerV2.swift */; };
 		818ECD8C2362FB6100783D08 /* ProphetV5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818ECD8B2362FB6100783D08 /* ProphetV5.swift */; };
 		819A9311234567F0001B28C5 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A9310234567F0001B28C5 /* Action.swift */; };
 		81A0C80C235EC81A005C83B1 /* AIPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A0C80B235EC81A005C83B1 /* AIPicker.swift */; };
@@ -101,6 +102,7 @@
 		8160C60E231A73B300550C54 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		816397FD23680F9E00C10D38 /* ProphetV6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV6.swift; sourceTree = "<group>"; };
 		816397FF2369789700C10D38 /* PlannerV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerV1.swift; sourceTree = "<group>"; };
+		816BF0D92371429900B3BF2F /* PlannerV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlannerV2.swift; sourceTree = "<group>"; };
 		818ECD8B2362FB6100783D08 /* ProphetV5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProphetV5.swift; sourceTree = "<group>"; };
 		819A9310234567F0001B28C5 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		81A0C80B235EC81A005C83B1 /* AIPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIPicker.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 				81A0C80D235ECA77005C83B1 /* AI.swift */,
 				81B3390D235FD3D400541E10 /* DiscardFirstAI.swift */,
 				816397FF2369789700C10D38 /* PlannerV1.swift */,
+				816BF0D92371429900B3BF2F /* PlannerV2.swift */,
 				81A0C810235ECCB6005C83B1 /* PlayFirstCardAI.swift */,
 				81A0C812235ED15A005C83B1 /* PlaySecondCardAI.swift */,
 				81B3390F235FD74000541E10 /* PlayableV1.swift */,
@@ -406,6 +409,7 @@
 				816397FE23680F9E00C10D38 /* ProphetV6.swift in Sources */,
 				81A9E6E0234E957A001429B8 /* TextArray+Concatenated.swift in Sources */,
 				81B339122360475100541E10 /* MultipleGamesView.swift in Sources */,
+				816BF0DA2371429900B3BF2F /* PlannerV2.swift in Sources */,
 				8160C60F231A73B300550C54 /* AboutView.swift in Sources */,
 				81F0165E23555B9D00BDF352 /* ActionType.swift in Sources */,
 				8160C5DC2319E08100550C54 /* AppDelegate.swift in Sources */,
