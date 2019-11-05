@@ -27,4 +27,9 @@ extension Array where Element == Card {
         }
         return cards2D
     }
+    
+    /// Returns a Boolean value that indicates whether `self` contains the specified card by reference.
+    func containsExact(_ card: Card) -> Bool {
+        contains{$0 === card}
+    }
 }

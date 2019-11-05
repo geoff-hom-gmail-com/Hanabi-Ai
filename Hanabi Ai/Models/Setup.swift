@@ -259,6 +259,7 @@ struct Setup {
                         guard !cardsToScore.contains(card) else {continue}
                         
                         // If a required scoring card first appears after, then score the second of the pair. Else, score the first of the pair.
+                        // TODO: I look at prior cards in multiple functions. Abstract it out?
                         
                         /// The index of the first card in the pair. (Doesn't matter which one since this is a trivial pair.)
                         let index = deck.firstIndex(of: card)!
@@ -295,23 +296,24 @@ struct Setup {
         return cardsToScore
     }
     
-    /// Returns a tuple that contains the max score and the exact cards not to discard, given the specified non-trivial pairs and chosen cards.
+    /// Returns a tuple that contains the max score and the exact cards to play, given the specified non-trivial pairs and cards to try to score.
     ///
-    /// If the max score requires discarding chosen cards, they won't be in the returned cards.
-    ///
-    /// - Parameter pairs: An array of tuples, each containing a pair to test.
-    /// - Parameter chosen: An array of cards to definitely try to score.
-    func maxScore(for pairs: [(Card, Card)], using chosen: [Card]) -> (score: Int, cardsNotToDiscard: [Card]) {
+    /// - Parameter pairs: The pairs to test.
+    /// - Parameter cardsToTryToScore: The cards to definitely try to score. No duplicates. Contains one of each card needed to get a perfect score (based on the current score), except for cards in `pairs`.
+    func maxScore(for pairs: [(Card, Card)], using cardsToTryToScore: [Card]) -> (score: Int, cardsToPlay: [Card]) {
         if pairs.isEmpty {
+            /// The cards to try to score, minus those that can't score in time.
+            let cardsAllowedToScore = removingUnscorableCards(from: cardsToTryToScore)
+            
             /// The score for this branch.
-            let branchScore = score(for: chosen)
-            print("score: \(branchScore.score)")
+            let branchScore = score(for: cardsAllowedToScore)
+//            print("score: \(branchScore.score)")
             
             // temp; the deck indices of the cards to score
-            let indices = branchScore.cardsNotToDiscard.compactMap { cardNotToDiscard in
-                    deck.firstIndex{$0 === cardNotToDiscard}
-            }
-            print("cardNotToDiscard indices: \(indices)")
+//            let indices = branchScore.cardsNotToDiscard.compactMap { cardNotToDiscard in
+//                    deck.firstIndex{$0 === cardNotToDiscard}
+//            }
+//            print("cardNotToDiscard indices: \(indices)")
             
             return branchScore
         } else {
@@ -322,80 +324,109 @@ struct Setup {
             let pair = mutablePairs.removeFirst()
             
             /// The max score for the first of the pair.
-            let maxScore1 = maxScore(for: mutablePairs, using: chosen + [pair.0])
+            let maxScore1 = maxScore(for: mutablePairs, using: cardsToTryToScore + [pair.0])
             
             /// The max score for the second of the pair.
-            let maxScore2 = maxScore(for: mutablePairs, using: chosen + [pair.1])
+            let maxScore2 = maxScore(for: mutablePairs, using: cardsToTryToScore + [pair.1])
             
             // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky. Then choose the safest option with the same score.
             return maxScore1.score >= maxScore2.score ? maxScore1 : maxScore2
         }
     }
     
-    /// Returns the score that results from trying to score the specified cards, and returns the exact cards not to discard.
+    /// Returns the specified cards minus those that can't score in time.
     ///
-    /// Assumes the AI will play the specified cards optimally, but if forced to discard, will discard the slowest least-valuable card.
+    /// If the last deck card is meant to score, then cards above that can't score. Similarly, if the 2nd-to-last deck card is a 2 in a 2-player game, then the 5 can't score.
+    ///
+    /// - Parameter cardsAllowedToScore: The only cards allowed to score. No duplicates. Any 1s are not in the last two deck cards.
+    func removingUnscorableCards(from cardsAllowedToScore: [Card]) -> [Card] {
+        /// The cards allowed to score minus those that can't score in time.
+        var refinedCardsAllowedToScore = cardsAllowedToScore
+        
+        // If the last deck card is meant to score, then remove cards above it.
+        if let last = deck.last, cardsAllowedToScore.containsExact(last), last.number != ScorePile.MaxNumber {
+            let unscorableCards = cardsAllowedToScore.filter{$0.suit == last.suit && $0.number > last.number}
+            unscorableCards.forEach{refinedCardsAllowedToScore.remove($0)}
+        }
+        
+        // If a 2-player game, the penultimate deck card is meant to score, and it's a 2, then remove the 5.
+        let penultimate = deck[deck.count - 2]
+        if hands.count == 2, cardsAllowedToScore.containsExact(penultimate), penultimate.number == 2, let matching5 = cardsAllowedToScore.first(where: {$0.suit == penultimate.suit && $0.number == 5}) {
+            refinedCardsAllowedToScore.remove(matching5)
+        }
+        
+        return refinedCardsAllowedToScore
+    }
+    
+    /// Returns the score that results from trying to score the specified cards, and returns the exact cards to play.
+    ///
+    /// Assumes AI plays the specified cards optimally, but if forced to discard, will discard the slowest least-valuable card.
     ///
     /// Also, there may not be enough turns at the end to play everything. However, infinite clues to pass the turn are assumed.
-    func score(for cardsToTryToScore: [Card]) -> (score: Int, cardsNotToDiscard: [Card]) {
+    ///
+    /// - Parameter cardsAllowedToScore: The only cards allowed to score. No duplicates, no gaps. Assumes any card can score (i.e., already ran `removingUnscorableCards(from:)`).
+    func score(for cardsAllowedToScore: [Card]) -> (score: Int, cardsToPlay: [Card]) {
         /// The score piles for this simulation.
         var tempScorePiles = scorePiles
         
-        // The cards still to try to score.
-        var cardsStillToTryToScore = cardsToTryToScore
-
-        /// The exact cards not to discard.
-        var cardsNotToDiscard = cardsToTryToScore
+        /// The cards still allowed to score.
+        var mutableCardsAllowedToScore = cardsAllowedToScore
         
-        /// The cards to try to score among all hands.
-        var handCardsToTryToScore = hands.joined().filter{handCard in cardsToTryToScore.contains{$0 === handCard}}
+        /// The exact cards to play.
+        var cardsToPlay = mutableCardsAllowedToScore
         
-        print("cardsStillToTryToScore: \(cardsStillToTryToScore.count); handCardsToTryToScore: \(handCardsToTryToScore.count)")
-
+        /// The hand cards allowed to score. (Any hand.)
+        var handCardsAllowedToScore = hands.joined().filter{handCard in mutableCardsAllowedToScore.contains{$0 === handCard}}
+        
         for card in deck {
-            // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a card we want to score. In the last case, we'll discard the slowest least-valuable card.
+            // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a desirable card because of the hand limit. In the last case, we'll discard the slowest least-valuable card.
             
             /// If there's a scorable card, score it.
-            if let scorableCard = handCardsToTryToScore.first(where: {tempScorePiles.nextIs($0)}) {
-                handCardsToTryToScore.remove(scorableCard)
+            if let scorableCard = handCardsAllowedToScore.first(where: {tempScorePiles.nextIs($0)}) {
+                handCardsAllowedToScore.remove(scorableCard)
                 tempScorePiles.score(scorableCard)
-                cardsStillToTryToScore.remove(scorableCard)
-            } else if handCardsToTryToScore.count == hands.count * hands[0].count {
+                mutableCardsAllowedToScore.remove(scorableCard)
+            } else if handCardsAllowedToScore.count == hands.count * hands[0].count {
                 
                 /// The least-valuable card that will take the longest to score.
-                let slowestLeastValuableCard = self.slowestLeastValuableCard(of: handCardsToTryToScore, whileHaving: cardsStillToTryToScore)
-                handCardsToTryToScore.remove(slowestLeastValuableCard)
-                cardsStillToTryToScore.remove(slowestLeastValuableCard)
-                cardsNotToDiscard.remove(slowestLeastValuableCard)
+                let worstCard = slowestLeastValuableCard(of: handCardsAllowedToScore, whileAllowing: mutableCardsAllowedToScore)
+                handCardsAllowedToScore.remove(worstCard)
+                mutableCardsAllowedToScore.remove(worstCard)
+                cardsToPlay.remove(worstCard)
             }
 
             // Draw the card. If it's a card we still want to score, track it.
-            if cardsStillToTryToScore.contains(where: {$0 === card}) {
-                handCardsToTryToScore += [card]
+            if mutableCardsAllowedToScore.contains(where: {$0 === card}) {
+                handCardsAllowedToScore += [card]
             }
         }
         
         /// The theoretical score. After the last card is drawn, each player gets a turn.
-        let score = tempScorePiles.score() + min(hands.count, handCardsToTryToScore.count)
-        print("tempScorePiles: \(tempScorePiles.description)")
+        let score = tempScorePiles.score() + min(hands.count, handCardsAllowedToScore.count)
         
-        return (score: score, cardsNotToDiscard: cardsNotToDiscard)
+        // This doesn't include the cards scored after deck empty.
+//        print("tempScorePiles: \(tempScorePiles.description)")
+        
+        return (score: score, cardsToPlay: cardsToPlay)
     }
     
-    /// Returns the slowest least-valuable card of the specified hand, assuming only the exact specified cards will be available.
+    /// Returns the slowest least-valuable card of the specified hand, assuming only the exact specified cards are allowed to score.
     ///
     /// "Least-valuable" takes precedence.
-    func slowestLeastValuableCard(of hand: [Card], whileHaving availableCards: [Card]) -> Card {
-        
+    ///
+    /// - Parameter handCardsAllowedToScore: The hand cards allowed to score. Must be a subset of `cardsAllowedToScore`.
+    /// - Parameter cardsAllowedToScore: The only cards allowed to score. No duplicates, no gaps. Assumes any card can score (i.e., already ran `removingUnscorableCards(from:)`).
+    func slowestLeastValuableCard(of handCardsAllowedToScore: [Card], whileAllowing cardsAllowedToScore: [Card]) -> Card {
+                
         /// Returns the worth of the specified card.
         ///
-        /// Worth is how many points that card is worth if it scores along with all available cards above it.
+        /// Worth is the card plus all allowed cards above it, as each card is a point.
         func worth(_ card: Card) -> Int {
-            availableCards.filter{$0.suit == card.suit && $0.number > card.number}.count + 1
+            cardsAllowedToScore.filter{$0.suit == card.suit && $0.number > card.number}.count + 1
         }
         
         /// A tuple of the lowest value and the corresponding cards.
-        let leastValuable: (worth: Int, cards: [Card]) = hand.reduce(
+        let leastValuable: (worth: Int, cards: [Card]) = handCardsAllowedToScore.reduce(
             (worth: 6, cards: []), { leastValuable, card in
             
             /// The card's worth.
@@ -416,7 +447,7 @@ struct Setup {
         /// Returns the number of turns needed to score the specified card.
         func turnsToScore(_ card: Card) -> Int {
             /// The cards that have to score first.
-            let priorCards = availableCards.filter{$0.suit == card.suit && $0.number < card.number}
+            let priorCards = cardsAllowedToScore.filter{$0.suit == card.suit && $0.number < card.number}
             
             /// The largest index of the cards that have to score first. If all cards in hand, `-1`.
             let maxIndex = priorCards.reduce(-1, { maxIndex, prior in
