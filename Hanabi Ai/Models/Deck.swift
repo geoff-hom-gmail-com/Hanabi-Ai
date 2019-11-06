@@ -27,8 +27,11 @@ extension Deck {
     /// A string that describes a deck that is tough to win. (Max 2p: 24)
     static let tough2Description = "b2r3w4g1g3y4b4g3b5r3w5g5w2w3b4w4g4b1r1b1y2b1r4w1y5y3w2r4w1y3r1g1r1w1r2g1y1r5g4y1y1b2b3g2b3y2r2w3g2y4"
     
-    /// A string that describes a deck that is tough to win. (Max 2p: 24?)
-    static let tough3Description = "r5w3w2r2w1r2g3r1y3g4w1r3r4b2b4y3r1y1g3y4r3y5y1b5g1g5r1w4w5b2b3b1b3w3b1w4r4y2b1w2g2y4y1g4g1w1b4g2g1y2"
+    /// A string that describes a deck that is tough to win. (Max 2p: 25?)
+    static let test1Description = "r4w1y5r2g1w5y2g4y4b3r1r1w1g2y1g4g1g5b5r5w4r4w4r1b2w3y4y3b4b1g1w2r3r2y3b1b2w1b1y2y1w2g3b4w3y1g2g3b3r3"
+    
+    /// A string that describes a deck that we're testing. (Max 2p: 25?)
+    static let test2Description = "b3y1y1y5r2r2r5y1g1w3g1w4w4y2r3b5b4w5w1w1r4w3r1g4g2g5g3b3b1y3b2y2y3y4r1g2w1r1g3y4b2b4b1r3r4b1w2g1w2g4"
     
     /// Makes and returns the deck described by the specified string.
     ///

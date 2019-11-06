@@ -8,12 +8,11 @@
 
 import Foundation
 
-// todo: update stats, description
 /// An AI that can see the deck.
 ///
 /// 1a) Plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues.
 ///
-/// Stats from 10,000 games: Avg. 24.95 (Won: 96.0%) (21–25). (2000 in Live Preview: 48")
+/// Stats from 1,000 games: Avg. 24.98 (Won: 98.1%) (22–25). (1000 in Live Preview: 19")
 struct PlannerV2: AI {
     let name = "Planner v2"
     let description = "1a) plays 1st playable; 1b) if another can play and scorables left ≥ deck, clues; 2) if self can't discard, clues; 3a) discards unscorable card; 3b) discards duplicate among hands; 3c) discards future duplicate; 4) if no clues, discard 1st; 5) if another player can do safe play/discard, clues; 6a) if self has specific card not needed for max score, discards; 6b) if another player, clues"
@@ -107,10 +106,13 @@ struct PlannerV2: AI {
                     
                     /// The max score and exact cards to play.
                     let maxScore = setup.maxScore(for: nonTrivialPairs, using: trivialCardsToScore)
-//                    print("Best score: \(maxScore.score)")
+//                    print("Best score: \(maxScore.score); endPlays:  \(maxScore.endPlays)")
                     
                     self.maxScore = maxScore.score
                     cardsToPlay = maxScore.cardsToPlay
+                    
+                    // Three cards that need to be played properly at the very end.
+                    // if let clutch3 = maxScore.clutch3
                 }
                 
                 // If a card's not in the plan, discard.

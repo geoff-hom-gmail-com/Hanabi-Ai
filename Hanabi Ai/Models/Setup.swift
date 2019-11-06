@@ -304,24 +304,18 @@ struct Setup {
     
     /// Returns a tuple that contains the max score and the exact cards to play, given the specified non-trivial pairs and cards to try to score.
     ///
+    /// Also returns the number of consecutive plays needed through the last possible turn. (Lower/zero is better.)
+    ///
     /// - Parameter pairs: The pairs to test.
     /// - Parameter cardsToTryToScore: The cards to definitely try to score. No duplicates. Contains one of each card needed to get a perfect score (based on the current score), except for cards in `pairs`.
-    func maxScore(for pairs: [(Card, Card)], using cardsToTryToScore: [Card]) -> (score: Int, cardsToPlay: [Card]) {
+    func maxScore(for pairs: [(Card, Card)], using cardsToTryToScore: [Card]) -> (score: Int, cardsToPlay: [Card], endPlays: Int) {
         if pairs.isEmpty {
             /// The cards to try to score, minus those that can't score in time.
             let cardsAllowedToScore = removingUnscorableCards(from: cardsToTryToScore)
-            
-//            print("cardsAllowedToScore: \(cardsAllowedToScore.description)")
-            
+                        
             /// The score for this branch.
             let branchScore = score(for: cardsAllowedToScore)
-//            print("score: \(branchScore.score)")
-            
-            // temp; the deck indices of the cards to score
-//            let indices = branchScore.cardsNotToDiscard.compactMap { cardNotToDiscard in
-//                    deck.firstIndex{$0 === cardNotToDiscard}
-//            }
-//            print("cardNotToDiscard indices: \(indices)")
+            print("score: \(branchScore.score); endplays: \(branchScore.endPlays)")
             
             return branchScore
         } else {
@@ -338,7 +332,18 @@ struct Setup {
             let maxScore2 = maxScore(for: mutablePairs, using: cardsToTryToScore + [pair.1])
             
             // TODO: we could calc not just a score but other parameters, like how much play space (# turns) remained, because at the very end that can be tricky. Then choose the safest option with the same score.
-            return maxScore1.score >= maxScore2.score ? maxScore1 : maxScore2
+            /// The score to return.
+            var maxScore = maxScore1
+            
+            if maxScore2.score > maxScore1.score || (maxScore2.score == maxScore1.score && maxScore2.endPlays < maxScore1.endPlays) {
+                maxScore = maxScore2
+            }
+                // todo: maxScore2.
+                // hmm, we could look at the last deck turn and after, only.
+                // or the number of consecutive turns at the end. yeah, let's try that
+               
+            return maxScore
+//            return maxScore1.score >= maxScore2.score ? maxScore1 : maxScore2
         }
     }
     
@@ -368,12 +373,14 @@ struct Setup {
     
     /// Returns the score that results from trying to score the specified cards, and returns the exact cards to play.
     ///
+    /// Also returns the number of consecutive plays needed through the last possible turn. (Lower/zero is better.)
+    ///
     /// Assumes AI plays the specified cards optimally, but if forced to discard, will discard the slowest least-valuable card.
     ///
     /// Also, there may not be enough turns at the end to play everything. However, infinite clues to pass the turn are assumed.
     ///
     /// - Parameter cardsAllowedToScore: The only cards allowed to score. No duplicates, no gaps. Assumes any card can score (i.e., already ran `removingUnscorableCards(from:)`).
-    func score(for cardsAllowedToScore: [Card]) -> (score: Int, cardsToPlay: [Card]) {
+    func score(for cardsAllowedToScore: [Card]) -> (score: Int, cardsToPlay: [Card], endPlays: Int) {
         /// The score piles for this simulation.
         var tempScorePiles = scorePiles
         
@@ -386,14 +393,18 @@ struct Setup {
         /// The hand cards allowed to score. (Any hand.)
         var handCardsAllowedToScore = hands.joined().filter{mutableCardsAllowedToScore.containsExact($0)}
         
+        /// The number of consecutive plays thru the last possible turn.
+        var endPlays = 0
+        
         for card in deck {
-            // Before drawing the deck card, we either 1) score a card, 2) discard something we didn't want to keep (so ignore it), or 3) are forced to discard a desirable card because of the hand limit. In the last case, we'll discard the slowest least-valuable card.
+            // Before drawing the deck card, we either 1) score a card, 2) are forced to discard a desirable card because of the hand limit, or 3) discard something we didn't want to keep (so ignore it). In the 2nd case, we'll discard the slowest least-valuable card.
             
             /// If there's a scorable card, score it.
             if let scorableCard = handCardsAllowedToScore.first(where: {tempScorePiles.nextIs($0)}) {
                 handCardsAllowedToScore.remove(scorableCard)
                 tempScorePiles.score(scorableCard)
                 mutableCardsAllowedToScore.remove(scorableCard)
+                endPlays += 1
             } else if handCardsAllowedToScore.count == hands.count * hands[0].count {
                 
                 /// The least-valuable card that will take the longest to score.
@@ -401,6 +412,9 @@ struct Setup {
                 handCardsAllowedToScore.remove(worstCard)
                 mutableCardsAllowedToScore.remove(worstCard)
                 cardsToPlay.remove(worstCard)
+                endPlays = 0
+            } else {
+                endPlays = 0
             }
 
             // Draw the card. If it's a card we still want to score, track it.
@@ -408,14 +422,21 @@ struct Setup {
                 handCardsAllowedToScore += [card]
             }
         }
-        
+    
+                // The score doesn't include the cards scored after deck empty.
+        //        print("tempScorePiles: \(tempScorePiles.description). handCardsAllowedToScore: \(handCardsAllowedToScore.description)")
+                
         /// The theoretical score. After the last card is drawn, each player gets a turn.
         let score = tempScorePiles.score() + min(hands.count, handCardsAllowedToScore.count)
         
-        // The score doesn't include the cards scored after deck empty.
-//        print("tempScorePiles: \(tempScorePiles.description). handCardsAllowedToScore: \(handCardsAllowedToScore.description)")
-        
-        return (score: score, cardsToPlay: cardsToPlay)
+        /// If the hands have cards left to score, assume they're at the last possible turn. Shouldn't matter?
+        if handCardsAllowedToScore.count == hands.count {
+            endPlays += handCardsAllowedToScore.count
+        } else {
+            endPlays = handCardsAllowedToScore.count
+        }
+
+        return (score: score, cardsToPlay: cardsToPlay, endPlays: endPlays)
     }
     
     /// Returns the slowest least-valuable card of the specified hand, assuming only the exact specified cards are allowed to score.
