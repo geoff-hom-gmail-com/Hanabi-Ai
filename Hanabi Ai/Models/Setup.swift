@@ -140,7 +140,9 @@ struct Setup {
         /// The deck cards grouped by suit.
         let deckBySuit: [[Card]] = deck.bySuit
         
-        deckBySuit.forEach { suitCards in
+        for suitCards in deckBySuit {
+            guard !suitCards.isEmpty else {continue}
+            
             /// The pairs in the suit.
             var pairs: [(Card, Card)] = []
             
@@ -154,7 +156,7 @@ struct Setup {
                 }
             }
             
-            /// The matching score pile.
+            // The matching score pile.
             let scorePile = scorePiles.first{$0.suit == suitCards.first!.suit}!
             
             // Check if each pair is non-trivial.
@@ -162,7 +164,7 @@ struct Setup {
                 /// The pair indices.
                 let firstIndex = suitCards.firstIndex(of: pair.0)!
                 let secondIndex = suitCards.lastIndex(of: pair.0)!
-                                
+                
                 /// The range between the pair.
                 let inBetween = firstIndex + 1..<secondIndex
                 
@@ -315,7 +317,7 @@ struct Setup {
                         
             /// The score for this branch.
             let branchScore = score(for: cardsAllowedToScore)
-            print("score: \(branchScore.score); endplays: \(branchScore.endPlays)")
+//            print("score: \(branchScore.score); endplays: \(branchScore.endPlays)")
             
             return branchScore
         } else {
